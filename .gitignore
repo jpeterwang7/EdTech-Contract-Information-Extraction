@@ -1,0 +1,10 @@
+.venv/
+.tessdata/
+work/
+tools/vision_ocr
+__pycache__/
+.DS_Store
+*.pdf
+*.PDF
+contracts/
+results_*.zip

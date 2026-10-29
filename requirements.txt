@@ -1,0 +1,11 @@
+# Python 3.12. Apple Vision OCR also needs macOS with the Swift compiler (comes with Xcode Command Line Tools).
+pypdfium2==5.14.0
+pdfplumber==0.11.10
+pillow
+numpy
+pyyaml
+rapidocr==3.10.0
+onnxruntime==1.31.1
+tesserocr==2.12.0
+# Tesseract's English model is downloaded separately into .tessdata/ (see README):
+# https://github.com/tesseract-ocr/tessdata_best/raw/main/eng.traineddata  (sha256 8280aed0...cb66ba)

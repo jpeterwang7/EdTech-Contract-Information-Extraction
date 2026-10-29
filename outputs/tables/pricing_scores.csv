@@ -1,0 +1,26 @@
+method,check,checked,passed,pass_rate
+docling,row,86,78,0.907
+docling,subtotal,60,60,1.0
+docling,grand,8,7,0.875
+docling,product rows found,86,,
+docling,product rows with no Qty read,86,2,
+geometry+tesseract,row,20,19,0.95
+geometry+tesseract,subtotal,13,13,1.0
+geometry+tesseract,grand,4,4,1.0
+geometry+tesseract,product rows found,20,,
+geometry+tesseract,product rows with no Qty read,20,0,
+geometry+tess+vision,row,67,60,0.896
+geometry+tess+vision,subtotal,40,37,0.925
+geometry+tess+vision,grand,11,7,0.636
+geometry+tess+vision,product rows found,67,,
+geometry+tess+vision,product rows with no Qty read,67,5,
+"geometry+vision, no re-read",row,88,81,0.92
+"geometry+vision, no re-read",subtotal,63,63,1.0
+"geometry+vision, no re-read",grand,12,12,1.0
+"geometry+vision, no re-read",product rows found,88,,
+"geometry+vision, no re-read",product rows with no Qty read,88,6,
+geometry+vision,row,88,81,0.92
+geometry+vision,subtotal,63,63,1.0
+geometry+vision,grand,12,12,1.0
+geometry+vision,product rows found,88,,
+geometry+vision,product rows with no Qty read,88,0,
