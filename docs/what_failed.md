@@ -85,3 +85,17 @@ file and renamed only when complete.
 
 **13. The server bundle crashed in testing.** In a simulated server run, the table step crashed when Tesseract was
 installed but its English model was not. This was caught and fixed before upload.
+
+**14. The first real server run crashed anyway.**
+- **What happened:** the code read an English word list from `/usr/share/dict/words`, which every Mac has and the
+  lab server does not. The simulated test ran on the Mac, so it could not catch this.
+- **Fix:** the same list now ships inside the project (`data/english_words.txt.gz`), so every computer uses
+  exactly the same words.
+- **Lesson:** a pretend server on a Mac is not a server.
+
+**15. The "is this real text?" check was too lenient.**
+- **What happened:** to forgive plurals and such, it trimmed up to three letters off a word before looking it up.
+  Trimming "xqzt" left "x", which counts as a word, so nonsense passed.
+- **Fix:** it now trims only real endings (-s, -es, -ed, -ing, -ly).
+- **Side effect:** clean order forms now score about 80% (their names and product words aren't in the
+  dictionary), so the cut-off for answer key 2 was lowered from 85% to 70%. No page falls between the two.

@@ -1,8 +1,8 @@
 answer_key,kind,engine,lines,chars,cer,lines_perfect,words_found,numbers,numbers_exact
-digital_textlayer,,rapidocr,104,10822,0.1525,0.75,0.9733,54,0.9074
-digital_textlayer,,tess+vision,784,65560,0.0313,0.881,0.9727,371,0.6604
-digital_textlayer,,tesseract,784,65560,0.0334,0.871,0.9697,371,0.6469
-digital_textlayer,,vision,784,65560,0.0402,0.872,0.9698,371,0.6307
+digital_textlayer,,rapidocr,785,63361,0.0453,0.843,0.9768,302,0.9172
+digital_textlayer,,tess+vision,785,63361,0.0045,0.893,0.995,302,0.9503
+digital_textlayer,,tesseract,785,63361,0.0072,0.884,0.9917,302,0.9305
+digital_textlayer,,vision,785,63361,0.0114,0.885,0.9921,302,0.9172
 scanned_hand,,baseline,93,6199,0.0878,0.667,0.9402,44,0.6136
 scanned_hand,,rapidocr,93,6199,0.0513,0.903,0.9701,44,0.9773
 scanned_hand,,tess+vision,93,6199,0.0037,0.892,0.995,44,1.0

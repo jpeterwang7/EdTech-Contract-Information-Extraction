@@ -16,6 +16,7 @@ Outputs:
   work/ocr/<engine>/<file>/pNNN.json         raw readings
   outputs/reading/page_inventory.csv         one row per page: text layer size and quality, image cover
 """
+import gzip
 import json
 import re
 import subprocess
@@ -36,19 +37,33 @@ _WORDS = None
 
 
 def english_words() -> set[str]:
+    """English word list (Webster's 2nd, the list macOS ships as /usr/share/dict/words), kept in data/ because
+    Linux servers often lack it, and so every computer uses exactly the same list."""
     global _WORDS
     if _WORDS is None:
-        _WORDS = {w.strip().lower() for w in open("/usr/share/dict/words")}
+        with gzip.open(DATA / "english_words.txt.gz", "rt", encoding="utf-8") as fh:
+            _WORDS = {w.strip().lower() for w in fh}
     return _WORDS
 
 
-def word_share(tokens: list[str]) -> float:
-    """Share of alphabetic tokens (3+ letters) that are English words: a rough check that text is readable."""
-    toks = [t.lower() for t in tokens if re.fullmatch(r"[A-Za-z]{3,}", t)]
-    if not toks:
-        return 0.0
+def is_word(token: str) -> bool:
+    """In the word list as is, or after taking off a common ending (-s, -es, -ed, -ing, -ly; "using" -> "use")."""
     words = english_words()
-    return sum(t in words or t.rstrip("s") in words or t[:-2] in words or t[:-3] in words for t in toks) / len(toks)
+    t = token.lower()
+    if t in words:
+        return True
+    for suffix in ("s", "es", "ed", "ing", "ly"):
+        stem = t[: -len(suffix)]
+        if t.endswith(suffix) and ((len(stem) >= 3 and stem in words) or (len(stem) >= 2 and stem + "e" in words)):
+            return True
+    return False
+
+
+def word_share(tokens: list[str]) -> float:
+    """Share of alphabetic tokens (3+ letters) that are English words: a rough check that stored text is readable.
+    Names and product words ("Hendrickson", "UNMC") are not in the list, so a clean order form scores about 0.8."""
+    toks = [t for t in tokens if re.fullmatch(r"[A-Za-z]{3,}", t)]
+    return sum(map(is_word, toks)) / len(toks) if toks else 0.0
 
 
 # ---------------------------------------------------------------- page images and inventory
@@ -199,12 +214,14 @@ def run_ocr(pages: list[tuple[str, int]], label: str, engines=ENGINES) -> None:
                   f"pages it read there", flush=True)
             continue
         t0, n = time.time(), 0
-        for file_id, page in pages:
-            out = WORK / "ocr" / engine / file_id / f"p{page:03d}.json"
-            if out.exists():
-                continue
-            write_json(out, OCR[engine](page_png(file_id, page)))
+        todo = [(f, p) for f, p in pages if not (WORK / "ocr" / engine / f / f"p{p:03d}.json").exists()]
+        if todo:
+            print(f"  {engine}, {label} pages: {len(todo)} to read", flush=True)
+        for file_id, page in todo:
+            write_json(WORK / "ocr" / engine / file_id / f"p{page:03d}.json", OCR[engine](page_png(file_id, page)))
             n += 1
+            if n % 10 == 0:
+                print(f"    {n} of {len(todo)} done ({time.time() - t0:.0f}s)", flush=True)
         print(f"  {engine}, {label} pages: {n} read in {time.time() - t0:.0f}s", flush=True)
 
 

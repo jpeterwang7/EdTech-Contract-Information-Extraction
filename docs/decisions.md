@@ -4,8 +4,8 @@ Every choice made so far, in order: what the options were, what was picked, and 
 (R = reading the pages, T = tables, S = server) that the code refers to. Numbers come from the files in
 `outputs/`; the failures behind them are told in [what_failed.md](what_failed.md).
 
-**Status (Oct 28, 2026):** steps R and T are built and scored. The RapidOCR digital-page scores are being finished
-on the lab server. Answer key 1 still needs a person to check it (R4).
+**Status (Oct 29, 2026):** steps R and T are built and scored on both answer keys. The final run was on the lab
+server, and its table results are identical to the Mac's. Answer key 1 still needs a person to check it (R4).
 
 ---
 
@@ -82,6 +82,11 @@ reading errors) and single spaces.
 their stored text. This needs no hand work and covers thousands of lines. But clean digital pictures are easier
 than real scans, so it shows each engine's best case.
 
+**Which digital pages are used.** The 99 digital pages with at least 100 stored words whose words are at least 70%
+real English. The real-English share is checked against a 234,456-word dictionary, after taking off endings like
+-s and -ing. This cut-off would catch a garbled text layer. None of these files has one: the lowest page, an order
+form full of names like "Hendrickson" and "UNMC", scores 77%.
+
 Some stored text is never visible on the page, so it can't be the answer for what the page shows. We leave out
 lines with:
 - characters stored as codes (`(cid:182)`),
@@ -121,7 +126,23 @@ On answer key 1, this has the fewest errors of all readings (0.37%) and gets eve
 
 **Honest caveat:** the combination was designed after seeing which lines each engine got wrong on this same key,
 so its score is a little optimistic. Answer key 2 is the cross-check, because it was not used to design anything.
-Its full results come from the lab-server run.
+
+**The cross-check agrees.** Answer key 2: 785 lines from the 99 digital pages, scored against the PDFs' own text.
+
+| Reading | Character errors | Lines perfect | Words found | Numbers exact |
+|---|---|---|---|---|
+| RapidOCR, 300 dpi | 4.5% | 84% | 97.7% | 91.7% |
+| Apple Vision | 1.14% | 89% | 99.2% | 91.7% |
+| Tesseract | 0.72% | 88% | 99.2% | 93.1% |
+| **Tesseract + Vision** | **0.45%** | **89%** | **99.5%** | **95.0%** |
+
+Same order as on the scanned pages, so the combination is not just tuned to answer key 1.
+
+The remaining number misses are on 9 lines:
+- **5 lines:** more hidden DocuSign tags mixed into the stored text ("\t1S\enior" = the visible word "Senior" with
+  a hidden tag "\t1\" inside). Those are flaws in the answer key, not OCR errors.
+- **4 lines:** real misses of short, isolated items in table cells: row labels "S4" and "S6", a lone "1", and an
+  order number. This is the same weakness T4 fixes for pricing tables.
 
 ---
 

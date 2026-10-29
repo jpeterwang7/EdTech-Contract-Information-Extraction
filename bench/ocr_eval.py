@@ -187,7 +187,9 @@ def evaluate() -> None:
     # 2. digital pages: the PDF's own text is the answer
     rng = random.Random(SEED)
     for r in inventory():
-        if is_scanned(r) or int(r["textlayer_words"]) < 100 or float(r["textlayer_word_share"]) < .85:
+        # pages with 100+ stored words that are mostly real words (a garbled text layer would score far lower;
+        # the lowest page here, an order form full of names, scores 0.77; decisions.md, R5)
+        if is_scanned(r) or int(r["textlayer_words"]) < 100 or float(r["textlayer_word_share"]) < .70:
             continue
         fid, page = r["file_id"], int(r["page"])
         lines = [l for l in load("textlayer", fid, page)

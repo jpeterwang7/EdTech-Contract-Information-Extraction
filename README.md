@@ -19,7 +19,7 @@ tables and forms.
 
 | Step | What it does | State |
 |---|---|---|
-| `read` | Turn every page into text: the PDF's own text on digital pages; OCR on the 47 scanned pages | done (RapidOCR's last 76 digital pages run on the lab server) |
+| `read` | Turn every page into text: the PDF's own text on digital pages; OCR on the 47 scanned pages | done (final run on the lab server, Oct 29) |
 | `ocr-eval` | Score each OCR reading against two answer keys | done; answer key 1 needs a human check |
 | `tables` | Read the pricing tables two ways; check them with arithmetic | done |
 | forms | Order-form fields (order #, dates, customer, payment terms, signers) | next |
@@ -30,6 +30,8 @@ Headline results so far:
 - **Reading scanned pages:**
   - The earlier pipeline got 8.8% of characters wrong and 61% of numbers exactly right.
   - Tesseract with Apple Vision filling its gaps gets 0.37% wrong and 100% of numbers right.
+  - A second test on 785 lines from digital pages, not used to design anything, ranks the readings in the same
+    order (0.45% of characters wrong).
 - **Pricing tables:**
   - 88 product rows found.
   - Every subtotal (63/63) and grand total (12/12) adds up.
