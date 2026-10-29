@@ -1,0 +1,113 @@
+form_id,field,gold_value,present,human_checked,notes
+OF01,order_number,Q-19544-1,yes,no,drafted from the page pictures. 
+OF01,order_date,2016-07-25,yes,no,drafted from the page pictures. 
+OF01,customer,University of Nebraska Medical Center,yes,no,drafted from the page pictures. 
+OF01,billing_frequency,,no,no,drafted from the page pictures. older form: no Billing Frequency field
+OF01,payment_terms,Net 30,yes,no,drafted from the page pictures. inside the Payment Terms paragraph ('...pay such amount to Instructure Net 30...')
+OF01,grand_total,7500.00,yes,no,drafted from the page pictures. 
+OF01,customer_signer,,no,no,drafted from the page pictures. blacked out
+OF01,customer_signed_date,2016-07-29,yes,no,drafted from the page pictures. handwritten
+OF02,order_number,Q-31146-2,yes,no,drafted from the page pictures. 
+OF02,order_date,2017-03-29,yes,no,drafted from the page pictures. 
+OF02,customer,University of Nebraska Medical Center,yes,no,drafted from the page pictures. 
+OF02,billing_frequency,,no,no,drafted from the page pictures. older form: no Billing Frequency field
+OF02,payment_terms,Net 30,yes,no,drafted from the page pictures. inside the Payment Terms paragraph on page 4
+OF02,grand_total,79760.00,yes,no,drafted from the page pictures. 
+OF02,customer_signer,,no,no,drafted from the page pictures. whole signature block blacked out
+OF02,customer_signed_date,,no,no,drafted from the page pictures. whole signature block blacked out
+OF03,order_number,Q-76677-6,yes,no,drafted from the page pictures. 
+OF03,order_date,2019-05-29,yes,no,drafted from the page pictures. 
+OF03,customer,Board of Trustees of the Nebraska State Colleges dba Wayne State College,yes,no,drafted from the page pictures. 
+OF03,billing_frequency,Annual Upfront,yes,no,drafted from the page pictures. 
+OF03,payment_terms,Net 45,yes,no,drafted from the page pictures. 
+OF03,grand_total,420463.68,yes,no,drafted from the page pictures. 
+OF03,customer_signer,Angela Fredrickson,yes,no,drafted from the page pictures. handwritten
+OF03,customer_signed_date,2019-05-29,yes,no,drafted from the page pictures. handwritten
+OF04,order_number,Q-84377-2,yes,no,drafted from the page pictures. 
+OF04,order_date,2019-06-13,yes,no,drafted from the page pictures. 
+OF04,customer,Board of Trustees of the Nebraska State Colleges dba Wayne State College,yes,no,drafted from the page pictures. 
+OF04,billing_frequency,Annual Upfront,yes,no,drafted from the page pictures. 
+OF04,payment_terms,Net 45,yes,no,drafted from the page pictures. 
+OF04,grand_total,3000.00,yes,no,drafted from the page pictures. 
+OF04,customer_signer,Angela Fredrickson,yes,no,drafted from the page pictures. 
+OF04,customer_signed_date,2019-06-24,yes,no,"drafted from the page pictures. written 'June 24, 2019'"
+OF05,order_number,,no,no,"drafted from the page pictures. blacked out; page 2 mentions an EARLIER form, Q-35152-2, which is not this form's number"
+OF05,order_date,2020-03-20,yes,no,drafted from the page pictures. 
+OF05,customer,University of Nebraska Medical Center,yes,no,drafted from the page pictures. 
+OF05,billing_frequency,Annual Upfront,yes,no,drafted from the page pictures. 
+OF05,payment_terms,Net 30,yes,no,drafted from the page pictures. 
+OF05,grand_total,54679.04,yes,no,drafted from the page pictures. 
+OF05,customer_signer,,no,no,drafted from the page pictures. signature block blacked out
+OF05,customer_signed_date,,no,no,drafted from the page pictures. signature block blacked out
+OF06,order_number,,no,no,drafted from the page pictures. blacked out
+OF06,order_date,2020-02-28,yes,no,drafted from the page pictures. 
+OF06,customer,University of Nebraska Medical Center,yes,no,drafted from the page pictures. 
+OF06,billing_frequency,Annual Upfront,yes,no,drafted from the page pictures. 
+OF06,payment_terms,Net 30,yes,no,drafted from the page pictures. 
+OF06,grand_total,126000.00,yes,no,drafted from the page pictures. 
+OF06,customer_signer,,no,no,drafted from the page pictures. signature block blacked out
+OF06,customer_signed_date,,no,no,drafted from the page pictures. signature block blacked out
+OF07,order_number,Q-165114-1,yes,no,drafted from the page pictures. 
+OF07,order_date,2020-12-09,yes,no,drafted from the page pictures. 
+OF07,customer,Board of Regents of the University of Nebraska d/b/a University of Nebraska at Kearney,yes,no,drafted from the page pictures. 
+OF07,billing_frequency,Annual Upfront,yes,no,drafted from the page pictures. 
+OF07,payment_terms,Net 30,yes,no,drafted from the page pictures. 
+OF07,grand_total,6540.50,yes,no,drafted from the page pictures. 
+OF07,customer_signer,Scott Benson,yes,no,drafted from the page pictures. 
+OF07,customer_signed_date,2020-12-11,yes,no,drafted from the page pictures. 
+OF08,order_number,Q-171061-1,yes,no,"drafted from the page pictures. page 3 also mentions an earlier form, Q-119665-1"
+OF08,order_date,2020-12-14,yes,no,drafted from the page pictures. 
+OF08,customer,University of Nebraska Medical Center,yes,no,drafted from the page pictures. 
+OF08,billing_frequency,Annual Upfront,yes,no,drafted from the page pictures. 
+OF08,payment_terms,Net 30,yes,no,drafted from the page pictures. 
+OF08,grand_total,85160.00,yes,no,drafted from the page pictures. 
+OF08,customer_signer,,no,no,drafted from the page pictures. signature block blacked out
+OF08,customer_signed_date,,no,no,drafted from the page pictures. signature block blacked out
+OF10,order_number,Q-247218-4,yes,no,drafted from the page pictures. 
+OF10,order_date,2022-04-05,yes,no,drafted from the page pictures. 
+OF10,customer,Board of Trustees for the Nebraska State Colleges,yes,no,drafted from the page pictures. 
+OF10,billing_frequency,Annual Upfront,yes,no,drafted from the page pictures. 
+OF10,payment_terms,Net 45,yes,no,drafted from the page pictures. 
+OF10,grand_total,818949.86,yes,no,drafted from the page pictures. 
+OF10,customer_signer,Paul Turman,yes,no,drafted from the page pictures. handwritten
+OF10,customer_signed_date,2022-04-21,yes,no,drafted from the page pictures. handwritten '4-21-2022'
+OF11a,order_number,Q-343071-1,yes,no,drafted from the page pictures. 
+OF11a,order_date,2024-01-24,yes,no,drafted from the page pictures. 
+OF11a,customer,University of Nebraska Medical Center (NETEC),yes,no,drafted from the page pictures. 
+OF11a,billing_frequency,Annual Upfront,yes,no,drafted from the page pictures. 
+OF11a,payment_terms,Net 30,yes,no,drafted from the page pictures. 
+OF11a,grand_total,53166.00,yes,no,drafted from the page pictures. 
+OF11a,customer_signer,Anne Barnes,yes,no,drafted from the page pictures. 
+OF11a,customer_signed_date,2024-08-21,yes,no,drafted from the page pictures. 
+OF11b,order_number,Q-287275-1,yes,no,drafted from the page pictures. 
+OF11b,order_date,2023-04-06,yes,no,drafted from the page pictures. 
+OF11b,customer,University of Nebraska Medical Center (NETEC),yes,no,drafted from the page pictures. 
+OF11b,billing_frequency,Annual Upfront,yes,no,drafted from the page pictures. 
+OF11b,payment_terms,Net 30,yes,no,drafted from the page pictures. 
+OF11b,grand_total,147514.20,yes,no,drafted from the page pictures. 
+OF11b,customer_signer,Benjamin Mattson,yes,no,drafted from the page pictures. 
+OF11b,customer_signed_date,2023-05-11,yes,no,drafted from the page pictures. 
+OF12,order_number,Q-401612-1,yes,no,drafted from the page pictures. 
+OF12,order_date,2024-10-11,yes,no,drafted from the page pictures. 
+OF12,customer,The Board of Regents of the University of Nebraska on behalf of UNMC,yes,no,drafted from the page pictures. 
+OF12,billing_frequency,Annual Upfront,yes,no,drafted from the page pictures. 
+OF12,payment_terms,Net 30,yes,no,drafted from the page pictures. 
+OF12,grand_total,1200.00,yes,no,drafted from the page pictures. 
+OF12,customer_signer,Michael Hrncirik,yes,no,drafted from the page pictures. 
+OF12,customer_signed_date,2024-12-19,yes,no,drafted from the page pictures. 
+OF13,order_number,Q-475816-1,yes,no,drafted from the page pictures. 
+OF13,order_date,2025-10-01,yes,no,drafted from the page pictures. 
+OF13,customer,Nebraska State College System,yes,no,drafted from the page pictures. heading 'Order Form for ...'; the bill-to entity is the Board of Trustees
+OF13,billing_frequency,Annual Upfront,yes,no,drafted from the page pictures. 
+OF13,payment_terms,Net 45,yes,no,drafted from the page pictures. 
+OF13,grand_total,67260.50,yes,no,drafted from the page pictures. no Grand Total row: Total row of the Billing Summary table
+OF13,customer_signer,Paul Turman,yes,no,drafted from the page pictures. typed 'Cheri Polenske' is crossed out; 'Paul Turman' handwritten beside it
+OF13,customer_signed_date,2025-10-27,yes,no,drafted from the page pictures. handwritten '10-27-25'; the 7 is hard to read
+OF14,order_number,Q-580569-1,yes,no,drafted from the page pictures. 
+OF14,order_date,2026-03-19,yes,no,drafted from the page pictures. 
+OF14,customer,University of Nebraska at Omaha,yes,no,drafted from the page pictures. 
+OF14,billing_frequency,Annual Upfront,yes,no,drafted from the page pictures. 
+OF14,payment_terms,Net 30,yes,no,drafted from the page pictures. 
+OF14,grand_total,51569.00,yes,no,drafted from the page pictures. no Grand Total row: Total row of the Billing Summary table
+OF14,customer_signer,Jessie Combs,yes,no,drafted from the page pictures. 
+OF14,customer_signed_date,2026-05-26,yes,no,drafted from the page pictures. 

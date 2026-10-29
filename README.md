@@ -22,7 +22,7 @@ tables and forms.
 | `read` | Turn every page into text: the PDF's own text on digital pages; OCR on the 47 scanned pages | done (final run on the lab server, Oct 29) |
 | `ocr-eval` | Score each OCR reading against two answer keys | done; answer key 1 needs a human check |
 | `tables` | Read the pricing tables two ways; check them with arithmetic | done |
-| forms | Order-form fields (order #, dates, customer, payment terms, signers) | next |
+| `forms` | Read 8 fields from each of the 14 order forms two ways (text rules, layout) and score them | done; its answer key needs a human check |
 | sections | Split into sections and label topics (goal 1) | later |
 | extraction | Privacy facts (goal 2) | later |
 
@@ -36,6 +36,10 @@ Headline results so far:
   - 88 product rows found.
   - Every subtotal (63/63) and grand total (12/12) adds up.
   - The 7 row checks that fail are arithmetic errors printed in the contracts themselves.
+- **Order-form fields:**
+  - Reading by position on the page (layout) gets 89 of 99 values right.
+  - Searching the running text (text rules) gets 84.
+  - Layout is far better on signer names and dates. Handwriting defeats both.
 
 ## Running it on the lab server (recommended: keeps your laptop cool)
 
@@ -83,7 +87,7 @@ bash benchmark_segmentation_extraction/server/cleanup_server.sh
 ## Running it on the Mac
 
 ```bash
-.venv/bin/python run.py read ocr-eval tables
+.venv/bin/python run.py read ocr-eval tables forms
 ```
 `read` skips pages already read, so only missing pages cost time. Setup on a new Mac:
 1. Create the environment and install the packages:
@@ -101,14 +105,18 @@ Open `data/gold/ocr_lines.csv` next to the pictures in `data/gold/ocr_crops/`. F
 
 Then run `.venv/bin/python run.py ocr-eval` again.
 
+Do the same for `data/gold/order_form_fields.csv`, comparing it with the order-form pages. Then run
+`.venv/bin/python run.py forms`.
+
 ## Folder map
 
 ```
 run.py              the entry point: python run.py <steps>
-bench/              one file per step: reading.py, ocr_eval.py, tables.py, common.py (shared helpers)
+bench/              one file per step: reading.py, ocr_eval.py, tables.py, forms.py, common.py (shared helpers)
 tools/              vision_ocr.swift (Apple Vision OCR, compiled on first use)
 data/files.csv      the 14 files and their short IDs F01..F14
-data/gold/          answer keys (ocr_lines.csv + the line pictures)
+data/order_forms.csv  the 14 order forms: file, first page, signature page
+data/gold/          answer keys: ocr_lines.csv (+ the line pictures), order_form_fields.csv
 data/baseline_docling_rapidocr/   the earlier pipeline's output, for comparison
 docs/               decisions.md, what_failed.md
 outputs/            scores and results (made by run.py)

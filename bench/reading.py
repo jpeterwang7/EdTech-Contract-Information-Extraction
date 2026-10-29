@@ -78,9 +78,31 @@ def render_pages() -> None:
                 doc[i].render(scale=DPI / 72).to_pil().convert("RGB").save(out)
 
 
+def is_white(color) -> bool:
+    """White fill in grey (1), RGB (1, 1, 1) or CMYK (0, 0, 0, 0)."""
+    if not color or not isinstance(color, (tuple, list)):
+        return False
+    if len(color) == 4:
+        return all(c <= 0.05 for c in color)
+    return all(c >= 0.95 for c in color)
+
+
 def textlayer_page(page) -> list[dict]:
-    """The PDF's own text as lines: words whose vertical centres are close are one line."""
+    """The PDF's own text as lines: words whose vertical centres are close are one line.
+    White characters on a white background are left out: DocuSign hides its field tags ("\\s1\\", "\\n1\\") that
+    way, on top of the visible names and dates, and a reader never sees them (decisions.md, R1)."""
     W, H = float(page.width), float(page.height)
+    # White text on a coloured bar ("Billing Summary" on blue) is visible, so only white text with nothing coloured
+    # behind it is dropped.
+    backs = [r for r in page.rects if r.get("fill") and not is_white(r.get("non_stroking_color"))] + list(page.images)
+
+    def hidden(o) -> bool:
+        if o.get("object_type") != "char" or not is_white(o.get("non_stroking_color")):
+            return False
+        x, y = (o["x0"] + o["x1"]) / 2, (o["top"] + o["bottom"]) / 2
+        return not any(b["x0"] <= x <= b["x1"] and b["top"] <= y <= b["bottom"] for b in backs)
+
+    page = page.filter(lambda o: not hidden(o))
     words = page.extract_words(keep_blank_chars=False, use_text_flow=False)
     words.sort(key=lambda w: ((w["top"] + w["bottom"]) / 2, w["x0"]))
     lines, cur, cur_y = [], [], None

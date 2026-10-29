@@ -5,16 +5,18 @@ Steps, in order:
   ocr-sample   pick lines from scanned pages for the hand-checked OCR answer key     (bench/ocr_eval.py)
   ocr-eval     score every reading against the answer keys                           (bench/ocr_eval.py)
   tables       read the pricing tables two ways and check them with arithmetic       (bench/tables.py)
+  forms        read 8 fields from each order form two ways and score them             (bench/forms.py)
 """
 import sys
 
-from bench import ocr_eval, reading, tables
+from bench import forms, ocr_eval, reading, tables
 
 STEPS = {
     "read": reading.main,
     "ocr-sample": ocr_eval.sample,
     "ocr-eval": ocr_eval.evaluate,
     "tables": tables.main,
+    "forms": forms.main,
 }
 
 if __name__ == "__main__":

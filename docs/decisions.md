@@ -4,8 +4,8 @@ Every choice made so far, in order: what the options were, what was picked, and 
 (R = reading the pages, T = tables, S = server) that the code refers to. Numbers come from the files in
 `outputs/`; the failures behind them are told in [what_failed.md](what_failed.md).
 
-**Status (Oct 29, 2026):** steps R and T are built and scored on both answer keys. The final run was on the lab
-server, and its table results are identical to the Mac's. Answer key 1 still needs a person to check it (R4).
+**Status (Oct 29, 2026):** steps R (reading), T (tables) and F (order-form fields) are built and scored.
+Two answer keys still need a person to check them: OCR lines (R4) and order-form fields (F1).
 
 ---
 
@@ -29,6 +29,14 @@ stored text has fewer than 40 words. We need both conditions:
 
 **Result.** 47 scanned pages and 109 digital pages (`outputs/reading/page_inventory.csv`). Digital pages always
 use their stored text, which is exact. Everything below about OCR is about the 47 scanned pages.
+
+**Hidden text is left out.** DocuSign stamps invisible field tags onto the order forms it handles:
+`/BillingContactName1/`, `\n1\` (a name), `\d1\` (a date). They are stored as white text on the white page, right
+on top of the visible names and dates. Copied out naively, "Jessie Combs" came out as "J\ecslmsie-n C1o\ mbs".
+So white characters are dropped, **but only when nothing coloured is behind them**. The first version dropped all
+white text, and that also removed the visible heading "Billing Summary", which is printed white on a blue bar (see
+what_failed.md, 17). Checked by hand: everything the rule drops is a tag, on 14 pages of 4 files (F07, F11, F12,
+F14).
 
 ### R2. Make page pictures at 300 dpi
 
@@ -131,18 +139,18 @@ so its score is a little optimistic. Answer key 2 is the cross-check, because it
 
 | Reading | Character errors | Lines perfect | Words found | Numbers exact |
 |---|---|---|---|---|
-| RapidOCR, 300 dpi | 4.5% | 84% | 97.7% | 91.7% |
-| Apple Vision | 1.14% | 89% | 99.2% | 91.7% |
-| Tesseract | 0.72% | 88% | 99.2% | 93.1% |
-| **Tesseract + Vision** | **0.45%** | **89%** | **99.5%** | **95.0%** |
+| RapidOCR, 300 dpi | 4.5% | 85% | 97.8% | 95.5% |
+| Apple Vision | 1.06% | 89% | 99.3% | 95.5% |
+| Tesseract | 0.65% | 89% | 99.3% | 95.5% |
+| **Tesseract + Vision** | **0.39%** | **90%** | **99.6%** | **97.6%** |
 
-Same order as on the scanned pages, so the combination is not just tuned to answer key 1.
+Same order as on the scanned pages, so the combination is not just tuned to answer key 1. (These numbers come after
+hidden DocuSign tags were removed from the stored text (R1); before that, the tags made every engine look worse on
+numbers, e.g. 95.0% for the combination.)
 
-The remaining number misses are on 9 lines:
-- **5 lines:** more hidden DocuSign tags mixed into the stored text ("\t1S\enior" = the visible word "Senior" with
-  a hidden tag "\t1\" inside). Those are flaws in the answer key, not OCR errors.
-- **4 lines:** real misses of short, isolated items in table cells: row labels "S4" and "S6", a lone "1", and an
-  order number. This is the same weakness T4 fixes for pricing tables.
+The remaining misses are 7 numbers on 3 lines, all short isolated items: the row labels "S4" and "S6" with their
+lone "1" quantities (F14 p4), and one order number read out of order (F12 p2). This is the same weakness T4 fixes
+for pricing tables.
 
 ---
 
@@ -216,6 +224,97 @@ We looked at the page picture for every failing row. In all 7, the printed numbe
 Here the Price column holds a flat price or a rounded unit price. No reading method could make these rows pass,
 so the reader has 0 known errors on the 88 product rows. The check does **not** test descriptions or dates; those
 need a hand check.
+
+---
+
+## Order-form fields (F)
+
+### F1. Eight fields from each of the 14 order forms
+
+The fields: order number, order date, customer, billing frequency, payment terms, grand total, and the name and
+signing date of the person who signed for the customer. They are the "who, when, how much" of each contract, and
+later steps need them to tell the contracts apart.
+
+The 14 order forms are listed in `data/order_forms.csv`. F11 holds two forms; F09, the California agreement, has
+none.
+
+**Answer key 2b** (`data/gold/order_form_fields.csv`) has 112 answers, typed from the page pictures:
+- **99 are on the page.**
+- **13 are not.** 11 are blacked out in the files we received; 2 are billing frequency on the 2016–2017 forms,
+  which have no such field.
+
+A method should leave those 13 empty, and a value it reports there counts as **invented**. The key includes three
+deliberate traps:
+- **Decoy order numbers.** F05 and F08 mention an *earlier* order's number ("supersedes … Q-35152-2"), and F05's
+  own number is blacked out.
+- **A crossed-out name.** On OF13 the typed signer name is crossed out and the real one is handwritten beside it.
+- **Handwriting.** 3 names and 4 dates are handwritten.
+
+**⚠ Still to do:** like answer key 1, it needs a person to check it.
+
+### F2. Two methods, reading the same text
+
+- **Text rules:**
+  1. Join the page's text into one running string, as if read aloud top to bottom.
+  2. Look for each label ("Order #:", "Payment Terms:").
+  3. Take what follows it.
+
+  Easy to write and to read. But running text loses the page's columns: two signature boxes side by side become
+  one line.
+- **Layout:**
+  1. Find each label *on the page*.
+  2. Take the words printed to its right on the same line, or on the nearest line just above or below.
+  3. In the signature area, use the left box, because that is the customer's.
+
+  This keeps columns apart. But it cannot find a value buried inside a paragraph.
+
+Both read exactly the same text (R7 for words; T5 for money), so any difference comes from the method.
+
+### F3. Results: layout is more accurate, mainly on signatures
+
+| Field | Text rules | Layout |
+|---|---|---|
+| order number (12 on the page) | 12 | 12 |
+| order date (14) | 14 | 14 |
+| customer (14) | 12 | 12 |
+| billing frequency (12) | 12 | 12 |
+| payment terms (14) | **14** | 12 |
+| grand total (14) | 14 | 14 |
+| signer's name (9) | 3 | **6** |
+| signing date (10) | 3 | **7** |
+| **all 99 values** | **84 (84.8%), 1 invented** | **89 (89.9%), 0 invented** |
+
+- **Decoy order numbers:** neither method was fooled. Both look for the number next to its label on the form's
+  first page, so they never reach the decoys.
+- **Text rules win on payment terms.** On the 2016–2017 forms, "Net 30" is buried inside a paragraph, where only a
+  text search can find it.
+- **Layout wins on signatures,** because it keeps the customer's box apart from Instructure's.
+- **Handwriting stops both methods** (3 names, 2 dates). Fixing that needs a stronger reader (for example a vision
+  language model on the lab server), not better rules.
+
+**How the scores got here.** The first versions scored 76.8% (text rules) and 61.6% (layout). The fixes, each a
+general rule rather than a patch for one form:
+1. Drop DocuSign's hidden text (R1).
+2. Read money with the table reading (T5).
+3. Look far enough right for header values that sit in their own column.
+4. Skip the heading "Customer Information" when looking for "Customer".
+5. Look on the nearest line above as well as below.
+
+They were found by looking at failures on these same 14 forms, so the final scores are development scores (as in
+T6). The fairest test is order forms neither method has seen.
+
+### F4. Comparing the two on the supervisor's criteria
+
+| | Text rules | Layout |
+|---|---|---|
+| Manual work | low: one pattern per field | medium: labels plus rules about where values sit |
+| Interpretability | high: each pattern can be read | high: each answer can be traced to a spot on the page |
+| Consistency across document types | breaks when columns or reading order change | breaks when a value is inside a paragraph |
+| Cost | none; seconds on a laptop | none; seconds on a laptop |
+| Weak spot | side-by-side boxes (signatures) | values inside sentences (old payment terms) |
+
+The two fail in different places, so a combination (layout first, text rules for fields layout leaves empty)
+would likely beat both. We have not tested that yet.
 
 ---
 

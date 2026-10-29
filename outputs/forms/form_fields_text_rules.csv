@@ -1,0 +1,113 @@
+form_id,field,gold,extracted,outcome
+OF01,order_number,Q-19544-1,Q-19544-1,correct
+OF01,order_date,2016-07-25,2016-07-25,correct
+OF01,customer,University of Nebraska Medical Center,University of Nebraska Medical,wrong
+OF01,billing_frequency,,,correctly empty
+OF01,payment_terms,Net 30,Net 30,correct
+OF01,grand_total,7500.00,"7,500.00",correct
+OF01,customer_signer,,Name,invented
+OF01,customer_signed_date,2016-07-29,,missed
+OF02,order_number,Q-31146-2,Q-31146-2,correct
+OF02,order_date,2017-03-29,2017-03-29,correct
+OF02,customer,University of Nebraska Medical Center,University of Nebraska,wrong
+OF02,billing_frequency,,,correctly empty
+OF02,payment_terms,Net 30,Net 30,correct
+OF02,grand_total,79760.00,"79,760.00",correct
+OF02,customer_signer,,,correctly empty
+OF02,customer_signed_date,,,correctly empty
+OF03,order_number,Q-76677-6,Q-76677-6,correct
+OF03,order_date,2019-05-29,2019-05-29,correct
+OF03,customer,Board of Trustees of the Nebraska State Colleges dba Wayne State College,Board of Trustees of the Nebraska State Colleges dba Wayne State College,correct
+OF03,billing_frequency,Annual Upfront,Annual Upfront,correct
+OF03,payment_terms,Net 45,Net 45,correct
+OF03,grand_total,420463.68,"420,463.68",correct
+OF03,customer_signer,Angela Fredrickson,"Name: UPAF Manager, Deal Desk",wrong
+OF03,customer_signed_date,2019-05-29,,missed
+OF04,order_number,Q-84377-2,Q-84377-2,correct
+OF04,order_date,2019-06-13,2019-06-13,correct
+OF04,customer,Board of Trustees of the Nebraska State Colleges dba Wayne State College,Board of Trustees of the Nebraska State Colleges dba Wayne State College,correct
+OF04,billing_frequency,Annual Upfront,Annual Upfront,correct
+OF04,payment_terms,Net 45,Net 45,correct
+OF04,grand_total,3000.00,"3,000.00",correct
+OF04,customer_signer,Angela Fredrickson,Angela Fredrickson Elizabeth Powe TI,wrong
+OF04,customer_signed_date,2019-06-24,,missed
+OF05,order_number,,,correctly empty
+OF05,order_date,2020-03-20,2020-03-20,correct
+OF05,customer,University of Nebraska Medical Center,University of Nebraska Medical Center,correct
+OF05,billing_frequency,Annual Upfront,Annual Upfront,correct
+OF05,payment_terms,Net 30,Net 30,correct
+OF05,grand_total,54679.04,"54,679.04",correct
+OF05,customer_signer,,,correctly empty
+OF05,customer_signed_date,,,correctly empty
+OF06,order_number,,,correctly empty
+OF06,order_date,2020-02-28,2020-02-28,correct
+OF06,customer,University of Nebraska Medical Center,University of Nebraska Medical Center,correct
+OF06,billing_frequency,Annual Upfront,Annual Upfront,correct
+OF06,payment_terms,Net 30,Net 30,correct
+OF06,grand_total,126000.00,"126,000.00",correct
+OF06,customer_signer,,,correctly empty
+OF06,customer_signed_date,,,correctly empty
+OF07,order_number,Q-165114-1,Q-165114-1,correct
+OF07,order_date,2020-12-09,2020-12-09,correct
+OF07,customer,Board of Regents of the University of Nebraska d/b/a University of Nebraska at Kearney,Board of Regents of the University of Nebraska d/b/a University of Nebraska at Kearney,correct
+OF07,billing_frequency,Annual Upfront,Annual Upfront,correct
+OF07,payment_terms,Net 30,Net 30,correct
+OF07,grand_total,6540.50,"6,540.50",correct
+OF07,customer_signer,Scott Benson,Scott Benson,correct
+OF07,customer_signed_date,2020-12-11,2020-12-11,correct
+OF08,order_number,Q-171061-1,Q-171061-1,correct
+OF08,order_date,2020-12-14,2020-12-14,correct
+OF08,customer,University of Nebraska Medical Center,University of Nebraska Medical Center,correct
+OF08,billing_frequency,Annual Upfront,Annual Upfront,correct
+OF08,payment_terms,Net 30,Net 30,correct
+OF08,grand_total,85160.00,"85,160.00",correct
+OF08,customer_signer,,,correctly empty
+OF08,customer_signed_date,,,correctly empty
+OF10,order_number,Q-247218-4,Q-247218-4,correct
+OF10,order_date,2022-04-05,2022-04-05,correct
+OF10,customer,Board of Trustees for the Nebraska State Colleges,Board of Trustees for the Nebraska State Colleges,correct
+OF10,billing_frequency,Annual Upfront,Annual Upfront,correct
+OF10,payment_terms,Net 45,Net 45,correct
+OF10,grand_total,818949.86,"818,949.86",correct
+OF10,customer_signer,Paul Turman,Name: Chancellor,wrong
+OF10,customer_signed_date,2022-04-21,2022-04-20,wrong
+OF11a,order_number,Q-343071-1,Q-343071-1,correct
+OF11a,order_date,2024-01-24,2024-01-24,correct
+OF11a,customer,University of Nebraska Medical Center (NETEC),University of Nebraska Medical Center (NETEC),correct
+OF11a,billing_frequency,Annual Upfront,Annual Upfront,correct
+OF11a,payment_terms,Net 30,Net 30,correct
+OF11a,grand_total,53166.00,"53,166.00",correct
+OF11a,customer_signer,Anne Barnes,"Name: Vice Chancellor, Business & Finance Director, Deal Desk & Pricing",wrong
+OF11a,customer_signed_date,2024-08-21,,missed
+OF11b,order_number,Q-287275-1,Q-287275-1,correct
+OF11b,order_date,2023-04-06,2023-04-06,correct
+OF11b,customer,University of Nebraska Medical Center (NETEC),University of Nebraska Medical Center (NETEC),correct
+OF11b,billing_frequency,Annual Upfront,Annual Upfront,correct
+OF11b,payment_terms,Net 30,Net 30,correct
+OF11b,grand_total,147514.20,"147,514.20",correct
+OF11b,customer_signer,Benjamin Mattson,Benjamin Mattson,correct
+OF11b,customer_signed_date,2023-05-11,2023-05-11,correct
+OF12,order_number,Q-401612-1,Q-401612-1,correct
+OF12,order_date,2024-10-11,2024-10-11,correct
+OF12,customer,The Board of Regents of the University of Nebraska on behalf of UNMC,The Board of Regents of the University of Nebraska on behalf of UNMC,correct
+OF12,billing_frequency,Annual Upfront,Annual Upfront,correct
+OF12,payment_terms,Net 30,Net 30,correct
+OF12,grand_total,1200.00,"1,200.00",correct
+OF12,customer_signer,Michael Hrncirik,Name,wrong
+OF12,customer_signed_date,2024-12-19,,missed
+OF13,order_number,Q-475816-1,Q-475816-1,correct
+OF13,order_date,2025-10-01,2025-10-01,correct
+OF13,customer,Nebraska State College System,Nebraska State College System,correct
+OF13,billing_frequency,Annual Upfront,Annual Upfront,correct
+OF13,payment_terms,Net 45,Net 45,correct
+OF13,grand_total,67260.50,"67,260.50",correct
+OF13,customer_signer,Paul Turman,Deal CLM,wrong
+OF13,customer_signed_date,2025-10-27,2025-10-24,wrong
+OF14,order_number,Q-580569-1,Q-580569-1,correct
+OF14,order_date,2026-03-19,2026-03-19,correct
+OF14,customer,University of Nebraska at Omaha,University of Nebraska at Omaha,correct
+OF14,billing_frequency,Annual Upfront,Annual Upfront,correct
+OF14,payment_terms,Net 30,Net 30,correct
+OF14,grand_total,51569.00,"51,569.00",correct
+OF14,customer_signer,Jessie Combs,Jessie Combs,correct
+OF14,customer_signed_date,2026-05-26,2026-05-26,correct

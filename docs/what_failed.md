@@ -65,6 +65,46 @@ tables worse:
 - **Errors in the source:** 7 rows fail because the contracts' own numbers don't multiply out (T6). A reader can't
   "fix" those, and they set a ceiling on the row-check score.
 
+## Order-form fields
+
+**16. Hidden DocuSign text garbled every signature on the DocuSign forms.**
+- **What happened:** the stored text of five order forms (OF07, OF11a, OF11b, OF12, OF14) holds invisible white
+  tags on top of the visible names. "Jessie Combs" came out as "J\ecslmsie-n C1o\ mbs", and "Anne Barnes" as just
+  "\n1\". Both methods failed on all five.
+- **Fix:** hidden text is now dropped when the stored text is read (R1).
+
+**17. The first fix for hidden text also deleted visible text.**
+- **What happened:** dropping *all* white characters removed "Billing Summary" from F14, because it is printed
+  white on a blue bar. The F14 grand total then disappeared for text rules.
+- **Fix:** only white text with nothing coloured behind it is dropped now, and the dropped characters were checked
+  by hand: all tags.
+- **Lesson:** a fix needs its own check.
+
+**18. The first versions of both methods.**
+- **Scores:** text rules 76.8%; layout 61.6%.
+- **Layout's main slip:** in the header, the values stand in their own column far to the right. Layout looked only
+  a short distance right, found nothing, then took the next line down, which is the "Offer Valid Through" date.
+  Only 4 of 14 order dates were right.
+- **Both methods' slip:** they took the section heading "Customer Information" for the customer's name. (F3)
+
+**19. Text rules can't keep two columns apart.**
+- **What happened:** running text puts the customer's and Instructure's signature boxes on one line, so the signer
+  came out as "Angela Fredrickson Elizabeth Powe…".
+- **Second problem:** when a typed name sits slightly above its label, the running text puts it before the label,
+  so the rule took the Title instead ("Vice Chancellor, Business & Finance").
+- **Result:** 3 of 9 signer names. This is built into the method, so it was left as it is.
+
+**20. Layout can't see a value inside a sentence.** On the 2016–2017 forms, the payment terms are a paragraph
+("…Customer must pay such amount to Instructure Net 30 on the date of this order"). Layout looks for a value next
+to the label, finds a sentence, and misses both. Text rules find "Net 30" in both.
+
+**21. Handwriting.**
+- **Names:** "Angela Fredrickson" came out as "Angelatredrideson", and "Paul Turman" as "Pavl Turman".
+- **Crossed-out name:** on OF13 the crossed-out typed name came out as "chort Rotonate" beside the handwritten
+  "Paul Turman".
+- **Date:** "7/29/2016" came out as "7/21/2016".
+- **What would help:** no rule fixes these; it needs a stronger reader. (F3)
+
 ## The tests themselves
 
 **10. The digital-page answer key had invisible text in it.**
