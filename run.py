@@ -6,10 +6,12 @@ Steps, in order:
   ocr-eval     score every reading against the answer keys                           (bench/ocr_eval.py)
   tables       read the pricing tables two ways and check them with arithmetic       (bench/tables.py)
   forms        read 8 fields from each order form two ways and score them             (bench/forms.py)
+  text         turn printed lines into clean whole text: no page furniture, whole       (bench/text.py)
+               paragraphs across lines and pages, table and form rows kept together
 """
 import sys
 
-from bench import forms, ocr_eval, reading, tables
+from bench import forms, ocr_eval, reading, tables, text
 
 STEPS = {
     "read": reading.main,
@@ -17,6 +19,7 @@ STEPS = {
     "ocr-eval": ocr_eval.evaluate,
     "tables": tables.main,
     "forms": forms.main,
+    "text": text.main,
 }
 
 if __name__ == "__main__":

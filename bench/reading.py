@@ -260,10 +260,23 @@ def _covered(line: dict, other: dict) -> bool:
 LOW_CONF = 0.6   # Tesseract's own confidence (0-1) below which a line is probably not text it could read
 
 
-def combine(primary: list[dict], filler: list[dict]) -> list[dict]:
+def real_word_share(text: str) -> float:
+    toks = re.findall(r"[A-Za-z]{3,}", text)
+    return sum(map(is_word, toks)) / len(toks) if toks else 0.0
+
+
+def combine(primary: list[dict], filler: list[dict], vote: bool = False) -> list[dict]:
     """Primary reading, with the filler's lines added where the primary has nothing (or only a line it was
     unsure of). Tesseract misses text on shaded or coloured backgrounds; Apple Vision misses whole paragraphs
-    now and then. Each fills the other's gaps (decisions.md, R7)."""
+    now and then. Each fills the other's gaps (decisions.md, R7).
+    With vote=True, where both read the same line, the one with clearly more real dictionary words wins
+    ("Conlractor" vs "Contractor"); otherwise the primary's (decisions.md, R8)."""
+    if vote:
+        primary = list(primary)
+        for i, l in enumerate(primary):
+            rivals = [f for f in filler if _covered(l, f) and _covered(f, l)]
+            if len(rivals) == 1 and real_word_share(rivals[0]["text"]) > real_word_share(l["text"]) + 0.05:
+                primary[i] = rivals[0]
     keep = [l for l in primary
             if l["conf"] >= LOW_CONF or not any(_covered(l, f) for f in filler)]
     for f in filler:
@@ -276,6 +289,10 @@ def load(engine: str, file_id: str, page: int) -> list[dict]:
     """One engine's reading of one page, as a list of lines."""
     if engine == "tess+vision":
         return combine(load("tesseract", file_id, page), load("vision", file_id, page))
+    if engine == "tess+vision+vote":
+        return combine(load("tesseract", file_id, page), load("vision", file_id, page), vote=True)
+    if engine == "textlayer+patch":
+        return patch_codes(load("textlayer", file_id, page), load(SCANNED_READING, file_id, page))
     if engine == "baseline":
         out = []
         for line in open(DATA / "baseline_docling_rapidocr" / f"{file_id}.jsonl"):
@@ -285,6 +302,25 @@ def load(engine: str, file_id: str, page: int) -> list[dict]:
         return out
     path = WORK / "ocr" / engine / file_id / f"p{page:03d}.json"
     return read_json(path) if path.exists() else []
+
+
+def patch_codes(lines: list[dict], ocr: list[dict]) -> list[dict]:
+    """A few stored words are codes like "(cid:179)" because the PDF does not say which letter each shape is
+    (F07 p1, F11 p1). Each such word is replaced by what OCR read at the same spot, or dropped if OCR read nothing
+    there (decisions.md, R1)."""
+    ocr_words = [w for l in ocr for w in l.get("words", [])]
+    out = []
+    for line in lines:
+        words = []
+        for w in line["words"]:
+            if "(cid:" not in w["text"]:
+                words.append(w)
+                continue
+            words += [o for o in ocr_words if min(o["box"][2], w["box"][2]) - max(o["box"][0], w["box"][0]) > 0
+                      and min(o["box"][3], w["box"][3]) - max(o["box"][1], w["box"][1]) > 0]
+        if words:
+            out.append({**line, "words": words, "text": " ".join(w["text"] for w in words)})
+    return out
 
 
 # Which reading later steps use. Digital pages: always the PDF's own text. Scanned pages: the reading that
@@ -302,7 +338,7 @@ def page_source(file_id: str, page: int, scanned_engine: str = SCANNED_READING) 
         import csv
         with open(OUT / "reading" / "page_inventory.csv") as fh:
             _INV = {(r["file_id"], int(r["page"])): r for r in csv.DictReader(fh)}
-    return scanned_engine if is_scanned(_INV[(file_id, page)]) else "textlayer"
+    return scanned_engine if is_scanned(_INV[(file_id, page)]) else "textlayer+patch"
 
 
 def best_reading(file_id: str, page: int, scanned_engine: str = SCANNED_READING) -> list[dict]:

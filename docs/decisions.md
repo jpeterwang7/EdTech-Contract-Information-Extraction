@@ -4,8 +4,10 @@ Every choice made so far, in order: what the options were, what was picked, and 
 (R = reading the pages, T = tables, S = server) that the code refers to. Numbers come from the files in
 `outputs/`; the failures behind them are told in [what_failed.md](what_failed.md).
 
-**Status (Oct 29, 2026):** steps R (reading), T (tables) and F (order-form fields) are built and scored.
-Two answer keys still need a person to check them: OCR lines (R4) and order-form fields (F1).
+**Status (Oct 29, 2026):**
+- **Built and scored:** steps R (reading), T (tables), F (order-form fields) and C (clean text).
+- **Still to do:** the clean text needs a whole-page check by a person (C6), and the order-form answer key (F1)
+  needs checking. The OCR line key (R4) no longer needs checking.
 
 ---
 
@@ -68,8 +70,12 @@ To score an engine you need the true text: an *answer key*.
 - **What's left out.** One line was a handwritten signature. We left it out, because signatures are not text we
   need to extract.
 - **Mix.** 41 lines of paragraph text, 24 table cells, 15 form fields, 7 headings and 6 page footers.
-- **⚠ Still to do:** I should check every typed line against its picture
-  (`human_checked` column in `data/gold/ocr_lines.csv`) and record how many were changed.
+- **What this key does *not* measure.** Each row is one *printed line*, so sentences stop where the line stops,
+  page numbers and lone table cells ("Per Year") appear as rows, and the slivers of neighbouring lines visible in
+  each picture are not typed. The key checks whether letters are read correctly. It says nothing about whether the
+  text comes out as whole, clean sentences; that is what step C checks.
+- **Not worth more hand-checking.** On Oct 29 I stopped checking it, because rows like these looked broken,
+  which they are as text. A better use of human time is a whole-page check of the clean text (C6).
 
 ### R5. How a reading is scored
 
@@ -151,6 +157,169 @@ numbers, e.g. 95.0% for the combination.)
 The remaining misses are 7 numbers on 3 lines, all short isolated items: the row labels "S4" and "S6" with their
 lone "1" quantities (F14 p4), and one order number read out of order (F12 p2). This is the same weakness T4 fixes
 for pricing tables.
+
+### R8. Tested and not adopted: a dictionary vote between the two engines
+
+On poor scans Tesseract confuses l and t ("Conlractor", "eilher", "sixly"), while Apple Vision reads the same line
+correctly. So we tried a vote: where both engines read the same line, keep the version with clearly more
+dictionary words.
+- **What it changed:** 43 lines on the 47 scanned pages.
+- **What it scored:** nothing measurable. 0.37% character errors on answer key 1 with or without it; on answer
+  key 2, two fewer perfect lines.
+- **Why:** some changes fix words ("violation"), others bring in Vision's own errors ("AP!" for "API").
+- **Decision:** the keys sample too few of the changed lines to settle it, so the reading stays as in R7. The vote
+  remains available as the reading `tess+vision+vote`.
+
+---
+
+## Clean text (C)
+
+The reading step (R) gives *printed lines*. On review (Oct 29), I found that this is not usable text:
+- sentences are cut at every line end,
+- page numbers sit among the words,
+- table cells like "Per Year" stand alone,
+- and some text looked missing.
+
+All true. Splitting contracts into sections needs whole sentences, so step C (`bench/text.py`) rebuilds the text.
+Each move below is a rule a reader can check.
+
+### C1. Remove page furniture, and log every removal
+
+| Removed | How it is found | Count |
+|---|---|---|
+| page numbers | "Page 5 of 7", or a bare number in the top or bottom 9% of the page | 69 |
+| DocuSign stamps | "DocuSign Envelope ID: …" | 41 |
+| running headers and footers | text with letters, repeated in the margin of 3+ pages of a file ("March 2022", "Updated 02/2018"), even if misread once | 32 |
+| symbols, rules, logos | pieces with no letter or digit ("|", "]"), signature underlines, a logo read as letters ("; N ST = U CT U = =") | 41 |
+| unsure, unconfirmed OCR | Tesseract under 50% sure, Apple Vision read nothing there, mostly non-words and no digits ("Rn NRE Jo AINSI") | 16 |
+
+Every removal is listed in `outputs/text/removed.csv` with its reason.
+
+The rules lean toward **keeping**. Anything with a real word of four or more letters, a number of three or more
+digits, or a tick mark is never removed. Earlier versions deleted quantities, column headers and clause numbers
+(what_failed.md, 24–25).
+
+### C2. Pricing tables come from the table step, not a second reading
+
+Each pricing table's area on the page is cut out of the text and replaced by the rows the table step read and
+checked with arithmetic (T1–T6), one row per line:
+`Catalog Cloud Subscription | Per Year | Subscription Add-ons | 7/1/2017 | 6/30/2018 | 1 | USD 12,000.00 | USD 12,000`.
+
+So "Per Year" is back in its row. Reading those tables a second time with the paragraph reading gave garbage,
+because Tesseract cannot read grey shading (T5).
+
+### C3. Columns, forms and smaller tables
+
+**Splitting columns.** A printed line is split where two words are far apart (more than twice the letter height,
+and at least 2% of the page width). So the two columns of a form are no longer glued into one line.
+
+**Rows of a form or small table.** A printed row with two or more pieces, at least one of them short, is kept
+together as `label | value | …`, for example
+`Customer: | University of Nebraska Medical Center | Billing Contact:`. A short piece wrapped onto the next line
+("Subscription" under "20% of") joins the cell above it.
+
+**Two exceptions:**
+- A clause number set apart from its text ("17.      Insurance. …") stays one line.
+- A line that carries on an unfinished sentence stays prose, even with odd gaps in it (an underlined web link).
+
+### C4. Whole paragraphs, across lines and pages
+
+**Within a page,** lines join into paragraphs. A new paragraph starts at:
+- a wider gap,
+- a change of column,
+- or a numbered start ("12. Proprietary Rights.") that follows a finished sentence. "(ii)" in the middle of a
+  running sentence does not start one.
+
+A word split by a hyphen at the end of a line is rejoined when the joined word is in the dictionary.
+
+**Across pages,** a paragraph that ends a page in mid-sentence continues with the first paragraph of the next page.
+"Mid-sentence" means no closing punctuation, and the next page starts in lowercase, or both sides are in capitals.
+This happened 23 times; for example, clause 10 "Limitation of Liability" now runs across pages 5–6 of F02 as one
+paragraph.
+
+### C5. Checks, before and after
+
+Counted over all 14 files (`outputs/text/checks.csv`):
+
+| Problem | Printed lines (before) | Clean text (after) |
+|---|---|---|
+| page numbers and DocuSign stamps in the text | 88 | 0 |
+| a sentence cut off (ends without punctuation, next part starts in lowercase) | 2,119 | 10 |
+| pieces of one or two words outside a table or form | 1,004 | 123 |
+
+**What remains:**
+- **The 123 short pieces** are mostly real: headings ("Year 1", "Billing Summary", the security brochure's section
+  titles), form labels ("Name:"), clause headings ("17. Indemnification."), "Source: https://…" lines. About ten
+  scraps remain where a rule could not be sure ("eis", "5").
+- **Missing text, checked with a third engine.** RapidOCR, which was not used to build the text, read every scanned
+  page independently. Where it read a dictionary word that is nowhere in the clean text, we look at what is at
+  that spot:
+  - **Only 3 lines are missing entirely:** a wrapped table cell "Apply)" (F05), a handwritten address "1233
+    Lincoln" (F13), and an Instructure signer's name next to a blacked-out signature (F13).
+  - **30 words are present but misread,** mostly on the poor scan of F13 ("eilher", "Conlractor"). They are listed
+    in `outputs/text/missing_candidates.csv`.
+
+**Honest caveat:** these counts come from the same rules that do the cleaning. They show the rules did what they
+were built to do, not that the text is right. That needs C6.
+
+### C7. My page check of F02, and the rules it led to (Oct 29)
+
+I read F02's clean text beside the scanned pages (`work/review/F02.html`, made by `python -m bench.review F02`).
+He found four things.
+
+**1. Scraps that are not on the page.** "| 5" after "Recurring", a heading "eis", and "£5 |" on page 2. Tesseract
+read these off a grey bar while very unsure (24% and 23%), and Apple Vision saw no text there.
+- *Old rule:* kept them because they contained a digit.
+- *New rule:* a line Tesseract is under 30% sure of, with nothing from Vision at that spot, is removed even with a
+  digit.
+- *Result:* 20 such lines on the 47 scanned pages, all garbage by inspection. Lines at 47–48% stay (a real
+  sentence end, a lone "1").
+
+**2. Empty fields** ("Billing Contact:", "P.O. Number:"). A first, broader rule wrongly removed several things:
+- labels whose content is printed *below* them ("Metrics and Descriptions:" with its definitions under it, and
+  "Supplier Name:" on the university forms),
+- the lead-in "Included in your Portfolium Bundle:" with its list under it,
+- the title "ACCEPTED BY:".
+
+The rule is now narrow. A label is dropped only when all of these hold:
+- it sits inside a side-by-side form row,
+- it is not in capitals,
+- nothing is printed directly below it,
+- no value can be found beside it, even a little above or below its line (typed names often sit above the "Name:"
+  line).
+
+Result: 46 labels removed, all checked by hand. They are signature lines (pictures or blacked out), blank
+billing-contact fields, and fields whose handwritten value the OCR could not read.
+
+**3. Empty sections** ("Notes" on page 3). A first rule ("the last line on a page, with blank space below")
+wrongly removed:
+- a signer's title ("Title: Manager, Deal Desk"),
+- a "Source: https://…" line that ends one document part,
+- a signer's job title.
+
+The rule is now narrow. A title is dropped only when all of these hold:
+- it is one or two words, with no digits or colon,
+- it is left-aligned,
+- it is the last thing on its page,
+- at least a tenth of the page is blank below it.
+
+Result: across all 14 files it removes exactly one title, "Notes". A centred title alone on a page ("Exhibit A") is
+kept.
+
+**4. Everything else on F02 looked fine.**
+
+**Limits:** these two rules are narrow on purpose, as I intended, so other documents may still show empty
+labels or empty section titles. Every removal is in `outputs/text/removed.csv` with its reason.
+
+### C6. Next: a whole-page check
+
+The fair test of clean text is a person reading it next to the PDF:
+- **Pages:** 4–5 whole pages (a scanned terms page, a scanned order form, a digital order form, a page of the
+  security brochure, the poor F13 scan).
+- **What to record:** every missing or broken sentence, every leftover page number or scrap, every table row that
+  is wrong.
+
+This replaces line-by-line checking. Reading `outputs/text/F02.md` beside the PDF is enough to start.
 
 ---
 

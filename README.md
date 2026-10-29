@@ -23,6 +23,7 @@ tables and forms.
 | `ocr-eval` | Score each OCR reading against two answer keys | done; answer key 1 needs a human check |
 | `tables` | Read the pricing tables two ways; check them with arithmetic | done |
 | `forms` | Read 8 fields from each of the 14 order forms two ways (text rules, layout) and score them | done; its answer key needs a human check |
+| `text` | Clean, whole text: page numbers and stamps removed, paragraphs joined across lines and pages, checked tables in place | done; needs a whole-page human check |
 | sections | Split into sections and label topics (goal 1) | later |
 | extraction | Privacy facts (goal 2) | later |
 
@@ -40,6 +41,10 @@ Headline results so far:
   - Reading by position on the page (layout) gets 89 of 99 values right.
   - Searching the running text (text rules) gets 84.
   - Layout is far better on signer names and dates. Handwriting defeats both.
+- **Clean text** (`outputs/text/F01.md` … `F14.md`, readable next to the PDFs):
+  - Page numbers and stamps in the text: 88 → 0.
+  - Sentences cut off mid-way: 2,119 → 10.
+  - A third OCR engine finds only 3 lines missing.
 
 ## Running it on the lab server (recommended: keeps your laptop cool)
 
@@ -87,7 +92,7 @@ bash benchmark_segmentation_extraction/server/cleanup_server.sh
 ## Running it on the Mac
 
 ```bash
-.venv/bin/python run.py read ocr-eval tables forms
+.venv/bin/python run.py read ocr-eval tables forms text
 ```
 `read` skips pages already read, so only missing pages cost time. Setup on a new Mac:
 1. Create the environment and install the packages:
@@ -96,23 +101,20 @@ bash benchmark_segmentation_extraction/server/cleanup_server.sh
    ```
 2. Download Tesseract's English model into `.tessdata/` (the link is in `requirements.txt`).
 
-## Checking the answer key (to do)
+## Checking the results (to do)
 
-Open `data/gold/ocr_lines.csv` next to the pictures in `data/gold/ocr_crops/`. For each line:
-- Compare `gold_text` with the picture, and fix the text if it is wrong.
-- Write `yes` in `human_checked`.
-- Note any change in `notes`.
+Read a few files of clean text next to their PDFs, for example `outputs/text/F02.md` beside the 2017 order form.
+Note every missing or broken sentence, leftover page number or scrap, and wrong table row. The line answer key
+(`data/gold/ocr_lines.csv`) measures letter accuracy only and does not need more checking (decisions.md, R4).
 
-Then run `.venv/bin/python run.py ocr-eval` again.
-
-Do the same for `data/gold/order_form_fields.csv`, comparing it with the order-form pages. Then run
-`.venv/bin/python run.py forms`.
+Check `data/gold/order_form_fields.csv`, comparing it with the order-form pages. Then run
+`.venv/bin/python run.py forms` again.
 
 ## Folder map
 
 ```
 run.py              the entry point: python run.py <steps>
-bench/              one file per step: reading.py, ocr_eval.py, tables.py, forms.py, common.py (shared helpers)
+bench/              one file per step: reading.py, ocr_eval.py, tables.py, forms.py, text.py, common.py (shared helpers)
 tools/              vision_ocr.swift (Apple Vision OCR, compiled on first use)
 data/files.csv      the 14 files and their short IDs F01..F14
 data/order_forms.csv  the 14 order forms: file, first page, signature page

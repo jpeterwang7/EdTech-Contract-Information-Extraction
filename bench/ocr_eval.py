@@ -173,7 +173,7 @@ def _summarise(details: list[dict], keys: list[str]) -> list[dict]:
 
 def evaluate() -> None:
     import csv
-    engines = ["baseline"] + ENGINES + ["tess+vision"]
+    engines = ["baseline"] + ENGINES + ["tess+vision", "tess+vision+vote"]
     # 1. hand-checked lines on scanned pages
     with open(GOLD) as fh:
         gold = [g for g in csv.DictReader(fh) if g["gold_text"].strip()]
@@ -195,7 +195,7 @@ def evaluate() -> None:
         lines = [l for l in load("textlayer", fid, page)
                  if len(l["text"]) >= 15 and not SKIP.search(l["text"]) and not UNSEEN.search(l["text"])]
         for l in rng.sample(lines, min(8, len(lines))):
-            for engine in ENGINES + ["tess+vision"]:
+            for engine in ENGINES + ["tess+vision", "tess+vision+vote"]:
                 ocr = load(engine, fid, page)
                 if not ocr:
                     continue

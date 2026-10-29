@@ -105,6 +105,72 @@ to the label, finds a sentence, and misses both. Text rules find "Net 30" in bot
 - **Date:** "7/29/2016" came out as "7/21/2016".
 - **What would help:** no rule fixes these; it needs a stronger reader. (F3)
 
+## Clean text
+
+**22. The text we had was printed lines, not usable text, and our tests could not see it.**
+- **What I found:** checking answer key 1 (Oct 29), I found sentences cut off at line ends and never
+  continued, page numbers mixed into the text, one-word rows like "Per Year" and "Customer.", and what looked like
+  missing sentences.
+- **Cause:** the key was built from single printed lines, so this is what it looks like. The pipeline's own text
+  had the same problems.
+- **Our mistake:** a line-by-line letter test can't detect any of this. We had good letter scores and unusable
+  text, and we asked for the check without explaining what the rows were.
+- **Fix:** step C now rebuilds whole text and counts each problem (decisions.md, C).
+
+**23. The first clean text read pricing tables a second time.**
+- **What happened:** with the paragraph reading, the grey-shaded table rows came out as "Recurring | Rn NRE | Jo
+  AINSI", and product names were torn from their rows.
+- **Fix:** tables now come from the arithmetic-checked table step (C2).
+
+**24. Clause numbers deleted as page headers.** The rule for running headers removed "19.6", "19.7", "19.16" in F07,
+because those clauses happened to start near the top of three pages. A repeated header now needs at least three
+letters.
+
+**25. A clean-up rule that deleted real content.** A rule to drop scraps (fewer than two letters or digits, or short
+non-words) took removals from 8 to 216. It deleted:
+- 33 quantities ("1"),
+- 32 column headers ("Qty"),
+- clause and section numbers ("1." to "9.", "A." to "E.").
+
+Narrowed, it then still removed a tick mark (✔, a ticked tax-exempt box), a column header "Expiration" and part of
+a handwritten phone number. Now anything with a real word, a 3+ digit number or a tick is kept. Lesson: when unsure,
+keep the text; a scrap is a small cost, a lost quantity is not.
+
+**26. Unsure OCR that was real.** Of 23 lines Tesseract was unsure of (under 50%) and Apple Vision did not read, 20
+were garbage. But one was the end of a real sentence ("Customer's instructions.", 48% sure) and one a lone "1". The
+rule now also needs the line to be mostly non-words with no digits; 16 lines go.
+
+**27. Two paragraph rules that cut sentences.**
+- **"(ii)" read as a new item:** clause 2 of F02 was cut in half at "(ii) harm or impersonate…", because an item
+  marker at a line start was taken as a new paragraph even mid-sentence.
+- **Clause 10 not joined across pages:** its ALL-CAPS sentence wasn't joined across the page break, because the
+  check for capitals looked at the whole paragraph, whose heading is not in capitals.
+
+**28. The missing-text check confused misspellings with missing lines.**
+- **What it reported:** "either … sixty … contractor" missing on F13 p2.
+- **What was really there:** the lines were there, read as "eilher … sixly … Conlractor".
+- **Fix:** the check now tells "line missing" (3) from "word misread" (30) (C5).
+
+**29. A fix that made no difference.** A dictionary vote between Tesseract and Apple Vision changed 43 lines and
+none of the scores (decisions.md, R8). It was not adopted.
+
+**30. Keeping anything with a digit kept garbage.** "5 eis =", "£5" and "3% Ci" were kept because a digit might be
+a quantity. I confirmed they are not on the page. Lines Tesseract is under 30% sure of, which Vision does not
+confirm, now go regardless (decisions.md, C7).
+
+**31. "Empty" rules that removed content.** The first rule for empty fields removed:
+- labels whose content is printed below them ("Metrics and Descriptions:", "Supplier Name:"),
+- a list's lead-in,
+- the title "ACCEPTED BY:".
+
+The first rule for empty sections removed:
+- two signers' titles,
+- a "Source:" link,
+- the label "Title:" (twice).
+
+And it missed "Notes", the one it was written for, because it asked for a fifth of the page blank and "Notes" has
+14%. Both rules are now narrow (C7). Found by listing every removal across all 14 files before showing the result.
+
 ## The tests themselves
 
 **10. The digital-page answer key had invisible text in it.**

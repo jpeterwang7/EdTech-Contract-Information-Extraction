@@ -209,10 +209,13 @@ def first_number(text: str) -> float | None:
     return float(m.group().replace(",", "")) if m else None
 
 
-def geometry_rows(file_id: str, n_pages: int, reread: bool = True, engine: str = TABLE_READING) -> list[dict]:
+def geometry_rows(file_id: str, n_pages: int, reread: bool = True, engine: str = TABLE_READING,
+                  zones: list | None = None) -> list[dict]:
     """A table row can span several visual lines (a wrapped "USD / 12,000.00", a tall "20% of / Subscription /
     (Minimums Apply)" cell). Every row has exactly one amount, printed once, so the visual lines that hold an
-    amount are the row anchors and every other line joins the nearest anchor (if within MAX_JOIN of it)."""
+    amount are the row anchors and every other line joins the nearest anchor (if within MAX_JOIN of it).
+    If `zones` is a list, each table's place on the page and its rows as text are added to it (bench/text.py
+    uses them in place of reading the table a second time)."""
     MAX_JOIN = 0.03
     out = []
     for page in range(1, n_pages + 1):
@@ -242,6 +245,10 @@ def geometry_rows(file_id: str, n_pages: int, reread: bool = True, engine: str =
                 near = min(anchors, key=lambda a: abs(yc(body[a]) - yc(line)))
                 if abs(yc(body[near]) - yc(line)) <= MAX_JOIN:
                     groups[near].append(line)
+            names = list(dict.fromkeys(c[0] for c in cols))
+            zone = {"file_id": file_id, "page": page, "y0": min(w["box"][1] for w in rows[i]),
+                    "y1": max([w["box"][3] for line in body for w in line] or [rows[i][0]["box"][3]]),
+                    "rows": [" | ".join(n.capitalize() for n in names)]}
             for k in anchors:
                 lines = sorted(groups[k], key=yc)
                 cells = _cells(lines, cols)
@@ -252,18 +259,26 @@ def geometry_rows(file_id: str, n_pages: int, reread: bool = True, engine: str =
                 if kind == "item":
                     row.update(description=cells.get("description", ""), qty=qty(cells.get("qty", "")),
                                price=money(cells.get("price", "")), reread="")
-                    if reread and page_source(file_id, page, engine) != "textlayer":
+                    if reread and not page_source(file_id, page, engine).startswith("textlayer"):
                         for name, parse in (("qty", first_number), ("price", money)):
                             if row[name] is None and name in [c[0] for c in cols]:
                                 again, how = reread_cell(file_id, page, cols, name, lines, parse)
                                 row[name] = parse(again)
                                 row["reread"] += f"{name} by {how}: {again!r}; "
+                                if row[name] is not None:
+                                    cells[name] = again
+                zone["rows"].append(" | ".join(cells.get(n, "") for n in names) if kind == "item"
+                                    else " ".join(dict.fromkeys(text.split(" "))))
                 out.append(row)
             # a Grand Total sits under the table, outside its columns
             if j < len(rows) and row_kind(" ".join(w["text"] for w in rows[j])) == "grand" and not (
                     body and row_kind(" ".join(w["text"] for w in body[-1])) == "grand"):
                 text = " ".join(w["text"] for w in rows[j])
                 out.append({"file_id": file_id, "page": page, "kind": "grand", "amount": money(text), "raw": text[:160]})
+                zone["rows"].append(text)
+                zone["y1"] = max(w["box"][3] for w in rows[j])
+            if zones is not None and anchors:
+                zones.append(zone)
             i = j
         # Grand Totals printed away from any table (another line further down the page)
         for row in rows:
