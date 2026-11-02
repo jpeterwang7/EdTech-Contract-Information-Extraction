@@ -1,0 +1,11 @@
+file_id,page,check,ok,detail,raw
+F13,2,billing row,True,"21,340.50 + 0.00 vs 21,340.50","Year 1 | USD 21,340.50 | USD 0.00 | USD 21,340.50"
+F13,2,billing row,True,"22,406.50 + 0.00 vs 22,406.50","Year 2 | USD 22,406.50 | USD 0.00 | USD 22,406.50"
+F13,2,billing row,True,"23,513.50 + 0.00 vs 23,513.50","Year 3 | USD 23,513.50 | USD 0.00 | USD 23,513.50"
+F13,2,billing row,True,"67,260.50 + 0.00 vs 67,260.50","Total | USD 67,260.50 | USD 0.00 | USD 67,260.50"
+F13,2,billing total,True,"years 67,260.50 vs printed 67,260.50","Total | USD 67,260.50 | USD 0.00 | USD 67,260.50"
+F14,5,billing row,True,"16,358.00 + 0.00 vs 16,358.00","Year 1 | USD 16,358.00 | USD 0.00 | USD 16,358.00"
+F14,5,billing row,True,"17,176.00 + 0.00 vs 17,176.00","Year 2 | USD 17,176.00 | USD 0.00 | USD 17,176.00"
+F14,5,billing row,True,"18,035.00 + 0.00 vs 18,035.00","Year 3 | USD 18,035.00 | USD 0.00 | USD 18,035.00"
+F14,5,billing row,True,"51,569.00 + 0.00 vs 51,569.00","Total | USD 51,569.00 | USD 0.00 | USD 51,569.00"
+F14,5,billing total,True,"years 51,569.00 vs printed 51,569.00","Total | USD 51,569.00 | USD 0.00 | USD 51,569.00"

@@ -171,6 +171,11 @@ The first rule for empty sections removed:
 And it missed "Notes", the one it was written for, because it asked for a fifth of the page blank and "Notes" has
 14%. Both rules are now narrow (C7). Found by listing every removal across all 14 files before showing the result.
 
+**32. A table no step was checking.** The Billing Summary has no Qty or Price column, so the table reader skipped it
+and the paragraph reading garbled it on F13: "sD 6720050" for USD 67,260.50. Our letter scores and sentence counts
+could not see this; I found it by reading the page. It now has its own reading and arithmetic checks
+(decisions.md, T7). Lesson: every table with numbers needs a check, not only the ones the first rule recognised.
+
 ## The tests themselves
 
 **10. The digital-page answer key had invisible text in it.**

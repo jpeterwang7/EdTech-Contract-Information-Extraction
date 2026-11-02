@@ -24,3 +24,5 @@ geometry+vision,subtotal,63,63,1.0
 geometry+vision,grand,12,12,1.0
 geometry+vision,product rows found,88,,
 geometry+vision,product rows with no Qty read,88,0,
+billing summary (vision),billing row,8,8,1.0
+billing summary (vision),billing total,2,2,1.0

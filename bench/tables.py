@@ -289,6 +289,45 @@ def geometry_rows(file_id: str, n_pages: int, reread: bool = True, engine: str =
     return out
 
 
+# ---------------------------------------------------------------- Billing Summary tables
+
+def billing_summaries(file_id: str, n_pages: int, engine: str = TABLE_READING, zones: list | None = None) -> list[dict]:
+    """The Billing Summary on the newer order forms (Segment | Recurring | Non-Recurring | Total) has no Qty or Price
+    column, so it is found by its own header. Two checks: Recurring + Non-Recurring = Total on each row, and the
+    Year rows add up to the Total row. (decisions.md, T7)"""
+    checks = []
+    for page in range(1, n_pages + 1):
+        words = [w for line in best_reading(file_id, page, engine) for w in line.get("words", [])]
+        rows = _page_rows(words)
+        for i, row in enumerate(rows):
+            names = [re.sub(r"[^a-z-]", "", w["text"].lower()) for w in row]
+            if not {"segment", "recurring", "non-recurring", "total"} <= set(names):
+                continue
+            cols = [(n, (w["box"][0] + w["box"][2]) / 2) for n, w in zip(names, row)]
+            order = [c[0] for c in cols]
+            body, years, y1 = [], [], max(w["box"][3] for w in row)
+            for line in rows[i + 1:i + 12]:
+                cells = _cells([line], cols)
+                if money(cells.get("total", "")) is None:
+                    break
+                y1 = max(w["box"][3] for w in line)
+                body.append(" | ".join(cells.get(n, "") for n in order))
+                rec, non, tot = (money(cells.get(n, "")) for n in ("recurring", "non-recurring", "total"))
+                is_total = cells.get("segment", "").lower().startswith("total")
+                if None not in (rec, non):
+                    checks.append({"check": "billing row", "ok": close(rec + non, tot), "file_id": file_id, "page": page,
+                                   "detail": f"{rec:,.2f} + {non:,.2f} vs {tot:,.2f}", "raw": body[-1]})
+                if is_total:
+                    checks.append({"check": "billing total", "ok": close(sum(years), tot), "file_id": file_id,
+                                   "page": page, "detail": f"years {sum(years):,.2f} vs printed {tot:,.2f}", "raw": body[-1]})
+                    break
+                years.append(tot)
+            if zones is not None and body:
+                zones.append({"file_id": file_id, "page": page, "y0": min(w["box"][1] for w in row), "y1": y1,
+                              "rows": [" | ".join(n.capitalize() for n in order)] + body})
+    return checks
+
+
 # ---------------------------------------------------------------- the arithmetic checks
 
 def close(a: float, b: float) -> bool:
@@ -367,6 +406,13 @@ def main() -> None:
                        "pass_rate": ""})
         scores.append({"method": method, "check": "product rows with no Qty read", "checked": len(items),
                        "passed": sum(r["qty"] is None for r in items), "pass_rate": ""})
+    billing = [c for f in files() for c in billing_summaries(f["file_id"], len(pdfium.PdfDocument(str(pdf_path(f)))))]
+    write_csv(OUT / "tables" / "billing_checks.csv", billing, ["file_id", "page", "check", "ok", "detail", "raw"])
+    for c in ("billing row", "billing total"):
+        sel = [x for x in billing if x["check"] == c]
+        scores.append({"method": "billing summary (vision)", "check": c, "checked": len(sel),
+                       "passed": sum(x["ok"] for x in sel),
+                       "pass_rate": round(sum(x["ok"] for x in sel) / len(sel), 3) if sel else ""})
     write_csv(OUT / "tables" / "pricing_scores.csv", scores)
     for s in scores:
         print("  ", s)

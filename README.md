@@ -23,7 +23,7 @@ tables and forms.
 | `ocr-eval` | Score each OCR reading against two answer keys | done; answer key 1 needs a human check |
 | `tables` | Read the pricing tables two ways; check them with arithmetic | done |
 | `forms` | Read 8 fields from each of the 14 order forms two ways (text rules, layout) and score them | done; its answer key needs a human check |
-| `text` | Clean, whole text: page numbers and stamps removed, paragraphs joined across lines and pages, checked tables in place | done; needs a whole-page human check |
+| `text` | Clean, whole text: page numbers and stamps removed, paragraphs joined across lines and pages, checked tables in place | done; F02 and F13 read by a person beside the scans |
 | sections | Split into sections and label topics (goal 1) | later |
 | extraction | Privacy facts (goal 2) | later |
 
@@ -37,6 +37,7 @@ Headline results so far:
   - 88 product rows found.
   - Every subtotal (63/63) and grand total (12/12) adds up.
   - The 7 row checks that fail are arithmetic errors printed in the contracts themselves.
+  - Billing Summary tables (F13, F14) pass all 10 of their arithmetic checks.
 - **Order-form fields:**
   - Reading by position on the page (layout) gets 89 of 99 values right.
   - Searching the running text (text rules) gets 84.

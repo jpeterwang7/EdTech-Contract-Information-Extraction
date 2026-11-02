@@ -35,7 +35,7 @@ import pypdfium2 as pdfium
 
 from .common import OUT, files, normalize, pdf_path, write_csv
 from .reading import _covered, best_reading, is_scanned, is_word, load, page_source, real_word_share
-from .tables import geometry_rows
+from .tables import billing_summaries, geometry_rows
 
 FURNITURE = [(re.compile(r"^page\s*\d+\s*(of\s*\d+)?$", re.I), "page number"),
              (re.compile(r"^-?\s*\d{1,3}\s*-?$"), "page number"),
@@ -348,6 +348,7 @@ def file_blocks(file_id: str, n_pages: int, removed: list[dict]) -> list[dict]:
     repeated = furniture_patterns(file_id, n_pages)
     zones = []
     geometry_rows(file_id, n_pages, zones=zones)
+    billing_summaries(file_id, n_pages, zones=zones)
     blocks = []
     for p in range(1, n_pages + 1):
         page = page_blocks(file_id, p, repeated, [z for z in zones if z["page"] == p], removed)

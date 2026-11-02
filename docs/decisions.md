@@ -4,10 +4,10 @@ Every choice made so far, in order: what the options were, what was picked, and 
 (R = reading the pages, T = tables, S = server) that the code refers to. Numbers come from the files in
 `outputs/`; the failures behind them are told in [what_failed.md](what_failed.md).
 
-**Status (Oct 29, 2026):**
+**Status (Nov 1, 2026):**
 - **Built and scored:** steps R (reading), T (tables), F (order-form fields) and C (clean text).
-- **Still to do:** the clean text needs a whole-page check by a person (C6), and the order-form answer key (F1)
-  needs checking. The OCR line key (R4) no longer needs checking.
+- **Checked by a person:** clean text of F02 and F13, read beside the scans (C7, C8).
+- **Still to do:** the order-form answer key (F1) needs checking. The OCR line key (R4) no longer does.
 
 ---
 
@@ -311,6 +311,21 @@ kept.
 **Limits:** these two rules are narrow on purpose, as I intended, so other documents may still show empty
 labels or empty section titles. Every removal is in `outputs/text/removed.csv` with its reason.
 
+### C8. My page check of F13, the poorest scan (Nov 1)
+
+I read F13 beside its scanned pages and found one thing to fix: the Billing Summary's Total row read "sD
+6720050". The page and the arithmetic say USD 67,260.50, so the whole table now comes from the table step (T7).
+He found no other major issues.
+
+Left as they are, because he did not consider them major:
+- misspellings on this scan ("Conlract", "stata sales lax"),
+- product descriptions split across two columns in the pricing rows ("S2 Diploma Size: | 8x10 Services"),
+- "Shell Type: …" lines outside their S2/S4 rows,
+- garbled handwriting (a Ship-to address, signer names and dates).
+
+The dictionary vote (R8) would fix most of the misspellings on this page, but it stays off: it showed no gain on
+either answer key, and these errors were not judged major.
+
 ### C6. Next: a whole-page check
 
 The fair test of clean text is a person reading it next to the PDF:
@@ -319,7 +334,8 @@ The fair test of clean text is a person reading it next to the PDF:
 - **What to record:** every missing or broken sentence, every leftover page number or scrap, every table row that
   is wrong.
 
-This replaces line-by-line checking. Reading `outputs/text/F02.md` beside the PDF is enough to start.
+This replaces line-by-line checking. Done so far: F02, a scanned terms file (C7), and F13, the poorest scan (C8).
+Reading more pages would strengthen this, especially a digital order form and the security brochure.
 
 ---
 
@@ -393,6 +409,20 @@ We looked at the page picture for every failing row. In all 7, the printed numbe
 Here the Price column holds a flat price or a rounded unit price. No reading method could make these rows pass,
 so the reader has 0 known errors on the 88 product rows. The check does **not** test descriptions or dates; those
 need a hand check.
+
+### T7. Billing Summary tables get their own reading and checks
+
+The two newest order forms (F13, F14) also have a Billing Summary: Segment | Recurring | Non-Recurring | Total. It
+has no Qty or Price column, so the pricing-table reader skipped it, and the clean text read it with the paragraph
+reading. On F13's poor scan that gave "usb 21,4050" and "sD 6720050" for what the page prints as USD 21,340.50 and
+USD 67,260.50.
+
+Now it is found by its own header, read with Apple Vision (T5), and checked two ways:
+- Recurring + Non-Recurring = Total on each row: 8 of 8.
+- The Year rows add up to the Total row: 2 of 2 (21,340.50 + 22,406.50 + 23,513.50 = 67,260.50).
+
+The checked rows go into the clean text in place of a second reading (C2). Details are in
+`outputs/tables/billing_checks.csv`.
 
 ---
 
