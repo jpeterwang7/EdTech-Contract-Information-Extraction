@@ -14,6 +14,8 @@ tables and forms.
 **Where to read:**
 - [docs/decisions.md](docs/decisions.md): every decision, in plain language, with the numbers behind it.
 - [docs/what_failed.md](docs/what_failed.md): what did not work, with examples.
+- To read both as formatted pages in a browser, run `.venv/bin/python -m bench.review docs` and open
+  `work/review/decisions.html` (rerun after editing either `.md` file).
 
 ## Status
 
@@ -43,9 +45,10 @@ Headline results so far:
   - Searching the running text (text rules) gets 84.
   - Layout is far better on signer names and dates. Handwriting defeats both.
 - **Finding privacy passages** (tuning files, contract text; test files not yet scored):
-  - Rules alone: found 100%, clean 49%, whole 100%. Meaning: 73%, 64%, 67%. Rules + LLM: 66%, 79%, 33%. LLM: 49%, 73%, 33%.
-  - Three-way sorter (rules, meaning and LLM vote): all core found after checking, 98% of borderline reaches a person,
-    and a person reads 11.8% of the words (decisions.md, P7).
+  - Judging one block at a time (found, clean, whole): term list (regex) 100%, 69%, 100%; meaning 73%, 51%, 67%;
+    Llama with context 73%, 100%, 53%.
+  - Three-way sorter (term list, meaning and Llama vote): all core found after checking, 89% of borderline reaches a
+    person, and a person reads 8.6% of the words (decisions.md, P8).
 - **Clean text** (`outputs/text/F01.md` … `F14.md`, readable next to the PDFs):
   - Page numbers and stamps in the text: 88 → 0.
   - Sentences cut off mid-way: 2,119 → 10.

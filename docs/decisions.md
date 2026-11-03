@@ -11,7 +11,7 @@ these decisions are in [what_failed.md](what_failed.md).
 | Pricing tables | Read by column position, checked with arithmetic | 88 rows; all 63 subtotals and 12 grand totals add up |
 | Order-form fields | Find each label on the page, take the value beside it | 89 of 99 values right |
 | Clean text | Remove page clutter, join lines into whole paragraphs | Cut-off sentences: 2,119 → 10 |
-| Privacy passages | Three methods vote; a person checks where they disagree | All core text found; a person reads 11.8% of the words (tuning files) |
+| Privacy passages | Term list, meaning and Llama vote on each block; a person checks where they disagree | All core text found; a person reads 8.6% of the words (tuning files) |
 
 **Still open:**
 - A person needs to check the privacy answer key (P2).
@@ -208,79 +208,97 @@ descriptions and garbled handwriting remain. I judged these not major.
 
 ## P. Finding the privacy passages
 
-**P1. Target one category: data governance and privacy.** My decision on Nov 2, so a 12-topic plan was dropped. The
-category covers who owns customer, student or user data; how the vendor may use or share it, including aggregated data
-and AI training; disclosure to third parties; retention, export and deletion; security safeguards and breach notice; and
-duties under privacy laws such as FERPA and GDPR.
+**Words used in this section**
+- **Block:** one piece of the clean text (section C): a paragraph, a heading, a form (rows of `label | value`) or a
+  pricing table.
+- **Section:** a run of blocks about one clause, used in P3–P7. A new section starts at a heading, a form, a table, a
+  numbered clause ("8. Compliance.") or a run-in title ("Duration: …"). The last two are found with regular expressions
+  (regex: a written text pattern the code searches for).
+- **Tuning files** (F01–F06, F09, F11, F12): used to build and adjust the methods. **Test files** (F07, F08, F10, F13,
+  F14): scored once, at the end.
 
-**P2. The answer key has two groups, drafted before any method was built.**
-- **Core (49 contract passages):** must be found.
-- **Borderline (25):** a person checks these, such as ordinary business confidentiality or password duties. They count
-  neither for nor against a method.
+**P1. One category: data governance and privacy.** My decision on Nov 2, so a 12-topic plan was dropped. The
+meaning method and Llama are given this definition word for word:
+> Data governance and privacy: who owns customer, student or user data; how the vendor may use, analyze or share it,
+> including aggregated or de-identified data and training AI models; disclosure to third parties; how long data is kept
+> and how it is exported, returned or deleted; security safeguards and data breach notification; and duties under
+> privacy laws such as FERPA and GDPR.
+
+**P2. The answer key: 83 passages marked** (`data/gold/privacy_passages.csv`), before any method was built.
+
+| Group | Passages | Meaning | Example |
+|---|---|---|---|
+| Core | 49 | Clearly in the category; must be found | "9. Aggregated Data. As between the parties, Instructure owns…" |
+| Borderline | 25 | Could go either way, so a person decides; counts neither for nor against a method | Ordinary business confidentiality; password duties |
+| Not scored | 9 | In the F09 security brochure, which is marketing, not signed terms | — |
 
 Only blocks containing a broad set of related words were read in full, so a passage with none of those words could be
-missed. **The key still needs a person to check it:** `outputs/privacy/privacy_key_for_review.xlsx`, for my mentor.
+missing. **A person still has to check the key:** `outputs/privacy/privacy_key_for_review.xlsx`, for my mentor.
 
-The **F09 security brochure is out of all scoring**, because it isn't contract terms and its many words swamped the scores.
+**P3. Three methods decide whether text is in the category.**
 
-**P3. Compare three methods.** Each splits a file into sections of whole blocks, so signed text is never rewritten.
-
-| Method | Splits at | Keeps a section when |
+| Method | Keeps the text when | Tool |
 |---|---|---|
-| Rules | Headings, tables, numbered clauses, run-in titles | It has a privacy term |
-| Meaning | Where neighbouring blocks change subject | It's close in meaning to the category definition |
-| Llama | Where Llama says a section starts | Llama says yes |
-| Rules + Llama | As the rules | Llama says yes |
+| **Term list** | It contains a privacy term ("personal data", "FERPA", "data breach", "encrypt"…), or "Customer Content" within 6 words of a word such as own, use, secure, export or delete | Two regexes, written from the tuning files |
+| **Meaning** | Its meaning is close to the definition in P1: both are turned into lists of numbers, and their similarity score (higher = closer) is at or above a threshold | sentence-transformers, all-mpnet-base-v2 |
+| **Llama** | Llama answers yes when asked whether the text is in the category defined in P1. It must reply in a fixed form a program can read (JSON): `{"in_category": true}` or `false` | Llama 3.1 8B Instruct, on the lab server |
 
-**P4. Score in words.**
-- **Found:** the share of core text returned. This matters most, because what's missed never reaches extraction.
-- **Clean:** the share of returned text that is core (borderline text isn't counted).
-- **Whole:** the share of core passages returned complete in one section.
-- **F2:** found and clean combined, with found weighted double. Used only to tune the meaning method.
+At first each method judged whole sections (P6, P7); now each judges one block at a time (P8). For sections, each
+method cut the file its own way:
+- **Term list:** the regex sections defined above.
+- **Meaning:** a new section where two neighbouring blocks differ in meaning (similarity below 0.7).
+- **Llama:** Llama is shown 30 blocks at a time and asked where sections start.
+- **Regex sections + Llama:** the term list's sections, judged by Llama. This separates Llama's cutting from its judging.
 
-**P5. Test fairly.** Tune on F01–F06, F09, F11, F12. Test once at the end on F07, F08, F10, F13, F14, after the key is
-checked. The rules' term list came from the tuning files only, so terms seen only in test files ("Service Data") were left
-out on purpose. Two limits: the test files were read while cleaning the text and drafting the key, and some boilerplate
-appears on both sides.
+**P4. Four scores, counted in words.** Example: the key has 300 core words, and a method returns 200 words, of which 150
+are core, 20 borderline and 30 neither.
+- **Found** = core words returned ÷ all core words in the key = 150 ÷ 300 = 50%. This matters most: what is missed never
+  reaches extraction.
+- **Clean** = core words returned ÷ words returned, leaving borderline words out = 150 ÷ (200 − 20) = 83%.
+- **Whole** = the share of core passages returned complete, meaning every block of the passage was returned. Half a
+  clause can lose its meaning.
+- **F2** = found and clean in one number, with found counted twice as much: 5 × found × clean ÷ (4 × clean + found). For
+  found 100% and clean 49%, F2 = 0.83. Used only to pick the meaning method's thresholds.
 
-**P6. Alone, the rules lead (tuning files, 15 core passages).**
+The F09 brochure is left out of every score. Scored with it, the meaning method kept only brochure text and found no
+contract clause (what_failed.md, 36).
+
+**P5. Test fairly.** Methods are built and adjusted on the tuning files (15 core and 12 borderline passages). The test
+files are scored once, after the key is checked. The term list came from the tuning files only, so a term seen only in
+test files ("Service Data") was left out on purpose. Two limits: the test files were read while cleaning the text and
+drafting the key, and some standard wording appears in both groups.
+
+**P6. First results, judging sections (tuning files).**
 
 | Method | Found | Clean | Whole |
 |---|---|---|---|
-| **Rules** | **100%** | 49% | **100%** |
+| **Term list** | **100%** | 49% | **100%** |
 | Meaning | 73% | 64% | 67% |
-| Rules + Llama | 66% | 79% | 33% |
+| Regex sections + Llama | 66% | 79% | 33% |
 | Llama | 49% | 73% | 33% |
 
-- **Rules** return whole clauses, so "8. Compliance" comes back in full though one sentence is about data.
-- **Llama and meaning** miss a privacy sentence inside a clause about something else.
-- **These scores are optimistic:** there are few passages, F01 and F02 share terms, and the rules were written from these
-  files. Only one Llama prompt was tried.
+- **The term list returns whole clauses:** "8. Compliance." comes back complete, though only its second sentence (on
+  security safeguards) is about data. The rest of the clause lowers clean.
+- **Llama's sections were too big:** on F01 it made clauses 1–10 one 1,159-word section and said no, losing "9.
+  Aggregated Data." Judging the regex sections instead raised found from 49% to 66%.
+- **Llama and meaning miss a privacy sentence inside a clause about something else:** "8. Compliance." and "16.
+  Termination.", whose last sentence lets the customer export its data for 3 months.
+- **These scores are optimistic:** 15 passages, F01 and F02 share wording, the term list was written from these files,
+  and only one Llama prompt was tried.
 
-**P7. Balance score against manual checking with a three-way sorter.** My goal: core must be found, a person checks
-borderline text, and that checking stays as small as possible.
+**P7. The sorter: three votes, and a person checks where they disagree.** My goal: all core text found, a person
+checks borderline text, and as little reading as possible.
+1. **Vote.** Each piece gets up to three votes: the term list keeps it; Llama says yes; its meaning similarity is at or
+   above a threshold t.
+2. **Sort.** 2–3 votes: automatically in. 0 votes: automatically out. 1 vote: a person reads it.
+3. **Tune on the tuning files.** Try t from 0.20 to 0.70 in steps of 0.05, 2 or 3 votes for automatically in, and with
+   or without a wide net (a 0-vote piece containing a broad word such as "data", "records" or "confidential" goes to a
+   person instead of out). Keep only settings where all core text is found after checking and enough borderline text
+   reaches a person: 95% on sections, 85% on blocks (P8). Of those, pick the one with the fewest words a person reads
+   plus wrong words let in automatically.
 
-1. **Vote.** Each of the rules' sections gets up to three votes: rules, Llama, meaning.
-2. **Sort.** 2–3 votes: automatically in. 0 votes: automatically out. 1 vote: the methods disagree, so a person checks it.
-3. **Tune.** Limits first: all core found, and at least 95% of borderline reaching a person. Then pick the setting with
-   the fewest words a person reads plus wrong words let in. Chosen: a meaning threshold of 0.45.
-
-| Tuning files, 25,607 contract words | |
-|---|---|
-| Core found after checking | 100% |
-| Core found with no person involved | 80.7% |
-| Borderline reaching a person | 98.3% |
-| A person reads | 11.8% of the words (40 sections) |
-| Automatically out | 85.0% of the words |
-| Correct among automatically-in text | 89.1% |
-
-The chosen setting sits just before a cliff:
-
-| Meaning threshold | Person reads | Borderline reaching a person | Core found |
-|---|---|---|---|
-| 0.40 | 20.2% | 98.3% | 100% |
-| **0.45** | **11.8%** | **98.3%** | **100%** |
-| 0.50 | 8.3% | 59.4% | 100% |
+On sections the chosen setting was t = 0.45, with a person reading 11.8% of the words (40 sections). The current results,
+on blocks, are in P8.
 
 **The research behind this approach:**
 - Sending uncertain cases to a person: [Chow 1970](https://dblp.org/pid/85/786).
@@ -288,59 +306,58 @@ The chosen setting sits just before a cliff:
 - Software-assisted legal review: [Grossman & Cormack 2011](https://scholarship.richmond.edu/jolt/vol17/iss3/5/).
 - Judging review against a recall target: [Cormack & Grossman 2016](https://cormack.uwaterloo.ca/reliability).
 
-These support the general approach. The voting rule, the 95% limit and counting a word read the same as a wrong word let
-in are my own choices, kept simple because 15 passages can't support a fitted model.
+These support the general approach. The voting rule, the borderline limit and counting a word read the same as a wrong
+word let in are my own choices, kept simple because 15 passages can't support a fitted model.
 
 **Limits:**
 - It assumes a person always agrees with the key.
 - It rests on 15 passages, so "100% found" is optimistic.
-- The cliff suggests the setting may be fragile on new files.
+- The cliff in P8 suggests the setting may be fragile on new files.
 - Nobody sees the automatically-out text, so on the test files a person should spot-check a random sample (an
   [elusion test](https://relativity.com/blog/active-learning-validation-101-quantifying-your-success/)). Practitioners warn
   this test alone can overstate how much was found.
 
-**P8. Judge one block at a time, not whole sections.** My choice on Nov 2, after the sections turned out to carry
-unrelated text along (F01's price deadline rode inside "Miscellaneous").
-- **The unit is one block** (a paragraph, a pricing table, a group of form rows), with two exceptions:
-  - **Headings are never returned.** They name a topic but state no legal term. No core contract passage sits in a
-    heading. Instead, the nearest heading above a block is shown to the judges as context.
-  - **Form rows split by a gap on one page are one unit**, so a signature box stays together. Each pricing table was
-    already one block.
-- **Context.** A later paragraph or a lettered item, such as "(b) If the refund is due to a Provider Error…", loses its
-  lead-in when read alone. Llama is shown the heading above it, the clause's opening and the nearest line ending in ":"
-  ("8.3 Refunds and Chargebacks. If an Individual Requestor seeks a refund…:"). The context is for understanding only and
-  is never returned or scored. Headings containing a digit ("Year 1", "Effective Date: 15 April 2026") are labels, not
-  topics, so they are skipped.
-- **"Whole" now means every block of a passage was returned**, by one section or by neighbouring units. For one-block
-  passages this is the same as before.
+**P8. Judge one block at a time (the current design).** My choice on Nov 2. Sections carried unrelated text along
+(F01's price deadline rode inside "Miscellaneous"), and Llama's own sections were too big (P6).
+- **Each block is judged on its own**, with two exceptions:
+  - **Headings are never judged or returned.** They name a topic but state no term, and no core passage is a heading.
+  - **Form rows on one page that a wide gap split apart stay one form**, so a signature box stays together.
+- **Llama sees context above the block:** the nearest heading, the opening of its clause, and the nearest lead-in line
+  ending in ":". For "(b) If the refund is due to a Provider Error…", that lead-in is "8.3 Refunds and Chargebacks. If an
+  Individual Requestor seeks a refund…:". The context helps Llama understand the block and is never returned or scored.
+  Headings containing a digit ("Year 1") are labels, not topics, so they are skipped.
 
-| Tuning files | Found | Clean | Whole |
-|---|---|---|---|
-| Rules, sections (before) | 100% | 49% | 100% |
-| **Rules, blocks** | **100%** | **69%** | **100%** |
-| Meaning, sections (before) | 73% | 64% | 67% |
-| Meaning, blocks | 73% | 51% | 67% |
-| Llama, sections (before) | 49% | 73% | 33% |
-| **Llama, blocks with context** | **73%** | **100%** | 53% |
+| Tuning files | Found | Clean | Whole | Before, on sections |
+|---|---|---|---|---|
+| **Term list** | **100%** | **69%** | **100%** | 100%, 49%, 100% |
+| Meaning | 73% | 51% | 67% | 73%, 64%, 67% |
+| **Llama, with context** | **73%** | **100%** | 53% | 49%, 73%, 33% |
 
-- **Meaning gets less clean on single blocks:** short blocks give it little to go on.
-- **Llama gains the most.** On small units with context, nothing it keeps is wrong. I chose blocks with context
-  as the way Llama is used from now on (Nov 2). It still misses a privacy sentence
-  inside a clause about something else ("8. Compliance").
-- **The sorter on blocks** (Nov 2): with the same limits, the best setting has a person read 33.8% of the words (66
-  blocks), against 11.8% for sections. The limit that forces this is "95% of borderline reaches a person". At the old
-  setting (t = 0.45, two votes) a person would read 8.6%, but 3 borderline passages would be dropped with no vote:
-  "14. Feedback" (customer surveys) in F01 and F02, and F12's term on confidentiality of public records. **I chose
-  the lighter check (Nov 2):** the borderline limit is now 85%, and the sorter picks t = 0.45 with two votes.
+- **Term list:** cleaner, because unrelated parts of a clause no longer ride along.
+- **Meaning:** less clean, because a short block gives it little to go on.
+- **Llama gains the most:** nothing it keeps is wrong. It still misses "8. Compliance."
 
-| Sorter on blocks, tuning files | |
+**The sorter on blocks.** With the 95% borderline limit, a person would read 33.8% of the words (66 blocks). **I chose
+the lighter check (Nov 2):** an 85% limit, which picks t = 0.45 with two votes for automatically in and no wide net. The
+cost is 3 borderline passages that get no vote and go out unseen: "14. Feedback" (customer surveys) in F01 and F02, and
+F12's term on confidentiality of public records.
+
+| Sorter on blocks, tuning files (25,269 words) | |
 |---|---|
 | Core found after checking | 100% |
 | Core found with no person involved | 87.8% |
 | Borderline reaching a person | 88.8% |
 | A person reads | 8.6% of the words (14 blocks) |
 | Automatically out | 88.0% of the words |
-| Correct among automatically-in text | 90.3% |
+| Automatically-in text that is core or borderline | 90.3% |
+
+The chosen setting sits just before a cliff:
+
+| t | A person reads | Borderline reaching a person | Core found after checking |
+|---|---|---|---|
+| 0.40 | 14.6% | 88.8% | 100% |
+| **0.45** | **8.6%** | **88.8%** | **100%** |
+| 0.50 | 5.0% | 49.9% | 100% |
 
 ---
 

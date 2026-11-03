@@ -301,7 +301,135 @@ def order_forms() -> str:
     return str(path)
 
 
+# ---------------------------------------------------------------- the decision log, readable in a browser
+
+DOC_CSS = """
+body{font-family:-apple-system,Segoe UI,Arial,sans-serif;margin:0;background:#fff;color:#1a1a1a;line-height:1.55}
+main{max-width:880px;margin:0 auto;padding:24px 20px 60px;font-size:15px}
+h1{font-size:26px;margin:8px 0 12px} h2{font-size:21px;margin:40px 0 10px;padding-top:12px;border-top:2px solid #ddd}
+h3{font-size:17px;margin:24px 0 8px}
+nav{background:#f6f6f4;border:1px solid #e2e2dc;border-radius:8px;padding:10px 16px;margin:12px 0 4px;font-size:14px;
+display:flex;flex-wrap:wrap;gap:4px 16px}
+p{margin:10px 0} ul,ol{margin:8px 0;padding-left:24px} li{margin:4px 0}
+a{color:#1a5fb4}
+code{font-family:Menlo,Consolas,monospace;font-size:13px;background:#f1f1ee;padding:1px 4px;border-radius:4px}
+blockquote{margin:12px 0;padding:8px 16px;border-left:4px solid #8a8fd8;background:#f5f5fd}
+table{border-collapse:collapse;margin:12px 0;font-size:14px;display:block;overflow-x:auto}
+th,td{border:1px solid #d6d6d0;padding:6px 10px;text-align:left;vertical-align:top}
+th{background:#f1efe8} tr:nth-child(even) td{background:#fafaf8}
+hr{border:none;border-top:1px solid #ddd;margin:28px 0}
+footer{color:#777;font-size:12px;margin-top:40px}
+"""
+ITEM = re.compile(r"^( *)(-|\d+\.) +(.*)$")
+
+
+def _inline(s: str) -> str:
+    """Code, bold, italics and links inside one line of markdown."""
+    s = html.escape(s, quote=False)
+    s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
+    s = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", s)
+    s = re.sub(r"(?<![\w*])\*(?!\s)(.+?)(?<!\s)\*(?![\w*])", r"<i>\1</i>", s)
+    # a link to another log (what_failed.md) points to its page
+    return re.sub(r"\[([^\]]+)\]\(([^)\s]+)\)",
+                  lambda m: f"<a href='{re.sub(r'^(?!https?:)(.*)[.]md', r'\1.html', m.group(2))}'>{m.group(1)}</a>", s)
+
+
+def _cells(line: str) -> list[str]:
+    """A table row's cells; a "|" inside `code` stays in its cell."""
+    cells, cur, code = [], "", False
+    for ch in line.strip().strip("|"):
+        if ch == "`":
+            code = not code
+        if ch == "|" and not code:
+            cells.append(cur)
+            cur = ""
+        else:
+            cur += ch
+    return [c.strip() for c in cells + [cur]]
+
+
+def _markdown(text: str) -> str:
+    """The markdown the logs use (headings, paragraphs, lists, tables, quotes, rules) as HTML."""
+    out, para, lists = [], [], []                      # lists: the open lists, innermost last, as (indent, tag)
+
+    def end_para():
+        if para:
+            out.append(f"<p>{_inline(' '.join(para))}</p>")
+            para.clear()
+
+    def end_lists(indent=-1):
+        while lists and lists[-1][0] > indent:
+            out.append(f"</li></{lists.pop()[1]}>")
+
+    lines, i = text.splitlines(), 0
+    while i < len(lines):
+        line, m = lines[i], ITEM.match(lines[i])
+        if line.startswith("|") or line.startswith(">"):
+            end_para()
+            end_lists()
+            run = []
+            while i < len(lines) and lines[i][:1] == line[:1]:
+                run.append(lines[i])
+                i += 1
+            if line.startswith(">"):
+                out.append(f"<blockquote>{_inline(' '.join(r[1:].strip() for r in run))}</blockquote>")
+            else:
+                rows = [_cells(r) for r in run if not re.fullmatch(r"[|:\- ]+", r.strip())]
+                out.append("<table><tr>" + "".join(f"<th>{_inline(c)}</th>" for c in rows[0]) + "</tr>" + "".join(
+                    "<tr>" + "".join(f"<td>{_inline(c)}</td>" for c in r) + "</tr>" for r in rows[1:]) + "</table>")
+            continue
+        if not line.strip() or line.startswith("#") or line.strip() == "---":
+            end_para()
+            end_lists()
+            if line.startswith("#"):
+                level = len(line) - len(line.lstrip("#"))
+                title = line[level:].strip()
+                slug = re.sub(r"\W+", "-", title.lower()).strip("-")
+                out.append(f"<h{level} id='{slug}'>{_inline(title)}</h{level}>")
+            elif line.strip() == "---":
+                out.append("<hr>")
+        elif m:
+            end_para()
+            indent, tag = len(m.group(1)), "ol" if m.group(2)[0].isdigit() else "ul"
+            if lists and lists[-1][0] >= indent:
+                end_lists(indent)
+                if lists and lists[-1][0] == indent:
+                    out.append("</li>")
+            if not lists or lists[-1][0] < indent:
+                lists.append((indent, tag))
+                out.append(f"<{tag}>")
+            out.append(f"<li>{_inline(m.group(3))}")
+        elif lists and line.startswith(" "):           # a list item carried on to the next line
+            out[-1] += " " + _inline(line.strip())
+        else:
+            end_lists()
+            para.append(line.strip())
+        i += 1
+    end_para()
+    end_lists()
+    return "\n".join(out)
+
+
+def docs() -> str:
+    """docs/decisions.md and docs/what_failed.md as formatted pages, linked to each other, with a list of sections at
+    the top. The .md files stay the ones to edit; rerun this afterwards."""
+    from .common import ROOT
+    for name in ("decisions", "what_failed"):
+        body = _markdown((ROOT / "docs" / f"{name}.md").read_text())
+        h2 = re.findall(r"<h2 id='([^']+)'>(.*?)</h2>", body)
+        nav = "<nav>" + "".join(f"<a href='#{s}'>{re.sub('<[^>]+>', '', t)}</a>" for s, t in h2) + "</nav>"
+        body = body.replace("</h1>", "</h1>" + nav, 1) if h2 else body
+        title = re.sub("<[^>]+>", "", re.search(r"<h1[^>]*>(.*?)</h1>", body).group(1))
+        path = WORK / "review" / f"{name}.html"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(f"<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' "
+                        f"content='width=device-width'><title>{title}</title><style>{DOC_CSS}</style></head><body><main>"
+                        f"{body}<footer>Made from docs/{name}.md by <code>python -m bench.review docs</code>.</footer>"
+                        "</main></body></html>")
+    return str(WORK / "review" / "decisions.html")
+
+
 if __name__ == "__main__":
     for fid in sys.argv[1:] or ["F02"]:
-        print(order_forms() if fid == "forms" else mentor_sheet() if fid == "sheet"
+        print(order_forms() if fid == "forms" else mentor_sheet() if fid == "sheet" else docs() if fid == "docs"
               else privacy_key() if fid == "privacy" else build(fid))
