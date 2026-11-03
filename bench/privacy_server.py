@@ -2,6 +2,7 @@
 
   embed  turns every block into a meaning vector (sentence-transformers, all-mpnet-base-v2), on the CPU
   llm    asks Llama 3.1 8B, served by vLLM, where sections start and whether each section is in the category
+  llm_units  asks Llama the same yes-or-no question for every single block, with its heading as context
 
 Both save raw answers for ALL files in work/privacy/. Scoring and threshold tuning then happen on the Mac in seconds
 with `python run.py privacy`, on the tuning files only, so test scores stay unseen and the server is not needed again.
@@ -14,7 +15,7 @@ import urllib.error
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 
-from .privacy import DEFINITION, PRIV, load_blocks, rule_sections
+from .privacy import DEFINITION, PRIV, load_blocks, rule_sections, unit_contexts, units
 
 EMBED_MODEL = "sentence-transformers/all-mpnet-base-v2"
 LLM_MODEL = os.environ.get("LLM_MODEL", "meta-llama/Llama-3.1-8B-Instruct")
@@ -152,3 +153,28 @@ def llm() -> None:
             out[f].append(bool(r and r.get("in_category") is True))
         results[tag] = out
     (PRIV / "llm_answers.json").write_text(json.dumps({"llm_sections": llm_secs, **results}))
+
+
+UNIT_SYSTEM = ("You judge one passage of a contract. Category: " + DEFINITION + " Above the passage you are shown the "
+               "heading and clause opening it sits under, only so you know what it is about; judge the passage itself. "
+               'Reply with JSON only: {"in_category": true} if the passage has terms or statements in this category, '
+               'otherwise {"in_category": false}.')
+
+
+def llm_units() -> None:
+    """Yes or no for every unit: one block, never a heading, with its heading and clause opening as context
+    (decisions.md, P8)."""
+    blocks = load_blocks()
+    js, idx, all_units = [], [], {}
+    for f, bs in blocks.items():
+        ctx = unit_contexts(bs)
+        all_units[f] = units(bs)
+        for u in all_units[f]:
+            js.append((UNIT_SYSTEM, f"Above the passage: {ctx[u[0]] or '(nothing)'}\n\nPassage: {_section_text(bs, u)}"))
+            idx.append(f)
+    replies = _ask_all(js, 30, "units")
+    print(f"  units: {sum(r is None for r in replies)} of {len(js)} replies unusable (counted as no)", flush=True)
+    yes = {f: [] for f in blocks}
+    for f, r in zip(idx, replies):
+        yes[f].append(bool(r and r.get("in_category") is True))
+    (PRIV / "llm_unit_answers.json").write_text(json.dumps({"units": all_units, "yes": yes}))

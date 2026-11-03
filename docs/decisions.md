@@ -299,6 +299,49 @@ in are my own choices, kept simple because 15 passages can't support a fitted mo
   [elusion test](https://relativity.com/blog/active-learning-validation-101-quantifying-your-success/)). Practitioners warn
   this test alone can overstate how much was found.
 
+**P8. Judge one block at a time, not whole sections.** My choice on Nov 2, after the sections turned out to carry
+unrelated text along (F01's price deadline rode inside "Miscellaneous").
+- **The unit is one block** (a paragraph, a pricing table, a group of form rows), with two exceptions:
+  - **Headings are never returned.** They name a topic but state no legal term. No core contract passage sits in a
+    heading. Instead, the nearest heading above a block is shown to the judges as context.
+  - **Form rows split by a gap on one page are one unit**, so a signature box stays together. Each pricing table was
+    already one block.
+- **Context.** A later paragraph or a lettered item, such as "(b) If the refund is due to a Provider Error…", loses its
+  lead-in when read alone. Llama is shown the heading above it, the clause's opening and the nearest line ending in ":"
+  ("8.3 Refunds and Chargebacks. If an Individual Requestor seeks a refund…:"). The context is for understanding only and
+  is never returned or scored. Headings containing a digit ("Year 1", "Effective Date: 15 April 2026") are labels, not
+  topics, so they are skipped.
+- **"Whole" now means every block of a passage was returned**, by one section or by neighbouring units. For one-block
+  passages this is the same as before.
+
+| Tuning files | Found | Clean | Whole |
+|---|---|---|---|
+| Rules, sections (before) | 100% | 49% | 100% |
+| **Rules, blocks** | **100%** | **69%** | **100%** |
+| Meaning, sections (before) | 73% | 64% | 67% |
+| Meaning, blocks | 73% | 51% | 67% |
+| Llama, sections (before) | 49% | 73% | 33% |
+| **Llama, blocks with context** | **73%** | **100%** | 53% |
+
+- **Meaning gets less clean on single blocks:** short blocks give it little to go on.
+- **Llama gains the most.** On small units with context, nothing it keeps is wrong. I chose blocks with context
+  as the way Llama is used from now on (Nov 2). It still misses a privacy sentence
+  inside a clause about something else ("8. Compliance").
+- **The sorter on blocks** (Nov 2): with the same limits, the best setting has a person read 33.8% of the words (66
+  blocks), against 11.8% for sections. The limit that forces this is "95% of borderline reaches a person". At the old
+  setting (t = 0.45, two votes) a person would read 8.6%, but 3 borderline passages would be dropped with no vote:
+  "14. Feedback" (customer surveys) in F01 and F02, and F12's term on confidentiality of public records. **I chose
+  the lighter check (Nov 2):** the borderline limit is now 85%, and the sorter picks t = 0.45 with two votes.
+
+| Sorter on blocks, tuning files | |
+|---|---|
+| Core found after checking | 100% |
+| Core found with no person involved | 87.8% |
+| Borderline reaching a person | 88.8% |
+| A person reads | 8.6% of the words (14 blocks) |
+| Automatically out | 88.0% of the words |
+| Correct among automatically-in text | 90.3% |
+
 ---
 
 ## S. Where things run

@@ -114,7 +114,8 @@ def score(blocks: dict, gold: list[dict], chosen: dict[str, list[list[int]]], fi
         got_core += len(sel & core[f])
         returned += len(sel - neutral[f])
     total = sum(len(v) for v in core.values())
-    whole = sum(any({k for k, _ in words} <= set(sec) for sec in chosen.get(f, [])) for f, words in passages)
+    # whole: every block of the passage was returned (by one section or by neighbouring units)
+    whole = sum({k for k, _ in words} <= {k for sec in chosen.get(f, []) for k in sec} for f, words in passages)
     found = got_core / total if total else 0.0
     clean = got_core / returned if returned else 0.0
     f2 = 5 * found * clean / (4 * clean + found) if found + clean else 0.0
@@ -159,6 +160,55 @@ def rule_keep(bs: list[dict], sec: list[int]) -> bool:
 
 def run_rules(blocks: dict) -> dict:
     return {f: [s for s in rule_sections(bs) if rule_keep(bs, s)] for f, bs in blocks.items()}
+
+
+# ---------------------------------------------------------------- units: one block each (decisions.md, P8)
+
+def units(bs: list[dict]) -> list[list[int]]:
+    """Each block is a unit, with two exceptions. A heading is never a unit: it names a topic but states no term, so it
+    is shown as context to the block below instead. Form rows on one page that the clean-text step split at a gap (a
+    signature box: "University ... | Instructure, Inc." then "Name: | ...") are one form, so they stay together. A
+    pricing table is already one block."""
+    out: list[list[int]] = []
+    for i, b in enumerate(bs):
+        if b["kind"] == "heading":
+            continue
+        if (b["kind"] == "grid" and out and out[-1][-1] == i - 1 and bs[i - 1]["kind"] == "grid"
+                and bs[i - 1]["pages"] == b["pages"]):
+            out[-1].append(i)
+        else:
+            out.append([i])
+    return out
+
+
+def unit_contexts(bs: list[dict]) -> dict[int, str]:
+    """What a reader sees above each unit, keyed by its first block: the nearest heading above it, and the opening of
+    its clause when the unit is a later paragraph or item of that clause. For "(b) If the refund is due to a Provider
+    Error..." that opening is "Refunds and Chargebacks. If an Individual Requestor seeks a refund...:". Context helps a
+    judge understand a unit; it is never returned or scored."""
+    secs = rule_sections(bs)
+    in_sec = {k: s for s in secs for k in s}
+    out = {}
+    for u in units(bs):
+        first = u[0]
+        # a heading with a digit is a label, not a topic ("Year 1", "Effective Date: 15 April 2026")
+        head = next((bs[k]["text"] for k in range(first - 1, -1, -1)
+                     if bs[k]["kind"] == "heading" and not re.search(r"\d", bs[k]["text"])), "")
+        sec = [k for k in in_sec[first] if k < first and bs[k]["kind"] != "heading"]
+        # the clause's opening, and the nearest lead-in above the unit: a line ending in ":" or a short sub-title
+        # ("8.2 Allocation of Risk.")
+        near = next((k for k in reversed(sec) if bs[k]["text"].rstrip().endswith(":")),
+                    next((k for k in reversed(sec) if len(bs[k]["words"]) <= 12), None))
+        parts = [head] if head else []
+        for k in dict.fromkeys(x for x in (sec[0] if sec else None, near) if x is not None):
+            words = bs[k]["words"]
+            parts.append(" ".join(words if len(words) <= 40 else words[:20] + ["..."] + words[-20:]))
+        out[first] = " / ".join(parts)
+    return out
+
+
+def run_rules_units(blocks: dict) -> dict:
+    return {f: [u for u in units(bs) if rule_keep(bs, u)] for f, bs in blocks.items()}
 
 
 # ---------------------------------------------------------------- reporting
@@ -215,20 +265,54 @@ def tune_meaning(blocks: dict, gold: list[dict], emb: dict) -> tuple[float, floa
     return best[1], best[2]
 
 
+def unit_similarity(bs: list[dict], vecs, u: list[int], definition) -> float:
+    import numpy as np
+    weights = np.array([max(len(bs[k]["words"]), 1) for k in u], dtype=float)
+    v = (vecs[u] * weights[:, None]).sum(axis=0)
+    return float(v / (np.linalg.norm(v) or 1.0) @ definition)
+
+
+def run_meaning_units(blocks: dict, emb: dict, keep: float) -> dict:
+    return {f: [u for u in units(bs) if unit_similarity(bs, emb[f], u, emb["__definition__"]) >= keep]
+            for f, bs in blocks.items()}
+
+
+def load_unit_answers(blocks: dict) -> dict | None:
+    """Llama's yes or no for every unit, from the server (privacy-llm-units). None until it has run on these units."""
+    path = PRIV / "llm_unit_answers.json"
+    if not path.exists():
+        return None
+    a = json.loads(path.read_text())
+    if any(a["units"].get(f) != units(bs) for f, bs in blocks.items()):
+        print("  Llama's block answers are for other units (the clean text or the unit rules changed): rerun on the server")
+        return None
+    return a["yes"]
+
+
 def methods_available(blocks: dict, gold: list[dict]) -> dict:
-    out = {"rules": run_rules(blocks)}
+    out = {"rules, sections": run_rules(blocks)}
     emb = _load_npz()
     if emb:
         cut, keep = tune_meaning(blocks, gold, emb)
         (OUT / "privacy").mkdir(parents=True, exist_ok=True)
         (OUT / "privacy" / "meaning_thresholds.json").write_text(json.dumps({"cut": cut, "keep": keep}))
         print(f"  meaning: thresholds from the tuning files: cut={cut}, keep={keep}")
-        out["meaning"] = run_meaning(blocks, emb, cut, keep)
+        out["meaning, sections"] = run_meaning(blocks, emb, cut, keep)
     answers = PRIV / "llm_answers.json"
     if answers.exists():
         a = json.loads(answers.read_text())
-        out["llm"] = {f: [s for s, yes in zip(a["llm_sections"][f], a["llm_yes"][f]) if yes] for f in blocks}
-        out["rules+llm"] = {f: [s for s, yes in zip(rule_sections(blocks[f]), a["rules_yes"][f]) if yes] for f in blocks}
+        out["llm, sections"] = {f: [s for s, yes in zip(a["llm_sections"][f], a["llm_yes"][f]) if yes] for f in blocks}
+        out["rules+llm, sections"] = {f: [s for s, yes in zip(rule_sections(blocks[f]), a["rules_yes"][f]) if yes]
+                                      for f in blocks}
+    out["rules, blocks"] = run_rules_units(blocks)
+    if emb:
+        keep = max((x / 20 for x in range(2, 15)),
+                   key=lambda k: score(blocks, gold, run_meaning_units(blocks, emb, k), TUNE)["F2"])
+        print(f"  meaning on blocks: threshold from the tuning files: keep={keep}")
+        out["meaning, blocks"] = run_meaning_units(blocks, emb, keep)
+    yes = load_unit_answers(blocks)
+    if yes:
+        out["llm, blocks"] = {f: [u for u, y in zip(units(bs), yes[f]) if y] for f, bs in blocks.items()}
     return out
 
 
@@ -238,23 +322,20 @@ WIDE_NET = re.compile(r"\b(data|records?|confidential\w*|secur\w*|passwords?|pri
                       r"|retain\w*|retention|export\w*|student\w*|anonymi\w*|customer content|credentials?|disclos\w*)\b", re.I)
 
 
-def section_signals(blocks: dict, emb: dict, answers: dict) -> dict:
-    """For each of the rules' sections in the contracts: the three methods' opinions, and the wide word net.
-    The rules' sections are the unit because they returned the most passages whole."""
-    import numpy as np
+def section_signals(blocks: dict, emb: dict, yes: dict) -> dict:
+    """For each unit (one block; decisions.md, P8) in the contracts: the three methods' opinions, and the wide word
+    net. (Before P8 the unit was the rules' section.)"""
     out = {}
     for f, bs in blocks.items():
         scored = set(contract_blocks(blocks, f))
         rows = []
-        for sec, yes in zip(rule_sections(bs), answers["rules_yes"][f]):
-            if not set(sec) <= scored:
+        for u, y in zip(units(bs), yes[f]):
+            if not set(u) <= scored:
                 continue
-            weights = np.array([max(len(bs[k]["words"]), 1) for k in sec], dtype=float)
-            v = (emb[f][sec] * weights[:, None]).sum(axis=0)
-            v = v / (np.linalg.norm(v) or 1.0)
-            rows.append({"sec": sec, "rules": rule_keep(bs, sec), "llm": yes, "meaning": float(v @ emb["__definition__"]),
-                         "net": bool(WIDE_NET.search(" ".join(bs[k]["text"] for k in sec))),
-                         "words": sum(len(bs[k]["words"]) for k in sec)})
+            rows.append({"sec": u, "rules": rule_keep(bs, u), "llm": y,
+                         "meaning": unit_similarity(bs, emb[f], u, emb["__definition__"]),
+                         "net": bool(WIDE_NET.search(" ".join(bs[k]["text"] for k in u))),
+                         "words": sum(len(bs[k]["words"]) for k in u)})
         out[f] = rows
     return out
 
@@ -307,7 +388,7 @@ def _weigh(blocks, gold, signals, sorted_, files) -> dict:
     return res
 
 
-CORE_TARGET, BORDERLINE_TARGET = 1.0, 0.95
+CORE_TARGET, BORDERLINE_TARGET = 1.0, 0.85     # 0.95 for sections; 0.85 for blocks, my choice (decisions.md, P8)
 
 
 def sweep(blocks, gold, signals) -> list[tuple[dict, dict]]:
@@ -326,10 +407,11 @@ def tune_sorter(results: list[tuple[dict, dict]]) -> dict:
 
 
 def run_sorter(blocks: dict, gold: list[dict], files: list[str], rows: list[dict]) -> None:
-    emb, path = _load_npz(), PRIV / "llm_answers.json"
-    if not (emb and path.exists()):
+    emb, yes = _load_npz(), load_unit_answers(blocks)
+    if not (emb and yes):
+        print("  sorter: waiting for Llama's answers on single blocks (server: run_privacy.sh); earlier results kept")
         return
-    signals = section_signals(blocks, emb, json.loads(path.read_text()))
+    signals = section_signals(blocks, emb, yes)
     choice_path = OUT / "privacy" / "sorter_settings.json"
     if files == TUNE:
         results = sweep(blocks, gold, signals)

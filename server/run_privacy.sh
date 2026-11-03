@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Run the two server methods:  bash benchmark_segmentation_extraction/server/run_privacy.sh
-#   1. meaning vectors for every block (CPU)
-#   2. start Llama with vLLM, ask for section starts and yes-or-no answers, stop Llama (also on an error or Ctrl-C)
+#   1. meaning vectors for every block (CPU; skipped when they exist)
+#   2. start Llama with vLLM, ask yes or no for every single block, stop Llama (also on an error or Ctrl-C)
+#      (the earlier section questions: STEP=privacy-llm bash ...)
 # Rerunning is safe: Llama's answers are saved as they arrive and are not asked again.
 # Port taken?  PORT=8123 bash ...     Pick a GPU?  CUDA_VISIBLE_DEVICES=1 bash ...
 set -euo pipefail
@@ -14,7 +15,7 @@ exec > >(tee -a work/run_privacy.log) 2>&1
 
 echo "GPU memory now:"; nvidia-smi --query-gpu=index,name,memory.used,memory.total --format=csv || true
 echo; echo "== 1. Meaning vectors"
-.venv/bin/python run.py privacy-embed
+if [ -f work/privacy/embeddings.npz ]; then echo "already made"; else .venv/bin/python run.py privacy-embed; fi
 
 DTYPE_ARGS=""
 if [ "$("$VLLM_DIR/bin/python" -c 'import torch; print(torch.cuda.get_device_capability()[0])')" -lt 8 ]; then
@@ -36,7 +37,7 @@ for _ in $(seq 1 180); do                      # up to 15 minutes (longer only i
 done
 curl -sf "$LLM_BASE_URL/models" > /dev/null || { echo "vLLM did not answer within 15 minutes; see work/vllm.log"; exit 1; }
 echo "Llama is up."
-.venv/bin/python run.py privacy-llm
+.venv/bin/python run.py "${STEP:-privacy-llm-units}"
 stop_vllm
 trap - EXIT
 echo; echo "Done. Next:  bash benchmark_segmentation_extraction/server/pack_privacy.sh"

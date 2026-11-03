@@ -1,5 +1,8 @@
 method,split,found,clean,whole,F2,passages,sections_kept,words_returned
-rules,TUNE,1.0,0.49,1.0,0.828,15,40,1810
-meaning,TUNE,0.734,0.64,0.667,0.713,15,49,1017
-llm,TUNE,0.494,0.73,0.333,0.528,15,24,600
-rules+llm,TUNE,0.663,0.794,0.333,0.685,15,35,741
+"rules, sections",TUNE,1.0,0.49,1.0,0.828,15,40,1810
+"meaning, sections",TUNE,0.734,0.64,0.667,0.713,15,49,1017
+"llm, sections",TUNE,0.494,0.73,0.333,0.528,15,24,600
+"rules+llm, sections",TUNE,0.663,0.794,0.333,0.685,15,35,741
+"rules, blocks",TUNE,1.0,0.688,1.0,0.917,15,63,1290
+"meaning, blocks",TUNE,0.734,0.506,0.667,0.673,15,52,1287
+"llm, blocks",TUNE,0.734,1.0,0.533,0.775,15,26,651

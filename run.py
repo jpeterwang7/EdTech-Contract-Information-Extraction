@@ -12,6 +12,7 @@ Steps, in order:
   privacy-test the same on the test files; run once, after everything is frozen
   privacy-embed  (server) meaning vectors for every block                            (bench/privacy_server.py)
   privacy-llm    (server) Llama marks section starts and answers yes or no           (bench/privacy_server.py)
+  privacy-llm-units (server) Llama answers yes or no for every single block          (bench/privacy_server.py)
 """
 import sys
 
@@ -28,6 +29,7 @@ STEPS = {
     "privacy-test": privacy.main_test,
     "privacy-embed": lambda: __import__("bench.privacy_server", fromlist=["x"]).embed(),
     "privacy-llm": lambda: __import__("bench.privacy_server", fromlist=["x"]).llm(),
+    "privacy-llm-units": lambda: __import__("bench.privacy_server", fromlist=["x"]).llm_units(),
 }
 
 if __name__ == "__main__":
