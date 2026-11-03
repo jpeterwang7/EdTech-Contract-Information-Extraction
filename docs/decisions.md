@@ -14,7 +14,7 @@ these decisions are in [what_failed.md](what_failed.md).
 | Privacy passages | Three methods vote; a person checks where they disagree | All core text found; a person reads 11.8% of the words (tuning files) |
 
 **Still open:**
-- A person needs to check the privacy answer key (P2) and the order-form answer key (F1).
+- A person needs to check the privacy answer key (P2).
 - The test files have not been scored (P5).
 - Her notes also list pricing and liability as example topics, so narrowing to one category should be confirmed with her (P1).
 
@@ -112,8 +112,8 @@ arithmetic checks pass.
 ## F. Order-form fields
 
 **F1. Read eight fields from 14 order forms:** order number, order date, customer, billing frequency, payment terms, grand
-total, signer's name and signing date. The answer key was typed from the page pictures and **still needs a person to
-check it**. It holds 99 values on the page and 13 that aren't (11 blacked out, 2 never there). Reporting one of those 13
+total, signer's name and signing date. The answer key was typed from the page pictures. **I checked all 112
+values against the pictures on Nov 2 and changed none** (page: `python -m bench.review forms`). It holds 99 values on the page and 13 that aren't (11 blacked out, 2 never there). Reporting one of those 13
 counts as inventing a value. It includes traps: earlier order numbers mentioned in notes, and a crossed-out signer.
 
 **F2. Compare two methods reading the same text.**

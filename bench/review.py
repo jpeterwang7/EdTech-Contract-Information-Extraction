@@ -228,6 +228,80 @@ def mentor_sheet() -> str:
     return str(path)
 
 
+def _crop(file_id: str, page: int, y0: float, y1: float) -> str:
+    img = Image.open(page_png(file_id, page)).convert("RGB")
+    W, H = img.size
+    c = img.crop((0, int(max(0.0, y0) * H), W, int(min(1.0, y1) * H)))
+    c.thumbnail((1100, 1100))
+    buf = io.BytesIO()
+    c.save(buf, "JPEG", quality=72)
+    return "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()
+
+
+def order_forms() -> str:
+    """The order-form answer key next to pictures of where each value is printed: the header (order number, date,
+    customer, billing frequency, payment terms), the grand total, and the customer's signature block."""
+    from .reading import TABLE_READING, best_reading
+    with open(DATA / "order_forms.csv") as fh:
+        forms = list(csv.DictReader(fh))
+    with open(DATA / "gold" / "order_form_fields.csv") as fh:
+        gold = list(csv.DictReader(fh))
+    names = {"order_number": "Order number", "order_date": "Order date", "customer": "Customer",
+             "billing_frequency": "Billing frequency", "payment_terms": "Payment terms", "grand_total": "Grand total",
+             "customer_signer": "Customer's signer", "customer_signed_date": "Customer's signing date"}
+
+    def find(fid, pages, pattern, engine=None):
+        for p in pages:
+            lines = best_reading(fid, p, engine) if engine else best_reading(fid, p)
+            ys = [l["box"][1] for l in lines if re.search(pattern, l["text"], re.I)]
+            if ys:
+                return p, min(ys)
+        return None
+
+    out = ["<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width'>"
+           "<title>Order-form answer key</title><style>"
+           "body{font-family:-apple-system,Segoe UI,Arial,sans-serif;margin:0 auto;max-width:1150px;padding:16px;font-size:14px}"
+           "h2{margin-top:36px;border-bottom:2px solid #333}table{border-collapse:collapse;margin:8px 0}"
+           "td,th{border:1px solid #bbb;padding:4px 10px;text-align:left;vertical-align:top}th{background:#eee}"
+           ".none{color:#888;font-style:italic}img{width:100%;border:1px solid #999;margin:4px 0 12px}.cap{font-size:12px;color:#555}"
+           "header{position:sticky;top:0;background:#fff;padding:8px 0;border-bottom:1px solid #ccc;z-index:2}</style></head><body>"
+           "<header><b>Order-form answer key: 14 forms, 8 values each.</b> Check each value against the pictures below it. "
+           "Reply with any that are wrong, for example \"OF05, Order date should be 2020-03-21\". Dates are written "
+           "year-month-day; totals without commas.</header>"]
+    for fm in forms:
+        fid, p1, ps, pl = fm["file_id"], int(fm["first_page"]), int(fm["signature_page"]), int(fm["last_page"])
+        rows = [g for g in gold if g["form_id"] == fm["form_id"]]
+        out.append(f"<h2>{fm['form_id']} ({fid}, pages {p1}-{pl})</h2><table><tr><th>Value</th><th>Answer key</th><th>Note</th></tr>")
+        for g in rows:
+            val = html.escape(g["gold_value"]) if g["gold_value"] else "<span class='none'>not on the page</span>"
+            note = html.escape(re.sub(r"^drafted from the page pictures\.\s*", "", g["notes"]))
+            out.append(f"<tr><td>{names[g['field']]}</td><td><b>{val}</b></td><td class='cap'>{note}</td></tr>")
+        out.append("</table>")
+        out.append(f"<div class='cap'>Header, page {p1}</div><img src='{_crop(fid, p1, 0.0, 0.42)}'>")
+        billing = find(fid, [p1], r"billing frequency:")
+        if billing and billing[1] > 0.38:                     # newer forms print it below the header picture
+            out.append(f"<div class='cap'>Billing frequency and payment terms, page {p1}</div>"
+                       f"<img src='{_crop(fid, p1, billing[1] - 0.03, billing[1] + 0.09)}'>")
+        terms = find(fid, range(p1, pl + 1), r"payment terms:\s*customer agrees")
+        if terms:
+            out.append(f"<div class='cap'>Payment terms paragraph, page {terms[0]}</div>"
+                       f"<img src='{_crop(fid, terms[0], terms[1] - 0.01, terms[1] + 0.09)}'>")
+        total = find(fid, range(p1, pl + 1), r"grand total", TABLE_READING) or find(fid, range(p1, pl + 1), r"billing summary|segment", TABLE_READING)
+        if total:
+            out.append(f"<div class='cap'>Grand total, page {total[0]}</div>"
+                       f"<img src='{_crop(fid, total[0], total[1] - 0.02, total[1] + (0.13 if fid in ('F13', 'F14') else 0.04))}'>")
+        # a line that starts with "Signature" (not "...the date of the last signature..." in a paragraph); if the
+        # block is blacked out, the "By executing" line above it, to show the blacked-out area
+        sig = find(fid, [ps], r"^\s*signature\s*:") or find(fid, [ps], r"by executing")
+        if sig:
+            out.append(f"<div class='cap'>Signature block, page {ps}</div><img src='{_crop(fid, ps, sig[1] - 0.05, sig[1] + 0.24)}'>")
+    path = WORK / "review" / "order_forms.html"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(out) + "</body></html>")
+    return str(path)
+
+
 if __name__ == "__main__":
     for fid in sys.argv[1:] or ["F02"]:
-        print(mentor_sheet() if fid == "sheet" else privacy_key() if fid == "privacy" else build(fid))
+        print(order_forms() if fid == "forms" else mentor_sheet() if fid == "sheet"
+              else privacy_key() if fid == "privacy" else build(fid))

@@ -22,7 +22,7 @@ tables and forms.
 | `read` | Turn every page into text: the PDF's own text on digital pages; OCR on the 47 scanned pages | done (final run on the lab server, Oct 29) |
 | `ocr-eval` | Score each OCR reading against two answer keys | done; answer key 1 needs a human check |
 | `tables` | Read the pricing tables two ways; check them with arithmetic | done |
-| `forms` | Read 8 fields from each of the 14 order forms two ways (text rules, layout) and score them | done; its answer key needs a human check |
+| `forms` | Read 8 fields from each of the 14 order forms two ways (text rules, layout) and score them | done; answer key checked by me (0 of 112 changed) |
 | `text` | Clean, whole text: page numbers and stamps removed, paragraphs joined across lines and pages, checked tables in place | done; F02 and F13 read by a person beside the scans |
 | `privacy` | Find data-governance-and-privacy passages with rules, meaning and an LLM; scored against a hand-made key | all four methods scored on the tuning files; test files not yet scored; key needs a human check |
 | extraction | Privacy facts (goal 2) | later |
@@ -112,8 +112,8 @@ Read a few files of clean text next to their PDFs, for example `outputs/text/F02
 Note every missing or broken sentence, leftover page number or scrap, and wrong table row. The line answer key
 (`data/gold/ocr_lines.csv`) measures letter accuracy only and does not need more checking (decisions.md, R4).
 
-Check `data/gold/order_form_fields.csv`, comparing it with the order-form pages. Then run
-`.venv/bin/python run.py forms` again.
+The order-form answer key (`data/gold/order_form_fields.csv`) was checked by me on Nov 2 against the page pictures
+(`python -m bench.review forms`); no values changed.
 
 ## Folder map
 
