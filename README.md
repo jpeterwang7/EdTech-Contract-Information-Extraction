@@ -24,7 +24,7 @@ tables and forms.
 | `tables` | Read the pricing tables two ways; check them with arithmetic | done |
 | `forms` | Read 8 fields from each of the 14 order forms two ways (text rules, layout) and score them | done; its answer key needs a human check |
 | `text` | Clean, whole text: page numbers and stamps removed, paragraphs joined across lines and pages, checked tables in place | done; F02 and F13 read by a person beside the scans |
-| sections | Split into sections and label topics (goal 1) | later |
+| `privacy` | Find data-governance-and-privacy passages with rules, meaning and an LLM; scored against a hand-made key | all four methods scored on the tuning files; test files not yet scored; key needs a human check |
 | extraction | Privacy facts (goal 2) | later |
 
 Headline results so far:
@@ -42,6 +42,10 @@ Headline results so far:
   - Reading by position on the page (layout) gets 89 of 99 values right.
   - Searching the running text (text rules) gets 84.
   - Layout is far better on signer names and dates. Handwriting defeats both.
+- **Finding privacy passages** (tuning files, contract text; test files not yet scored):
+  - Rules alone: found 100%, clean 49%, whole 100%. Meaning: 73%, 64%, 67%. Rules + LLM: 66%, 79%, 33%. LLM: 49%, 73%, 33%.
+  - Three-way sorter (rules, meaning and LLM vote): all core found after checking, 98% of borderline reaches a person,
+    and a person reads 11.8% of the words (decisions.md, P7).
 - **Clean text** (`outputs/text/F01.md` … `F14.md`, readable next to the PDFs):
   - Page numbers and stamps in the text: 88 → 0.
   - Sentences cut off mid-way: 2,119 → 10.

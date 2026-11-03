@@ -176,6 +176,39 @@ and the paragraph reading garbled it on F13: "sD 6720050" for USD 67,260.50. Our
 could not see this; I found it by reading the page. It now has its own reading and arithmetic checks
 (decisions.md, T7). Lesson: every table with numbers needs a check, not only the ones the first rule recognised.
 
+## Finding the privacy passages
+
+**33. A plan bigger than the job.** The first plan had 12 topics and scored document types. I stopped it: the goal
+is one category of text (decisions.md, P1). Nothing had been built.
+
+**34. "Privacy is mostly in three files" was wrong.** Said early on from a quick look. A count on the clean text finds
+it in the Standard Terms too (F01–F03), and the full reading confirmed it.
+
+**35. The first rules kept what merely mentions Customer Content.** Infringement and indemnity clauses were returned,
+as were "Student Information Systems" and DocuSign's "Hashed/Encrypted" log lines. Clean was 51%. Narrower terms raised
+it to 69.5% with nothing lost (tuning files).
+
+**36. A score the brochure could swamp.** Scored in words, the brochure held most of the target text on the tuning
+files. So the meaning method, tuned on that score, kept only brochure sections: found 62.5% overall, and 0% of the
+contract text. Contract text now has its own view, and thresholds are tuned on it (decisions.md, P4, P6).
+
+**37. Llama misses privacy sentences inside other clauses.** Asked yes or no per section, it said no to "Compliance"
+and "Termination", which each hold one key sentence. Found: 42% alone, 53% on the rules' sections, against 72% for the
+rules (tuning files, in-or-out key). It also said yes to some titles and signature headers. Only one prompt was tried.
+
+**38. Forcing everything into in or out.** Tried briefly on Nov 2. With 29 borderline passages given a yes or no, the
+rules' found score moved from 100% to 72%, so the score depends heavily on where the line falls. I then chose a
+better design: core must be found, and a person checks borderline text (decisions.md, P7).
+
+**39. A review sheet that hid what it was for.** The first spreadsheet's "Marked Out" tab listed only 12 rows, because
+of a typo in the search pattern, so a reviewer could not have spotted text wrongly left out. It now lists 269.
+
+**40. The same typo twice.** The sorter's word net had the doubled-backslash pattern that broke the review sheet, so
+it matched nothing and the first results looked too good. Checking the pattern on sample text is now part of the build.
+
+**41. A balance that ignored half the goal.** The first tuner only protected core text, and picked a setting sending
+just 26% of borderline text to a person. It now has a limit for borderline too (P7).
+
 ## The tests themselves
 
 **10. The digital-page answer key had invisible text in it.**

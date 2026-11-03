@@ -1,0 +1,405 @@
+file_id,lane,first_block,last_block,words,rules,llm,meaning,net,text
+F01,in,24,24,55,True,False,0.467,True,8. Compliance. Each party will comply with all applicable laws and regulations (including all applicable export control laws and restrictions) with respect to its activities under this Agreement. Instructure will
+F01,in,25,25,96,True,True,0.548,True,"9. Aggregated Data. As between the parties, Instructure owns the aggregated and statistical data derived from the operation of the Service, including, without limitation, the number of records in the"
+F01,in,29,29,64,True,True,0.41,True,"13. Customer Owned Content. As between Instructure and Customer, any and all information, data, results, plans, sketches, text, files, links, images, photos, videos, audio files, notes or other materials uploaded"
+F01,check,2,2,2,False,True,0.428,False,Customer Information
+F01,check,13,13,8,False,True,0.13,False,"University of Nebraska Medical Center | Instructure, Inc."
+F01,check,19,19,41,False,False,0.491,True,"3. Customer Responsibilities. Customer: (a) is solely responsible for Customer Content and all activities arising from its Users, and (b) must keep its passwords secure and confidential, and notify Instructure"
+F01,check,27,27,220,False,False,0.49,True,"11. Confidentiality. Each party acknowledges that the other party may disciose its Confidential Information to the other in the performance of this Agreement. Accordingly, each party shall: (a) keep the"
+F01,check,30,30,64,False,True,0.358,False,14. Feedback. instructure may send surveys to Users (no more than once each year) to solicit feedback regarding performance of the Service and suggestions for improvements (such feedback will be
+F01,check,32,32,125,True,False,0.356,True,16. Termination. Either party may terminate this Agreement for the material breach of any provision by the other party if such material breach remains uncured for thirty (30) days after
+F01,check,33,33,46,True,False,0.293,True,17. Suspension of Service. Instructure may immediately suspend the Service and remove applicable Customer Content if Customer and/or its Users have violated a law or the terms of this Agreement.
+F01,out,0,0,14,False,False,0.162,False,INSTRU CTU RE | Services Order Form Order #: | Q-19544-1 Date: | 7/25/2016
+F01,out,1,1,13,False,False,0.0,False,"6330 South 3000 East, Suite 700. Saft Lake City, UT 84121. United States"
+F01,out,3,3,42,False,False,0.043,False,Customer | University of Nebraska Medical Center | Contact Address | 987815 Nebraska Medical Ctr | Phone City | Omaha | Email State/Province | Nebraska | Billing Contact Zip/Postal Code
+F01,out,4,4,2,False,False,0.045,False,Non Recuring
+F01,out,5,5,45,False,False,0.118,False,"Description | Metric | Category | Start | End | Qty | Price | Amount Canvas Pilot | User | Pilot | 8/1/2016 | 1/31/2017 | 400 | USD 7,500.00"
+F01,out,6,6,136,False,False,0.225,False,"Payment Terms: Customer agrees to pay to Instructure the applicable fees set forth on this order form. For any Year 1 recurring costs, training and implementation fees, Customer must pay"
+F01,out,7,7,26,False,False,0.133,False,"Duration: This order begins on the initial date listed above under Term, and continues until the last date listed above, unless sooner terminated under the Agreement."
+F01,out,8,10,73,False,False,0.347,False,"Miscellaneous: In connection with certain services, Instructure shall provide Customer access to its application-programming interface (""API"") for no additional fee. Usage and access to the API will be subject to"
+F01,out,11,12,43,False,False,0.267,False,Notes
+F01,out,14,14,3,False,False,0.042,False,Date: | 7/21/2016
+F01,out,15,16,73,False,False,0.317,False,Instructure Standard Terms and Conditions
+F01,out,17,17,75,False,False,0.42,False,"1. Services. Subject to the terms of this Agreement, Instructure will provide the Service specified on the Order Form. ""Service"" means the proprietary software as a service provided by Instructure"
+F01,out,18,18,212,False,False,0.406,False,"2. Restrictions. Customer shall not (and shall not permit Users to): (a) sell, rent, lease, lend, sublicense, distribute, or otherwise transfer or provide access to the Service or the API"
+F01,out,20,20,44,False,False,0.367,False,4. Instructure Responsibilities. Instructure shall provide: (a) all updates and upgrades to the Service to Customer that Instructure provides to its customers generally for no additional charge; and {b) Support
+F01,out,21,21,86,False,False,0.28,False,"5. Fees. As consideration for the subscription to the Service, Customer shall pay all fees (""Fees"") set forth in the Order Form. All Fees will be due from Customer within"
+F01,out,22,22,227,False,False,0.259,False,"6. Service Level Agreement. Instructure will use commercially reasonable efforts fo make the Service available with an Annual Uptime Percentage of at least 99.9% (""Service Commitment""). In the event Instructure"
+F01,out,23,23,135,False,False,0.26,False,"7. Representations and Warranties. Insiructure warrants that: (a) the functionality or features of the Service and Support may change but will not materially degrade during the Term, and (b) the"
+F01,out,26,26,188,False,False,0.373,True,"10. Limitation of Liability. EXCEPT AS EXPRESSLY PROVIDED IN SECTIONS 6 & 7, INSTRUCTURE DISCLAIMS ALL WARRANTIES, WHETHER WRITTEN, ORAL, EXPRESS, IMPLIED, OR STATUTORY, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES"
+F01,out,28,28,146,False,False,0.41,False,"12. Proprietary Rights. As between Customer and Instructure, the Instructure Intellectual Property is, and shall at all times remain, the sole and exclusive property of Instructure. Customer shall have no"
+F01,out,31,31,44,False,False,0.199,False,"15. Term. The term (""Term"") of this Agreement shall begin on date identified as the Effective Date on the Order Form and shall continue for the time period set forth"
+F01,out,34,34,310,False,False,0.422,True,"18. Infringement. If a third party claims the Service infringes that party's patent, copyright or other proprietary right, Instructure will defend Customer against that claim at Instructure's expense and pay"
+F01,out,35,35,523,False,False,0.355,True,"19. General. Any notice by a party under this Agreement shall be in writing and either personally delivered, delivered by facsimile or sent via reputable overnight courier {such as Federal"
+F02,in,32,32,4,True,True,0.247,True,Canvas User Data Storage
+F02,in,50,50,55,True,False,0.467,True,8. Compliance. Each party will comply with all applicable laws and regulations (including all applicable export control laws and restrictions) with respect to its activities under this Agreement. Instructure will
+F02,in,51,51,96,True,True,0.558,True,"9. Aggregated Data. As between the parties, Instructure owns the aggregated and statistical data derived from the operation of the Service, including, without limitation, the number of records in the"
+F02,in,55,55,64,True,True,0.41,True,"13. Customer Owned Content. As between Instructure and Customer, any and all information, data, results, plans, sketches, text, files, links, images, photos, videos, audio files, notes or other materials uploaded"
+F02,check,3,3,2,False,True,0.428,False,Customer Information
+F02,check,10,10,1,False,True,0.07,False,canvas
+F02,check,11,11,1,False,True,0.07,False,Canvas
+F02,check,30,31,29,False,True,0.367,True,Canvas User
+F02,check,45,45,41,False,False,0.491,True,"3. Customer Responsibilities. Customer: (a) is solely responsible for Customer Content and all activities arising from its Users, and (b) must keep its passwords secure and confidential, and notify Instructure"
+F02,check,53,53,220,False,False,0.5,True,"11. Confidentiality. Each party acknowledges that the other party may disclose its Confidential Information to the other in the performance of this Agreement. Accordingly, each party shall: (a) keep the"
+F02,check,56,56,64,False,True,0.355,False,14. Feedback. Instructure may send surveys to Users (no more than once each year) to solicit feedback regarding performance of the Service and suggestions for improvements (such feedback will be
+F02,check,58,58,125,True,False,0.356,True,16. Termination. Either party may terminate this Agreement for the material breach of any provision by the other party if such material breach remains uncured for thirty (30) days after
+F02,check,59,59,46,True,False,0.293,True,17. Suspension of Service. Instructure may immediately suspend the Service and remove applicable Customer Content if Customer and/or its Users have violated a law or the terms of this Agreement.
+F02,out,0,0,3,False,False,0.138,False,Services Order Form
+F02,out,1,1,7,False,False,0.044,False,Order #: | Q-31146-2 Date: | 3/29/2017
+F02,out,2,2,13,False,False,0.024,False,"6330 South 3000 East, Suite 700, Salt Lake City, UT 84121, United States"
+F02,out,4,4,38,False,False,0.064,False,Customer: | University of Nebraska Medical Center Contact: | Dan Moser Phone: | (402) 559-5684 Email: | dmoser@unmc.edu Address: | 987815 Nebraska Medical Ctr City: | Omaha State/Province: | Nebraska
+F02,out,5,5,1,False,False,0.016,False,Recurring
+F02,out,6,6,213,False,False,0.244,False,Description | Metric | Category | Start | End | Qty | Price | Amount 24x7 Support | 20% of Subscription (Min $2500) | Support | 7/1/2017 | 6/30/2018 |
+F02,out,7,7,84,False,False,0.26,False,"Description | Metric | Category | Start | End | Qty | Price | Amount Tier 1 Support | User | Support | 7/1/2019 | 6/30/2020 | 1,000 | USD"
+F02,out,8,8,1,False,False,0.016,False,Non-Recurring
+F02,out,9,9,82,False,False,0.238,False,"Description | Metric | Category | Start | End | Qty | Price | Amount Standard Implementation | Per Implementation | Implementation | | | 1 | USD 8,000.00 |"
+F02,out,12,20,154,False,False,0.441,False,Deliverables
+F02,out,21,29,176,False,False,0.365,False,Deliverables
+F02,out,33,34,29,False,False,0.243,False,Description
+F02,out,35,35,90,False,False,0.262,False,Duration: Instructure will commence the provision of support and cloud subscription services on the date that is the later of: (i) ninety days prior to the Start Date; and (ii)
+F02,out,36,38,73,False,False,0.343,False,"Miscellaneous: In connection with certain services, Instructure shall provide Customer access to its application-programming interface (""API"") for no additional fee. Usage and access to the API will be subject to"
+F02,out,39,40,176,False,False,0.264,False,"Payment Terms: Customer agrees to pay to Instructure the applicable fees set forth on this order form. For any Year 1 recurring costs, training and implementation fees, Customer must pay"
+F02,out,41,42,73,False,False,0.323,False,Instructure Standard Terms and Conditions
+F02,out,43,43,75,False,False,0.42,False,"1. Services. Subject to the terms of this Agreement, Instructure will provide the Service specified on the Order Form. ""Service"" means the proprietary software as a service provided by Instructure"
+F02,out,44,44,212,False,False,0.41,False,"2. Restrictions. Customer shall not (and shall not permit Users to): (a) sell, rent, lease, lend, sublicense, distribute, or otherwise transfer or provide access to the Service or the API"
+F02,out,46,46,47,False,False,0.371,False,4. Instructure Responsibilities. Instructure shall provide: (a) all updates and upgrades to the Service to Customer that Instructure provides to its customers generally for no additional charge; and (b) Support
+F02,out,47,47,86,False,False,0.28,False,"5. Fees. As consideration for the subscription to the Service, Customer shall pay all fees (""Fees"") set forth in the Order Form. All Fees will be due from Customer within"
+F02,out,48,48,227,False,False,0.255,False,"6. Service Level Agreement. Instructure will use commercially reasonable efforts to make the Service available with an Annual Uptime Percentage of at least 99.9% (""Service Commitment""). In the event Instructure"
+F02,out,49,49,135,False,False,0.273,False,"7. Representations and Warranties. Instructure warrants that: (a) the functionality or features of the Service and Support may change but will not materially degrade during the Term, and (b) the"
+F02,out,52,52,188,False,False,0.373,True,"10. Limitation of Liability. EXCEPT AS EXPRESSLY PROVIDED IN SECTIONS 6 & 7, INSTRUCTURE DISCLAIMS ALL WARRANTIES, WHETHER WRITTEN, ORAL, EXPRESS, IMPLIED, OR STATUTORY, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES"
+F02,out,54,54,146,False,False,0.41,False,"12. Proprietary Rights. As between Customer and Instructure, the Instructure Intellectual Property is, and shall at all times remain, the sole and exclusive property of Instructure. Customer shall have no"
+F02,out,57,57,44,False,False,0.199,False,"15. Term. The term (""Term"") of this Agreement shall begin on date identified as the Effective Date on the Order Form and shall continue for the time period set forth"
+F02,out,60,60,310,False,False,0.39,True,"18. Infringement. If a third party claims the Service infringes that party's patent, copyright or other proprietary right, Instructure will defend Customer against that claim at Instructure's expense and pay"
+F02,out,61,61,523,False,False,0.355,True,"19. General. Any notice by a party under this Agreement shall be in writing and either personally delivered, delivered by facsimile or sent via reputable overnight courier (such as Federal"
+F03,in,48,48,55,True,False,0.462,True,8. Compliance. Each party will comply with all applicable laws and regulations (including all applicable export control laws and restrictions) with respect to its activities under this Agreement. Instructure will
+F03,in,49,49,268,True,True,0.659,True,"9. Data. As between Instructure and Customer; any and all information, data, results, plans, sketches, text, files, links, images, photos, videos, audio files, notes or other materials uploaded by a"
+F03,check,10,10,2,False,True,0.079,False,Year 4
+F03,check,35,35,15,False,True,0.171,False,"Board of Trustees of the Nebraska State Colleges dba Wayne State College | Instructure, Inc."
+F03,check,40,40,282,False,False,0.489,True,"2. Customer Restrictions. Customer shall not (and shall not permit Customer employee Users to): (a) sell, rent, lease, lend, sublicense, distribute, or otherwise transfer or provide access to the Service"
+F03,check,41,41,174,False,False,0.534,True,"3. Customer Responsibilities. Customer is responsible for Customer Content and use of the Service by Users. Prior to allowing any User access to the Service, Customer will ensure that such"
+F03,check,51,51,278,False,False,0.549,True,"11. Confidentiality. Each party acknowledges that the other party may disclose its Confidential Information to the other in the performance of this Agreement. Accordingly, each party shall: (a) keep the"
+F03,check,53,53,177,True,False,0.306,True,"13. Term and Termination. The term of this Agreement commences June 1, 2019, ends as specified in the in the Order Form (""Term"") and shall continue for its full duration"
+F03,check,54,54,126,True,False,0.39,True,14. Monitoring; Suspension of Service. Instructure may monitor the Service for a violation of this Agreement or any applicable law or third-party rights and may suspend any offending User(s) access
+F03,check,66,66,1,False,True,0.211,False,Instructure
+F03,check,69,69,15,False,True,0.311,False,Customer (Board of Trustees of the Nebraska State Colleges doing business as Wayne State College
+F03,out,0,0,17,False,False,0.146,False,INSTRUCTURE | Services Order Form Order #: | Q-76677-6 Date: | 5/29/2019 Offer Valid Through: | 6/30/2019
+F03,out,1,2,28,False,False,0.157,False,"6330 South 3000 East, Suite 700, Salt Lake City UT 84121. United States"
+F03,out,3,3,53,False,False,0.14,False,Address: | 1111 Main | Order Information City: | Wayne | Billing Frequency: | Annual Upfront State/Province: | Nebraska | Payment Terms: | Net 45 Zip/Postal Code: | 68787 Country:
+F03,out,4,4,2,False,False,0.047,False,Year 1
+F03,out,5,5,121,False,False,0.262,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas Cloud Subscription | 7/1/2019 | 6/30/2020 | FTE | 3,292 | USD 21.90 | USD 72,094.80"
+F03,out,6,6,2,False,False,0.042,False,Year 2
+F03,out,7,7,55,False,False,0.192,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas Cloud Subscription | 7/1/2020 | 6/30/2021 | FTE | 3,292 | USD 23.00 | USD 75,716.00"
+F03,out,8,8,2,False,False,0.078,False,Year 3
+F03,out,9,9,55,False,False,0.201,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas Cloud Subscription | 7/1/2021 | 6/30/2022 | FTE | 3,292 | USD 24.15 | USD 79,501.80"
+F03,out,11,11,55,False,False,0.212,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas Cloud Subscription | 7/1/2022 | 6/30/2023 | FTE | 3,292 | USD 25.36 | USD 83,485.12"
+F03,out,12,12,2,False,False,0.07,False,Year 5
+F03,out,13,13,59,False,False,0.21,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas Cloud Subscription | 7/1/2023 | 6/30/2024 | FTE | 3,292 | USD 26.63 | USD 87,665.96"
+F03,out,14,14,57,False,False,0.246,True,Deliverable | Description | Expiration Canvas Cloud Subscription | FTE means the number of full-time equivalent students calculated in accordance with the definition published by the Integrated Postsecondary Education Data
+F03,out,15,15,24,False,False,0.19,False,for 1 Year - 20 Users until the earlier of 12 months after subscription state date or the last date of the contracted subscription.
+F03,out,16,16,18,False,False,0.163,False,"Deliverable | Description | Expiration Canvas Implementation | As needed, your implementation will include the following: | N/A"
+F03,out,17,20,200,False,False,0.405,True,Expertise and best practices on any SIS import and automation work with Canvas. This includes access to API documentation and consulting with client resources on the client initiated strategy.
+F03,out,21,21,40,False,False,0.349,True,Data Provisioning for Canvas | Your Implementation Consultant (IC) will provide expertise and best practices regarding data provisioning for | 12 Months Instance | your Canvas instance. This includes consultation
+F03,out,22,23,39,False,False,0.394,True,"integrations, including grade pass back. Access to relevant Community guides and API documentation will be provided."
+F03,out,24,24,109,False,False,0.248,False,Instructional Design: Ready | Select One Pre-Built Template from our suite of designs. Templates are built with a variety of audience needs in mind. | 12 Months Made Template |
+F03,out,25,26,69,False,False,0.135,False,"supported for bulk import into Canvas: Angel, Blackboard 6/7/8/9, Blackboard Vista/CE, WebCT 6+ Course, Common Cartridge 1.0/1.1/1.2/1.3 Package, D2L., Moodle 1.9/2.x .zip file, eCollege, native Canvas format."
+F03,out,27,27,29,False,False,0.178,True,Subscription | Description Canvas | FTE | FTE means the number of full-time equivalent students calculated in accordance with the definition published by the Integrated Postsecondary Education Data System.
+F03,out,28,28,57,False,False,0.202,False,Duration: Instructure may begin providing the services on the later of: (i) ninety (90) days prior to the earliest start date; or (ii) the date of the last signature on
+F03,out,29,30,46,False,False,0.186,False,Miscellaneous: Instructure's support terms are available as follows: Canvas & Catalog: hitps://www.canvaslms.com/policies/support-terms Bridge: hitps://iwww.getbridge.com/support-terms Portfolium: hitps:/portfolium.com/support-terms MasteryConnect: https://www.masteryconnecl.com/support/
+F03,out,31,31,33,False,False,0.295,False,PURCHASE ORDER INFORMATION | TAX INFORMATION Is a Purchase Order required for the purchase or payment of the products Check here if your company is tax exempt: on this order
+F03,out,32,34,40,False,False,0.232,False,Please email any/all exemption certifications to ar@instructure.com.
+F03,out,36,36,19,False,False,0.198,False,"Name: | Angelatredrideson Title: | UPAF | Title: | Manager, Deal Desk Date: | 5/29/2019 | Date: | 05.28.19"
+F03,out,37,38,89,False,False,0.366,False,Instructure Standard Terms and Conditions
+F03,out,39,39,81,False,False,0.426,False,"1. Services. Subject to the terms of this Agreement, Instructure will provide the Service specified in the Order Form. ""Service(s)"" means the proprietary software as a service offering(s) provided by"
+F03,out,42,42,18,False,False,0.392,False,"4, | Instructure Responsibilities. Instructure shall: (a) deploy all updates and upgrades to the Service to Customer that"
+F03,out,43,43,25,False,False,0.265,False,"Instructure provides to its customers generally for no additional charge; and (b) provide Support (""Support"") pursuant to the then-current standard terms of Instructure's customer support."
+F03,out,44,44,99,False,False,0.179,False,"5. Fees. As consideration for the subscription to the Service, Customer shall pay all fees (""Fees"") set forth in the Order Form. All Fees will be due from Customer on"
+F03,out,45,46,226,False,False,0.283,False,6. Service Standard. Instructure will use commercially reasonable efforts to make the Service available with an
+F03,out,47,47,188,False,False,0.295,False,7. Representations and Warranties. Instructure warrants that: (a) the functionality or features of the Service and Support may change but will not materially degrade during the Term; and (b) the
+F03,out,50,50,149,False,False,0.369,True,"10. Limitation of Liability. EACH PARTY AND ITS SUPPLIERS SHALL NOT BE LIABLE TO THE OTHER PARTY FOR ANY INDIRECT, SPECIAL, EXEMPLARY, PUNITIVE, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF"
+F03,out,52,52,146,False,False,0.433,False,"12. Proprietary Rights. As between Customer and Instructure, the Instructure Intellectual Property is, and shall at all times remain, the sole and exclusive property of Instructure. Customer shall have no"
+F03,out,55,55,391,False,False,0.349,True,"15. Indemnification. Instructure will indemnify and defend Customer from and against any and all losses, liabilities, and claims (including reasonable attorneys' fees) arising out of any claim by a third-party"
+F03,out,56,56,770,False,False,0.366,True,"16. General. Each party acknowledges that any breach, threatened or actual, of this Agreement, including, without limitation, with respect to unauthorized use of proprietary assets, will cause irreparable injury to"
+F03,out,57,57,114,False,False,0.39,False,"17. Insurance. Instructure is required to carry general and cyber liability insurance in the amount of one million dollars ($1,000,000) per occurrence. The insurance policy shall be primary and non-contributory"
+F03,out,58,58,125,False,False,0.317,False,"18. Non-Discrimination. Instructure agrees to comply fully with Title VI of the Civil Rights Act of 1964, as amended, the Nebraska Fair Employment Practice Act, Neb. Rev. Stat. §§48-1101 to"
+F03,out,59,59,50,False,False,0.278,False,"19. ADA & Drug-Free Workplace Requirements. All provisions of this Agreement are subject to the Americans with Disabilities Act (ADA). Further, Instructure certifies that Instructure operates a drug-free workplace and,"
+F03,out,60,60,178,False,False,0.275,False,"20. Unavailability of Funding. Due to possible future reductions in state and/or federal appropriations, Customer cannot guarantee the continued availability of funding for this Agreement beyond the current fiscal year."
+F03,out,61,61,54,False,False,0.286,False,"21. Technology Access. To the extent applicable, and only as it pertains to Canvas, the Service shall comply with the Nebraska Technology Access Standards adopted pursuant to Neb. Rev. Stat."
+F03,out,62,63,209,False,False,0.301,True,"22. Independent Contractor. Instructure shall be an independent contractor and not a Customer employee for all purposes, including, but not limited to, the application of the Fair Labor Standards Act,"
+F03,out,64,64,29,False,False,0.28,False,"23. Designated Customer Representative. The designated Customer representative for purposes of monitoring and oversight of this Agreement is: John Dunning, Vice President for Information Technology, jodunnil@wsc.edu, (402) 375- 7286."
+F03,out,65,65,3,False,False,0.15,False,24. | Signatures.
+F03,out,67,67,1,False,False,0.108,False,05.29.19
+F03,out,68,68,14,False,False,0.167,False,"- 34156894028404... | Date Manager, Deal Desk | Elizabeth Powell Title | Printed Name"
+F03,out,70,70,14,False,False,0.175,False,Signature | Date VPAF. | Angela Fredrickson President- | Marysz-Rames Title | Printed Name
+F04,check,18,18,15,False,True,0.171,False,"Board of Trustees of the Nebraska State Colleges dba Wayne State College | Instructure, Inc."
+F04,out,0,0,17,False,False,0.14,False,INSTRUCTURE | Services Order Form Order #: | Q-84377-2 Date: | 6/13/2019 Offer Valid Through: | 6/30/2019
+F04,out,1,2,28,False,False,0.133,False,"6330 South 3000 East, Suite 700, Salt Lake Cily, UT 84121, Uniled Slates"
+F04,out,3,3,61,False,False,0.162,False,Address: | 1111 Main | Order Information City: | Wayne | Billing Frequency: | Annual Upfront State/Province: | Nebraska | Payment Terms: | Net 45 Zip/Postal Code: | 68787 Country:
+F04,out,4,4,2,False,False,0.047,False,Year 1
+F04,out,5,5,41,False,False,0.155,False,Description | Start | End | Metric | Qty | Price | Amount Additional Ticketing System License | 7/1/2019 | 6/30/2020 | Per Year | 2 | USD 500.00 |
+F04,out,6,6,2,False,False,0.042,False,Year 2
+F04,out,7,7,41,False,False,0.157,False,Description | Start | End | Metric | Qty | Price | Amount Additional Ticketing System License | 7/1/2020 | 6/30/2021 | Per Year | 2 | USD 500.00 |
+F04,out,8,8,2,False,False,0.078,False,Year 3
+F04,out,9,9,45,False,False,0.141,False,Description | Start | End | Metric | Qty | Price | Amount Additional Ticketing System License | 7/1/2021 | 6/30/2022 | Per Year | 2 | USD 500.00 |
+F04,out,10,10,57,False,False,0.202,False,Duration: Instructure may begin providing the services on the later of: (i) ninety (90) days prior to the earliest start date; or (ii) the date of the last signature on
+F04,out,11,11,18,False,False,0.255,False,Miscellaneous: Instructure's support terms are available as follows: Canvas & Catalog: hitps://www.canvaslms.com/policies/support-terms Bridge: https://www.getbridge.com/support-terms Portfolium: hitps:/portfolium.com/support-terms MasteryConnect: htips://www.masteryconnect.com/support/
+F04,out,12,12,10,False,False,0.231,False,PURCHASE ORDER INFORMATION on this order form? | TAX INFORMATION
+F04,out,13,14,28,False,False,0.128,False,Is a Purchase Order required for the purchase or payment of the products Check here if your company is tax exempt:
+F04,out,15,17,34,False,False,0.215,False,No
+F04,out,19,19,26,False,False,0.25,False,"Name: | Angela Fredrickson | Name: | Elizabeth Powe TI VP for Admin and Finance | Manager, Deal Desk Pale: | June 24, 2019 | 06.24.19"
+F04,out,20,20,1,False,False,0.197,False,Title:
+F05,check,2,2,8,False,True,0.111,False,Order Form For University of Nebraska Medical Center
+F05,out,0,0,5,False,False,0.148,False,STRUCTURE | Services Order Form
+F05,out,1,1,8,False,False,0.056,False,Date: | 3/20/2020 Offer Valid Through: | 3/31/2020
+F05,out,3,3,40,False,False,0.055,False,Address: | 987815 Nebraska Medical Ctr | Order Information City: | Omaha | Billing Frequency: | Annual Upfront State/Province: | Nebraska | Payment Terms: | Net 30 Zip/Postal Code: |
+F05,out,4,6,3,False,False,0.162,False,Name:
+F05,out,7,7,2,False,False,0.049,False,Year i
+F05,out,8,8,113,False,False,0.253,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas Cloud Subscription | 3/24/2020 | 3/23/2021 | Enrollment | 10,000 | USD 2.50 | USD 25,000.00"
+F05,out,9,9,2,False,False,0.042,False,Year 2
+F05,out,10,10,48,False,False,0.225,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas Cloud Subscription | 3/24/2021 | 6/30/2021 | User | 500 | USD 2.97 | USD 1,485.00"
+F05,out,11,11,61,False,False,0.198,False,Description | Start | End | Metric | Qty | Price | Amount UNMC 24x7 Support | 3/24/2021 | 6/30/2021 | 20% of | 1 | USD 672.95 | USD
+F05,out,12,12,93,False,False,0.321,False,Deliverable | Description | Expiration Canvas Cloud Subscription | Enrollment Metric is measured by the number of courses started | (whether or not completed) by any individual | N/A Canvas
+F05,out,13,15,59,False,False,0.263,False,authorized by the Customer to access the Service.
+F05,out,16,16,30,False,False,0.216,False,Metric | Description Enrollment | Enrollment Metric is measured by the number of courses started (whether or not completed) by any individual authorized by the Customer to access the Service.
+F05,out,17,17,27,False,False,0.279,False,"Product | Description Canvas Cloud Subscription | Storage included in the annual subscription fee Is (i) Unlimted files and database storage, and (ii) 500 MB per (FTE/User/Enrollment/"
+F05,out,18,18,16,False,False,0.225,False,Seat) multimedia storage. Additional multimedia storage can be purchased for USD $1.00 per 1GB per year.
+F05,out,19,19,57,False,False,0.202,False,Duration: Instructure may begin providing the services on the later of: (i) ninety (90) days prior to the earliest start date; or (ii) the date of the last signature on
+F05,out,20,21,84,False,False,0.226,False,Miscellaneous: Instructure's support terms are available as follows: Canvas & Catalog: hitps:/www.canvasims.com/policies/support-terms Bridge: https:/www.getbridge.com/support-terms Porifolium: https:/portfolium.com/support-terms MasteryConnect: https:/www.masteryconnect.com/support/ As part of our commitment to provide the most innovative and trusted
+F05,out,22,22,23,False,False,0.076,False,Billing Frequency Term: Non-Recurring items will be invoiced upon signing. Recurring items will be invoiced 30 days prior to the annual start date.
+F05,out,23,23,10,False,False,0.013,False,RUROHASE ORDERIN ORMATION E on this order form? | FORMATION
+F05,out,24,27,62,False,False,0.207,False,Is a Purchase Order required for the purchase or payment of the products Check here if your company is tax exempt:
+F06,check,2,2,8,False,True,0.111,False,Order Form For University of Nebraska Medical Center
+F06,check,8,8,1,False,True,0.107,False,5
+F06,out,0,0,3,False,False,0.138,False,Services Order Form
+F06,out,1,1,8,False,False,0.051,False,Date: | 2/28/2020 Offer Valid Through: | 3/31/2020
+F06,out,3,3,40,False,False,0.055,False,Address: | 987815 Nebraska Medical Ctr | Order Information City: | Omaha | Billing Frequency: | Annual Upfront State/Province: | Nebraska | Payment Terms: | Net 30 Zip/Postal Code: |
+F06,out,4,6,3,False,False,0.162,False,Name:
+F06,out,7,7,3,False,False,-0.029,False,VTE | pray
+F06,out,9,9,77,False,False,0.249,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas Cloud Subscription | 7/1/2020 | 6/30/2021 | Enrollment | 10,000 | USD 2.50 | USD 25,000.00"
+F06,out,10,10,68,False,False,0.273,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas Cloud Subscription | 7/1/2021 | 6/30/2022 | Enrollment | 10,000 | USD 2.50 | USD 25,000.00"
+F06,out,11,11,22,False,False,0.162,False,"Description | Start | End | Metric | Qty | Price | Amount Recurring Sub-Total USD 42,000.00 Year 2 Total USD 42,000.00"
+F06,out,12,12,1,False,False,0.141,False,Yoar3
+F06,out,13,13,82,False,False,0.253,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas Cloud Subscription | 7/1/2022 | 6/30/2023 | Enrollment | 10,000 | USD 2.50 | USD 25,000.00"
+F06,out,14,14,67,False,False,0.344,False,Description | Teg | Co | EE | Lo | © © | Expiration Deliverable Canvas Cloud Subscription | Eh Enrollment Metric is measured by the number of courses started
+F06,out,15,16,50,False,False,0.208,False,authorized by the Customer to access the Service.
+F06,out,17,17,30,False,False,0.216,False,Metric | Description Enrollment | Enrollment Metric is measured by the number of courses started (whether or not completed) by any individual authorized by the Customer to access the Service.
+F06,out,18,18,27,False,False,0.294,False,"Product | Description Canvas Cloud Subscription | Storage included in the annual subscription fee is (i) Unlimted files and database storage, and (if) 500 MB per (FTE/User/Enrollment/"
+F06,out,19,20,73,False,False,0.244,False,Seat) multimedia storage. Additional multimedia storage can be purchased for USD $1.00 per 1GB per year.
+F06,out,21,23,91,False,False,0.147,False,Miscellaneous: Instructure's support terms are available as follows: Canvas & Catalog: https://www.canvaslms.com/policies/support-terms Bridge: https://www.getbridge.com/support-terms Portfolium: https:/portfolium.com/support-terms MasteryConnect: https://www.masteryconnect.com/support/
+F06,out,24,24,23,False,False,0.076,False,Billing Frequency Term: Non-Recurring items will be invoiced upon signing. Recurring items will be invoiced 30 days prior to the annual start date.
+F06,out,25,25,10,False,False,0.231,False,PURCHASE ORDER INFORMATION on this order form? | TAX INFORMATION
+F06,out,26,29,62,False,False,0.214,False,Is a Purchase Order required for the purchase or payment of the products Check here if your company is tax exempt
+F09,in,14,14,47,True,False,0.551,True,"5. COMPLIANCE WITH LAWS. Performance of all obligations under this IPA shall be in compliance with all applicable laws and regulations including, but not limited to the observance of all"
+F09,out,0,8,277,False,False,0.413,False,INSTITUTION PARTICIPATION AGREEMENT
+F09,out,9,9,33,False,False,0.366,False,1. PURPOSE. The purpose of this IPA is to define the roles and responsibilities of the parties hereto as it relates to the Work purchased by the District on the
+F09,out,10,10,183,False,False,0.236,False,"2. APPLICABILITY OF SUBCONTRACT AGREEMENT. This IPA is governed by the terms of the Subcontract Agreement, which terms are incorporated into this IPA for all purposes, including specifically the terms"
+F09,out,11,11,68,False,False,0.297,False,"3. CONTINUING WORK WHERE GRANT FUNDING NOT AVAILABLE. In the event the Subcontract Agreement is cancelled due to unavailability of funds, or only partial grant funding is available for the"
+F09,out,12,12,21,False,False,0.343,False,"4, | SERVICES OUTSIDE SCOPE OF WORK. Any additional services not within the Work defined in the Subcontract Agreement shall be"
+F09,out,13,13,19,False,False,0.296,False,subject to a separate agreement between Participating Institution and Subcontractor and shall not be paid for by the District.
+F09,out,15,15,33,False,False,0.227,False,"6. TERM OF IPA. This IPA shall commence upon the date of final signature (""Effective Date"") and shall continue through the date on which Subcontractor ceases to provide Work to"
+F09,out,16,16,34,False,False,0.251,False,"7. TERMINATION. Except as set forth in Section 8.C. below, this IPA may be terminated by Participating Institution providing written notice to Subcontractor upon either termination of the Subcontract Agreement"
+F09,out,17,17,3,False,False,0.257,False,8. GENERAL PROVISIONS
+F09,out,18,18,26,False,False,0.187,False,"A. | AMENDMENTS. This IPA may be amended or modified upon the request of either party. Any changes, modifications, revisions or and dated by both parties."
+F09,out,19,19,24,False,False,0.232,False,"amendments to this IPA which are mutually agreed upon by and between the parties to this IPA shall be incorporated by written instrument, signed"
+F09,out,20,20,17,False,False,0.348,False,"B. | INDEMNIFICATION. Participating Institution shall defend, indemnify and hold Subcontractor, District, CCCCO and their officers, employees"
+F09,out,21,21,167,False,False,0.345,False,"and agents harmless from and against any and all third party claims for liability, loss, expense (including reasonable attorneys' fees), or claims for injury or damages arising out of the"
+F09,out,22,22,20,False,False,0.18,False,C. | FUNDS UNAVAILABLE. This IPA may be terminated immediately by the Participating Institution if funds become unavailable for the
+F09,out,23,23,77,False,False,0.336,False,"support of the program for which the services are provided. In the event termination is pursuant to this paragraph, a notice specifying reason for termination shall be sent as soon"
+F09,out,24,24,22,False,False,0.355,False,"D. | Publicity. Participating Institution agrees to allow Subcontractor to use its name, logo and non-competitive use details in both text and"
+F09,out,25,25,17,False,False,0.24,False,"pictures in its various marketing communications and materials, in accordance with Participating Institution's trademark guidelines and policies."
+F09,out,26,26,19,False,False,0.192,False,"E. | ENTIRETY OF AGREEMENT. This IPA, including the Addendum to the Subcontract Agreement, contains the entire agreement and"
+F09,out,27,27,25,False,False,0.353,False,understanding between the Subcontractor and the Participating Institution and supersedes all prior oral or written representations and agreements with respect to the subject matter herein.
+F09,out,28,28,47,False,False,0.184,True,F. | APPLICABLE LAW/REMEDIES. This IPA shall be construed in accordance with and governed by the laws of the State of California. The G. | NOTICES. Notices under this IPA
+F09,out,29,32,67,False,False,0.196,False,parties shall have all remedies available by law or in equity.
+F09,out,33,33,24,False,False,0.208,False,"H. | SEVERABILITY. If any term, provision, covenant, or condition of this IPA is held by a court of competent jurisdiction to be invalid,"
+F09,out,34,34,25,False,False,0.148,False,"void, or unenforceable, the remainder of the IPA shall remain in full force and effect and in no way shall be affected, impaired, or invalidated."
+F09,out,35,35,31,False,False,0.181,False,"COUNTERPARTS. This IPA may be executed in any number of counterparts, each of which shall be deemed an original but all of which together shall constitute one and the same"
+F09,out,36,36,23,False,False,0.139,False,J. NON-WAIVER. No waiver by a party of any default or nonperformance will be deemed a waiver of any subsequent default or nonperformance.
+F09,out,37,37,24,False,False,0.3,False,K. AUTHORITY. The parties to this IPA warrant that the person signing this IPA on its behalf is authorized to enter into this IPA.
+F09,out,38,38,22,False,False,0.283,False,L. | TERMS AND CONDITIONS. The parties to this IPA acknowledge that they have read and understood this IPA and the Subcontract
+F09,out,39,39,17,False,False,0.249,False,"Agreement completely, and will fully comply with all terms and conditions of this IPA set forth herein."
+F09,out,40,40,8,False,False,0.133,False,"1 | onterey Peninsula College | Instructure, Inc."
+F09,out,41,41,3,False,False,0.201,False,- DocuSigned by:
+F09,out,42,42,27,False,False,0.163,False,"Signatuee | Signature: | Elizabeth Powell -3415CBF9A62B404 Name: | Steven bugler | Name: | Elizabeth Powell Interm UP Admn SAvies | Senior Manager, Deal Desk 9/2/2020 lutle:"
+F11,check,0,0,3,False,True,0.02,False,University of Nebraska
+F11,check,40,46,220,True,False,0.264,True,Miscellaneous: Instructure's support terms are available as follows: Canvas & Catalog: https://www.instructure.com/canvas/support-terms Portfolium: https://portfolium.com/support-terms MasteryConnect: https://www.masteryconnect.com/support/
+F11,check,53,53,9,False,True,0.132,False,"University of Nebraska Medical Center (NETEC) | Instructure, Inc."
+F11,check,66,66,2,False,True,0.078,False,Year 3
+F11,check,75,80,163,True,False,0.331,True,Miscellaneous: Instructure's support terms are available as follows: Canvas & Catalog: https://www.instructure.com/canvas/support-terms Portfolium: https://portfolium.com/support-terms MasteryConnect: https://www.masteryconnect.com/support/
+F11,check,87,87,9,False,True,0.132,False,"University of Nebraska Medical Center (NETEC) | Instructure, Inc."
+F11,out,1,2,189,False,False,0.223,False,Non-Competitive Purchase Documentation
+F11,out,3,3,6,False,False,0.166,False,§ | EXCEPTION TO COMPETITIVE PURCHASE
+F11,out,4,4,83,False,False,0.278,False,"1. Purchase of unique or non-competitive articles or services (e.g., ""Sole Source""). Without limiting the generality of the foregoing sentence, examples of unique or non-competitive articles and services are public"
+F11,out,5,5,111,False,False,0.297,False,"2. Contracts for professional services; provided, however, that any contract for architectural, engineering, land surveying or landscape architectural services shall be made in accordance with applicable law and Board of"
+F11,out,6,6,6,False,False,0.221,False,3. Purchases necessary in emergency situations.
+F11,out,7,7,46,False,False,0.344,False,"4. Contracts for maintenance or servicing of equipment with the manufacturer of the equipment or the manufacturer's authorized service agent, where in the judgment of the principal business officer such"
+F11,out,8,9,80,False,False,0.281,False,5. Contracts on capital construction projects (a) for the services of a construction manager who may or may not at the discretion of the University also be engaged on the
+F11,out,10,10,9,False,False,0.199,False,"Supplier Name: | Amount of Purchase: Instructure | $53,166"
+F11,out,11,11,8,False,False,0.309,False,Description Supporting Non-Competitive Purchase Determination: CanvasisaLMSusedthroughouttheUniversitysystemtoprovidelearningtostudentsandotherstakeholders. NETECutilizesthislearningsystemto provideaccesstootherstakeholdersthroughoutthecountry.
+F11,out,12,13,49,False,False,0.236,True,Check HERE if additional supporting documentation attached
+F11,out,14,14,67,False,False,0.207,False,JoelRuud | 7/11/24 Requestor's Signature | Requestor's Name (Printed) | Date Jol Kurd | JoelRuud | Joel Ruud | 7/11/24 | 7111/24 Funding Approver's Signature | Funding Approver's Name (Printed)
+F11,out,15,16,82,False,False,0.268,False,"Canvas Catalog currently distributes existing TSQC (Training, Simulation and Quarantine Center) resources, UBeats content https://www.unmc.edu/elearning/ubeats/index.html). and other content/ courses around the world to thousands of enrolled participants. The contract extension"
+F11,out,17,18,13,False,False,0.325,False,University of Nebraska Contract Summary
+F11,out,19,19,3,False,False,0.151,False,Email | jvillanueva@instructure.com
+F11,out,20,24,75,False,False,0.308,False,REQUESTING DEPARTMENT Participating UNMC Campuses Primary Contact Rachel Prudhomme Name Primary Contact rachel.prudhomme@unmc.edu Email
+F11,out,25,25,3,False,False,0.138,False,Services Order Form
+F11,out,26,26,12,False,False,0.056,False,Order #: | Q-343071-1 Date: | 2024-01-24 Offer Valid Through: | 2024-06-30
+F11,out,27,28,22,False,False,0.092,False,"6330 South 3000 East, Suite 700, Salt Lake City, UT 84121, United States"
+F11,out,29,29,50,False,False,0.072,False,Address: | 987815 Nebraska Medical Ctr | Order Information City: | Omaha | Billing Frequency: | Annual Upfront State/Province: | Nebraska | Payment Terms: | Net 30 Zip/Postal Code: |
+F11,out,30,30,23,False,False,0.076,False,Billing Frequency Term: Non-Recurring items will be invoiced upon signing. Recurring items will be invoiced 30 days prior to the annual start date.
+F11,out,31,31,2,False,False,0.047,False,Year 1
+F11,out,32,32,83,False,False,0.241,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas LMS Cloud Subscription | 2024-07-01 | 2025-06-30 | Enrollment | 10,000 | USD 3.16 | USD"
+F11,out,33,33,24,False,False,0.179,False,Deliverable | Description | Expiration | Qty 24x7 Support | 24x7 support per year (20% of subscription - minimums apply) | N/A | 1
+F11,out,34,34,22,False,False,0.267,False,Deliverable | Description | Expiration | Qty Canvas Catalog Cloud Subscription | Annual Canvas Catalog subscription for Higher Education clients | N/A
+F11,out,35,36,45,False,False,0.18,False,The items above must be completed during the time period beginning on the later of the Effective Date or the initial Start Date specified in this Order Form and ending
+F11,out,37,37,26,False,False,0.232,False,Enrollment: Enrollment Metric is measured by the number of courses started (whether or not completed) by any individual authorized by the Customer to access the Service.
+F11,out,38,38,45,False,False,0.229,False,"Product | Description Canvas LMS Cloud | Storage included in the annual subscription fee is (i) Unlimited files and database storage, and (ii) 500 MB per (FTE/User/Enrollment/ Subscription | Seat)"
+F11,out,39,39,51,False,False,0.205,False,"Duration: The Services provided under this Order Form shall begin on the first year Start Date set forth above and continue through the last year End Date set forth above,"
+F11,out,47,47,6,False,False,0.22,False,PURCHASE ORDER INFORMATION | TAX INFORMATION
+F11,out,48,52,134,False,False,0.272,False,Is a Purchase Order required for the purchase or payment of the products Check here if your company is exempt from US state sales on this order form? tax :
+F11,out,54,54,44,False,False,0.168,False,"Signature: | \s1\ | Signature: | \s2\ Name: | Anne Barnes | Name: | Jeff Ebert Title: | Vice Chancellor, Business & Finance | Title: | Director, Deal Desk &"
+F11,out,55,55,3,False,False,0.138,False,Services Order Form
+F11,out,56,56,12,False,False,0.057,False,Order #: | Q-287275-1 Date: | 2023-04-06 Offer Valid Through: | 2023-06-30
+F11,out,57,58,22,False,False,0.092,False,"6330 South 3000 East, Suite 700, Salt Lake City, UT 84121, United States"
+F11,out,59,59,69,False,False,0.094,False,Address: | 987815 Nebraska Medical Ctr | Order Information City: | Omaha | Billing Frequency: | Annual Upfront State/Province: | Nebraska | Payment Terms: | Net 30 Zip/Postal Code: |
+F11,out,60,60,23,False,False,0.076,False,Billing Frequency Term: Non-Recurring items will be invoiced upon signing. Recurring items will be invoiced 30 days prior to the annual start date.
+F11,out,61,61,2,False,False,0.047,False,Year 1
+F11,out,62,62,78,False,False,0.248,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas LMS Cloud Subscription | 2023-07-01 | 2024-06-30 | Enrollment | 10,000 | USD 2.75 | USD"
+F11,out,63,63,2,False,False,0.042,False,Year 2
+F11,out,64,64,31,False,False,0.258,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas LMS Cloud Subscription | 2024-07-01 | 2025-06-30 | Enrollment | 10,000 | USD 2.94 | USD"
+F11,out,65,65,60,False,False,0.238,False,"Description | Start | End | Metric | Qty | Price | Amount 24x7 Support | 2024-07-01 | 2025-06-30 | 20% of Subscription (Minimums | 1 | USD 5,880.00 |"
+F11,out,67,67,82,False,False,0.241,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas LMS Cloud Subscription | 2025-07-01 | 2026-06-30 | Enrollment | 10,000 | USD 3.09 | USD"
+F11,out,68,68,20,False,False,0.18,False,Deliverable | Description | Expiration 24x7 Support | 24x7 support per year (20% of subscription - minimums apply) | N/A
+F11,out,69,70,45,False,False,0.18,False,The items above must be completed during the time period beginning on the later of the Effective Date or the initial Start Date specified in this Order Form and ending
+F11,out,71,72,264,False,False,0.385,False,Enrollment: Enrollment Metric is measured by the number of courses started (whether or not completed) by any individual authorized by the Customer to access the Service. User: User Metric reflects
+F11,out,73,73,45,False,False,0.229,False,"Product | Description Canvas LMS Cloud | Storage included in the annual subscription fee is (i) Unlimited files and database storage, and (ii) 500 MB per (FTE/User/Enrollment/ Subscription | Seat)"
+F11,out,74,74,51,False,False,0.205,False,"Duration: The Services provided under this Order Form shall begin on the first year Start Date set forth above and continue through the last year End Date set forth above,"
+F11,out,81,81,6,False,False,0.22,False,PURCHASE ORDER INFORMATION | TAX INFORMATION
+F11,out,82,82,31,False,False,0.108,False,Is a Purchase Order required for the purchase or payment of the products Check here if your company is exempt from US state sales Yes on this order form? tax
+F11,out,83,83,10,False,False,0.107,False,Please email all US state sales tax exemption certifications to
+F11,out,84,84,13,False,False,0.066,False,"Please Enter (Yes or No): If yes, please enter PO Number: | No"
+F11,out,85,86,17,False,False,0.258,False,ar@instructure.com
+F11,out,88,88,34,False,False,0.166,False,"Signature: | \s1\ | Signature: | \s2\ Name: | Benjamin Mattson | Name: | Austin Holden Title: | Senior Instructional Designer | Title: | Manager, Deal Desk Date: | 5/11/2023"
+F11,out,89,89,15,False,False,0.244,False,Certificate Of Completion Envelope Id: 99186DFDE1FB489CA6C733BA909837FA Status: Completed Subject: CW16024 - Instructure NCPD.pdf Source Envelope:
+F11,out,90,90,44,False,False,0.213,False,"Document Pages: 9 | Signatures: 4 | Envelope Originator: Certificate Pages: 6 | Initials: 1 | Michael Hendrickson AutoNav: Enabled | 1400 R Street EnvelopeId Stamping: Disabled | LINCOLN, NE"
+F11,out,91,91,9,False,False,0.224,True,Record Tracking Status: Original Holder: Michael Hendrickson Location: DocuSign
+F11,out,92,92,36,False,False,0.265,False,7/23/2024 11:02:59 AM | michaelhendrickson@nebraska.edu Signer Events | Signature | Timestamp Lynn McAlpine | Sent: 7/23/2024 11:12:20 AM lynn.mcalpine@nebraska.edu | Viewed: 7/24/2024 12:01:35 PM Assoc Chief Procurement Officer University of
+F11,out,93,93,4,False,False,0.053,False,Signature Adoption: Pre-selected Style
+F11,out,94,94,10,False,False,0.129,True,"Security Level: Email, Account Authentication (None) Using IP Address: 174.210.160.251"
+F11,out,95,96,14,False,False,0.214,True,Signed using mobile
+F11,out,97,97,25,False,False,0.351,False,Shanon Wright | Sent: 7/24/2024 12:02:40 PM shanonwright@nebraska.edu | Viewed: 7/24/2024 1:07:03 PM Senior IT Sourcing Agent University of Nebraska | Signed: 7/24/2024 1:07:21 PM
+F11,out,98,98,4,False,False,0.053,False,Signature Adoption: Pre-selected Style
+F11,out,99,100,21,False,False,0.221,True,"Security Level: Email, Account Authentication (None) Using IP Address: 167.248.51.154"
+F11,out,101,101,25,False,False,0.118,False,"Jeff Ebert | Sent: 8/20/2024 5:15:04 PM jebert@instructure.com | Viewed: 8/20/2024 5:15:24 PM Director, Deal Desk & Pricing Instructure, Inc. | Signed: 8/20/2024 5:15:33 PM"
+F11,out,102,102,5,False,False,0.125,False,Signature Adoption: Uploaded Signature Image
+F11,out,103,104,21,False,False,0.226,True,"Security Level: Email, Account Authentication (None) Using IP Address: 65.130.253.229"
+F11,out,105,105,24,False,False,0.246,False,"Anne Barnes | Sent: 8/20/2024 5:15:35 PM annebarnes@unmc.edu | Viewed: 8/21/2024 12:30:49 PM Vice Chancellor, Business & Finance UNMC | Signed: 8/21/2024 12:31:14 PM"
+F11,out,106,106,4,False,False,0.053,False,Signature Adoption: Pre-selected Style
+F11,out,107,108,21,False,False,0.21,True,"Security Level: Email, Account Authentication (None) Using IP Address: 98.179.11.163"
+F11,out,109,109,46,False,False,0.176,True,In Person Signer Events | Signature | Timestamp Editor Delivery Events | Status | Timestamp Michael Hendrickson | Sent: 7/24/2024 1:07:23 PM michaelhendrickson@nebraska.edu | Viewed: 7/24/2024 9:39:38 PM Sourcing Agent
+F11,out,110,110,11,False,False,0.225,True,Electronic Record and Signature Disclosure: Accepted: 6/14/2024 9:09:56 AM ID: 2ebe2f2a-af18-4457-8918-618a4af11428
+F11,out,111,111,47,False,False,0.199,True,Agent Delivery Events | Status | Timestamp Intermediary Delivery Events | Status | Timestamp Certified Delivery Events | Status | Timestamp Carbon Copy Events | Status | Timestamp Joel Ruud
+F11,out,112,112,11,False,False,0.223,True,Electronic Record and Signature Disclosure: Accepted: 7/29/2024 7:59:45 AM ID: 04228e80-6f43-429c-9c8b-9a8eb7aecad5
+F11,out,113,113,19,False,False,0.24,True,"Rachel Prudhomme | Sent: 7/23/2024 11:12:20 AM rachel.prudhomme@unmc.edu Security Level: Email, Account Authentication (None) | Viewed: 7/23/2024 11:29:40 AM"
+F11,out,114,114,9,False,False,0.239,True,Electronic Record and Signature Disclosure: Not Offered via DocuSign
+F11,out,115,115,7,False,False,0.069,False,Deal Desk | Sent: 8/20/2024 5:15:06 PM
+F11,out,116,116,25,False,False,0.192,True,"dealdesk@instructure.com Director, Deal Desk & Pricing Instructure, Inc. Security Level: Email, Account Authentication (None) Electronic Record and Signature Disclosure: Accepted: 8/20/2024 5:14:37 PM ID: 9ea370e1-efb2-4157-aa5f-2220c5b020ad"
+F11,out,117,117,19,False,False,0.218,True,"Javier Villanueva | Sent: 7/25/2024 3:35:29 PM jvillanueva@instructure.com Security Level: Email, Account Authentication (None) | Viewed: 8/12/2024 3:32:29 PM"
+F11,out,118,118,11,False,False,0.236,True,Electronic Record and Signature Disclosure: Accepted: 7/25/2024 12:34:31 PM ID: 3bd37b8a-e0db-4ac9-b9ca-6f87f4b6fbd4
+F11,out,119,119,19,False,False,0.206,True,"Karen Stimson | Sent: 8/19/2024 2:52:46 PM karen.stimson@instructure.com Security Level: Email, Account Authentication (None) | Viewed: 8/19/2024 2:54:25 PM"
+F11,out,120,120,11,False,False,0.224,True,Electronic Record and Signature Disclosure: Accepted: 8/19/2024 2:51:21 PM ID: eb6a5312-d051-4848-a19d-eb0c009d948f
+F11,out,121,121,6,False,False,0.116,False,Witness Events | Signature | Timestamp
+F11,out,122,122,89,False,False,0.13,True,Notary Events | Signature | Timestamp Envelope Summary Events | Status | Timestamps Envelope Sent | Hashed/Encrypted | 7/23/2024 11:12:19 AM Envelope Updated | Security Checked | 8/19/2024 2:42:04 PM
+F11,out,123,124,36,False,False,0.316,True,Electronic Record and Signature Disclosure
+F11,out,125,126,103,False,False,0.307,True,ELECTRONIC RECORD AND SIGNATURE DISCLOSURE
+F11,out,127,128,128,False,False,0.182,True,Getting paper copies
+F11,out,129,130,69,False,False,0.259,True,Withdrawing your consent
+F11,out,131,132,104,False,False,0.214,True,Consequences of changing your mind
+F11,out,133,136,217,False,False,0.301,True,All notices and disclosures will be sent to you electronically
+F11,out,137,139,91,False,False,0.084,True,To advise NU Contracts+Ariba of your new email address
+F11,out,140,141,67,False,False,0.153,True,To request paper copies from NU Contracts+Ariba
+F11,out,142,145,113,False,False,0.216,True,To withdraw your consent with NU Contracts+Ariba
+F11,out,146,151,276,False,False,0.293,True,Required hardware and software
+F12,check,1,1,5,False,True,0.219,False,University of Nebraska Contract Summary
+F12,check,23,29,196,True,False,0.31,True,Miscellaneous: Instructure's support terms are available as follows: Canvas & Catalog: https://www.instructure.com/canvas/support-terms Portfolium: https://portfolium.com/support-terms MasteryConnect: https://www.masteryconnect.com/support/
+F12,check,61,61,270,False,False,0.453,False,"15. Insurance. The Supplier shall at its own expense obtain and maintain throughout the term of the Agreement general commercial liability insurance against claims for bodily injury, death, and property"
+F12,check,86,86,8,False,True,0.234,False,be completed in accordance with Board of Regents
+F12,check,99,99,5,False,True,-0.017,False,University of Nebraska Medical Center
+F12,out,0,0,4,False,False,0.076,False,INTERNAL USE ONLY CW26144
+F12,out,2,2,10,False,False,0.287,False,CONTRACTOR/COMPANY INFORMATION Supplier Instructure Inc. Contact Name Kara van Schilfgaarde
+F12,out,3,3,5,False,False,0.214,False,and Email | kara.vanschilfgaarde@instru cture.com
+F12,out,4,5,34,False,False,0.249,False,REQUESTING DEPARTMENT Participating Campuses UNMC and Admin Unit/Dept. Primary Contact Name Joel Ruud and Email Secondary Contact Name and Email
+F12,out,6,6,14,False,False,0.017,False,"Total Amount of Spend $1,200 | Start 12/31/2024 End | 12/31/2025 Date | Date"
+F12,out,7,8,25,False,False,0.227,False,BID INFORMATION Bid Number N/A Competitive Review UNMC Under $50K Findings Contract Information N/A
+F12,out,9,9,3,False,False,0.138,False,Services Order Form
+F12,out,10,10,12,False,False,0.073,False,Order #: | Q-401612-1 Date: | 2024-10-11 Offer Valid Through: | 2024-12-31
+F12,out,11,12,29,False,False,0.148,False,"6330 South 3000 East, Suite 700, Salt Lake City, UT 84121, United States"
+F12,out,13,13,53,False,False,0.063,False,Address: | 987815 Nebraska Medical Ctr | Order Information City: | Omaha | Billing Frequency: | Annual Upfront State/Province: | Nebraska | Payment Terms: | Net 30 Zip/Postal Code: |
+F12,out,14,14,23,False,False,0.076,False,Billing Frequency Term: Non-Recurring items will be invoiced upon signing. Recurring items will be invoiced 30 days prior to the annual start date.
+F12,out,15,15,2,False,False,0.047,False,Year 1
+F12,out,16,16,43,False,False,0.105,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas Certified Educator Program | | | Per Each | 1 | USD 1,200.00 | USD 1,200.00"
+F12,out,17,17,50,False,False,0.1,False,Professional Services | Description | Expiration | Qty Canvas Certified Educator | One enrollment in a series of 6 online courses to complete the HE Canvas Certified Educator | 12
+F12,out,18,21,71,False,False,0.19,False,named participant may not be swapped for a different named participant.
+F12,out,22,22,51,False,False,0.205,False,"Duration: The Services provided under this Order Form shall begin on the first year Start Date set forth above and continue through the last year End Date set forth above,"
+F12,out,30,30,6,False,False,0.22,False,PURCHASE ORDER INFORMATION | TAX INFORMATION
+F12,out,31,36,149,False,False,0.28,False,Is a Purchase Order required for the purchase or payment of the products Check here if your company is exempt from US state sales on this order form? tax :
+F12,out,37,37,45,False,False,0.295,False,"Signature: | 1\ | Signature: | \s2\ Name: | Michael Hrncirik | Name: | Jeff Ebert Title: | Assistant Vice Chancellor for Business T&it leF:inance & DCiornetcrtoolrl,e rD,e aUlN MDCesk"
+F12,out,38,39,124,False,False,0.283,False,University of Nebraska Legal and Policy Compliance Addendum
+F12,out,40,40,1,False,False,0.133,False,RECITALS
+F12,out,41,41,29,False,False,0.294,False,"A. | University desires to enter the Agreement with Supplier. B. | The Agreement is in the form provided by Supplier, which the parties are using for their mutual"
+F12,out,42,42,11,False,False,0.138,False,convenience without the necessity of specifically negotiating a separate contract document.
+F12,out,43,43,34,False,False,0.253,False,"C. | The Agreement is, with the exceptions noted in this Addendum, acceptable to University. D. | Certain clauses in the Agreement cannot be accepted by University as a matter"
+F12,out,44,44,7,False,False,0.123,False,of the State of Nebraska and University.
+F12,out,45,45,16,False,False,0.239,False,E. | Supplier is willing to modify the Agreement as set forth in this Addendum. AGREEMENT
+F12,out,46,46,33,False,False,0.171,False,"NOW, THEREFORE, in consideration of the mutual covenants set forth in the Agreement and herein and the above recitals, which are incorporated into this Addendum by this reference, the parties"
+F12,out,47,47,46,False,False,0.171,False,1. Incorporation and Priority of Terms. The Agreement is amended as stated herein and this Addendum is incorporated into the Agreement by this reference. In the event of a conflict
+F12,out,48,48,31,False,False,0.296,False,2. Assignment. The Agreement is non-assignable and non-transferrable unless agreed to in writing by the parties. Any attempt by either party to assign its rights or obligations hereunder shall be
+F12,out,49,49,88,False,False,0.179,False,3. Governing Law and Forum. The Agreement shall be governed by the laws of the State of Nebraska without giving effect to its conflicts of law provisions. Any legal actions
+F12,out,50,50,55,False,False,0.423,True,"4. Liability. To the fullest extent allowed by law, Supplier shall defend, indemnify, and hold harmless University, its regents, officers, employees, agents, and students for any loss, claim, damage, expense,"
+F12,out,51,51,43,False,False,0.203,False,5. Work Status Verification. Supplier and its subcontractors shall use a federal immigration verification system to determine the work eligibility status of new employees physically performing services within the State
+F12,out,52,52,187,False,False,0.374,False,"6. Debarment List. Supplier certifies and warrants that it has not been debarred, suspended, or declared ineligible as defined in the Federal Acquisition Regulation 48 CFR Ch.1 Subpart 9.4. Supplier"
+F12,out,53,53,123,False,False,0.367,False,"7. Taxpayer Transparency Act. Pursuant to Nebraska's Taxpayer Transparency Act (Neb. Rev. Stat. § 84-602.01), as may be amended), University is required to provide the Nebraska Department of Administrative Services"
+F12,out,54,54,124,False,False,0.295,True,"8. Equal Opportunity (intentionally bolded). Supplier shall comply with 41 CFR §§ 60-1.4(a), 60- 300.5(a), and 60-741.5(a), which are incorporated by reference with the following statement: ""This Contractor and subcontractor"
+F12,out,55,55,73,False,False,0.318,False,"9. Nondiscrimination. Supplier agrees that neither it nor any of its subcontractors shall discriminate against any employee, or applicant for employment to be employed in the performance of the Agreement,"
+F12,out,56,56,91,False,False,0.335,False,"10. Logos or University Marks. The Supplier shall not use or display any University campus name, logo, trademark, service mark (individually a ""Mark"" and collectively the ""Marks"") and/or other indicia"
+F12,out,57,57,50,False,False,0.429,False,11. Right to Audit Privilege. University reserves the right to audit or inspect work performed by the Supplier under the Agreement. University may participate directly or through an appointed representative
+F12,out,58,58,43,False,False,0.253,False,12. Purchase Order Requirement. A purchase order shall be issued by University to Supplier for payment in accordance with the terms of the Agreement. All invoice(s) submitted by Supplier shall
+F12,out,59,59,145,False,False,0.309,True,13. Conflict of Interest. No article or service shall be purchased from any University faculty or staff member without prior approval by the Vice Chancellor of Business and Finance and
+F12,out,60,60,47,False,False,0.393,False,"14. Compliance. Supplier and its employees and agents will comply with all laws, ordinances, codes, rules, regulations, and licensing requirements that are applicable to the conduct of its business, including"
+F12,out,62,62,204,False,False,0.365,False,"16. Unavailability of Funding. Due to possible future reductions in State and/or Federal funds, University cannot guarantee the continued availability of funding of the Agreement notwithstanding the consideration contained within"
+F12,out,63,80,484,False,False,0.367,True,"17. Unenforceability of Certain Terms. Notwithstanding any provision of the Agreement to the contrary, any of the following terms within the Agreement shall have no effect and shall not be"
+F12,out,81,81,6,False,False,0.252,False,University Department Approval (if applicable) Supplier
+F12,out,82,82,20,False,False,0.142,False,"Printed Name: | Jeff Ebert Date: | 12/19/24 | 13:09 MST Title: | Title: | Director, Deal Desk & Pricing"
+F12,out,83,83,20,False,False,0.164,False,Board of Regents of the University of Nebraska I affirm that if I am an employee of the University of
+F12,out,84,84,8,False,False,0.068,False,"Nebraska, I have notified the University of my"
+F12,out,85,85,26,False,False,0.255,False,"Signature: | status as an employee and that this contract must Printed Name: Date: | Policy 6.2.1.16, Purchases Involving University 12/19/24 | 20:44 CST | Personnel."
+F12,out,87,87,2,False,False,0.115,False,Michael Hrncirik
+F12,out,88,89,11,False,False,0.257,False,"Assistant Vice Chancellor for Business & Finance & Controller, UNMC"
+F12,out,90,90,15,False,False,0.228,False,Certificate Of Completion Envelope Id: C746A83C-CC4E-4E35-B8BF-A6C37BF557B1 Status: Completed Subject: CW26144 - COVER SHEET.docx Source Envelope:
+F12,out,91,91,44,False,False,0.206,False,"Document Pages: 9 | Signatures: 4 | Envelope Originator: Certificate Pages: 5 | Initials: 0 | Anthony Taylor AutoNav: Enabled | 1400 R Street EnvelopeId Stamping: Disabled | LINCOLN, NE"
+F12,out,92,92,9,False,False,0.23,True,Record Tracking Status: Original Holder: Anthony Taylor Location: DocuSign
+F12,out,93,93,41,False,False,0.223,False,"12/19/2024 5:35:47 AM | ataylor68@nebraska.edu Signer Events | Signature | Timestamp Jeff Ebert | Sent: 12/19/2024 5:37:43 AM jebert@instructure.com | Resent: 12/19/2024 11:38:44 AM Director, Deal Desk & Pricing |"
+F12,out,94,94,5,False,False,0.125,False,Signature Adoption: Uploaded Signature Image
+F12,out,95,96,21,False,False,0.225,True,"Security Level: Email, Account Authentication (None) Using IP Address: 65.130.6.134"
+F12,out,97,97,28,False,False,0.325,False,"Michael Hrncirik | Sent: 12/19/2024 2:09:31 PM mhrncirik@unmc.edu | Viewed: 12/19/2024 8:43:49 PM Assistant Vice Chancellor for Business & Finance & Controller, UNMC | Signed: 12/19/2024 8:44:35 PM"
+F12,out,98,98,4,False,False,0.053,False,Signature Adoption: Pre-selected Style
+F12,out,100,100,4,False,False,0.061,False,Using IP Address: 67.3.181.52
+F12,out,101,101,20,False,False,0.279,True,"Security Level: Email, Account Authentication (None) Signed using mobile Electronic Record and Signature Disclosure: Accepted: 12/19/2024 8:43:49 PM ID: d7783773-7f72-40d1-a6fe-79e008fb70f9"
+F12,out,102,102,62,False,False,0.144,True,In Person Signer Events | Signature | Timestamp Editor Delivery Events | Status | Timestamp Agent Delivery Events | Status | Timestamp Intermediary Delivery Events | Status | Timestamp Certified
+F12,out,103,103,9,False,False,0.239,True,Electronic Record and Signature Disclosure: Not Offered via DocuSign
+F12,out,104,104,14,False,False,0.086,False,Carbon Copy Events | Status | Timestamp Joel Ruud | Sent: 12/19/2024 8:44:37 PM
+F12,out,105,105,16,False,False,0.248,True,"jruud@nebraskamed.com Security Level: Email, Account Authentication (None) Electronic Record and Signature Disclosure: Not Offered via DocuSign"
+F12,out,106,106,11,False,False,0.1,False,"Joanna L. Ray, M. Ed joanna.ray@instructure.com | Sent: 12/19/2024 8:44:38 PM"
+F12,out,107,107,15,False,False,0.339,True,"Security Level: Email, Account Authentication (None) Electronic Record and Signature Disclosure: Not Offered via DocuSign"
+F12,out,108,108,9,False,False,0.125,False,Kara van Schilfgaarde kara.vanschilfgaarde@instructure.com | Sent: 12/19/2024 8:44:39 PM
+F12,out,109,109,17,False,False,0.301,True,"Security Level: Email, Account Authentication (None) Electronic Record and Signature Disclosure: Accepted: 12/19/2024 9:42:24 AM ID: 985489da-0a97-4c33-b25b-76ac870a1954"
+F12,out,110,110,104,False,False,0.138,True,Witness Events | Signature | Timestamp Notary Events | Signature | Timestamp Envelope Summary Events | Status | Timestamps Envelope Sent | Hashed/Encrypted | 12/19/2024 5:37:35 AM Envelope Updated |
+F12,out,111,112,25,False,False,0.334,True,Electronic Record and Signature Disclosure
+F12,out,113,114,103,False,False,0.307,True,ELECTRONIC RECORD AND SIGNATURE DISCLOSURE
+F12,out,115,116,128,False,False,0.182,True,Getting paper copies
+F12,out,117,118,69,False,False,0.259,True,Withdrawing your consent
+F12,out,119,120,104,False,False,0.214,True,Consequences of changing your mind
+F12,out,121,124,217,False,False,0.301,True,All notices and disclosures will be sent to you electronically
+F12,out,125,127,91,False,False,0.084,True,To advise NU Contracts+Ariba of your new email address
+F12,out,128,129,67,False,False,0.153,True,To request paper copies from NU Contracts+Ariba
+F12,out,130,133,113,False,False,0.216,True,To withdraw your consent with NU Contracts+Ariba
+F12,out,134,139,276,False,False,0.293,True,Required hardware and software

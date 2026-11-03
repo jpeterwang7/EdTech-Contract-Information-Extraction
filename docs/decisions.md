@@ -339,6 +339,164 @@ Reading more pages would strengthen this, especially a digital order form and th
 
 ---
 
+## Finding the privacy passages (P)
+
+### P1. The goal: one category of text
+
+My correction (Nov 2): the task is to get a specific category of text, data governance and privacy, which Goal 2
+then mines for facts. An earlier plan with 12 topics and scored document types was dropped as more than this needs.
+Other topics (pricing, liability) are not labelled. Her notes also mention those topics as examples, so this
+narrowing should be confirmed with her.
+
+**The category:** who owns customer, student or user data; how the vendor may use, analyze or share it, including
+aggregated data and AI training; disclosure to third parties; retention, export, return and deletion; security
+safeguards and breach notification; duties under privacy laws such as FERPA and GDPR.
+
+### P2. Answer key (`data/gold/privacy_passages.csv`)
+
+Drafted before any method was built, from the clean text. Every block with a word that could relate to the category
+was read in full ("data", "information", "security", "content", "delete", and about 30 more; about 40,000 words). For
+other blocks only the opening words were read, on the reasoning that a block with none of those words can hardly
+be about data. A passage hidden from that word list could be missed.
+
+The key has two groups (Nov 2):
+- **Core (49 contract passages):** must be found.
+- **Borderline (25 contract passages):** a person checks these. Examples: ordinary business confidentiality, customer
+  password duties, cyber insurance. In scoring they count neither for nor against a method.
+
+An excerpt can be part of a block: only the safeguards sentence inside a "Compliance" clause is marked, not the whole
+clause. A brief try at forcing everything into in or out was reversed the same day (what_failed.md, 38).
+
+**The F09 security brochure is out of all scoring and review counts,** because the goal is contract terms. It is not
+contract text, and it holds so many words that it swamped the scores (what_failed.md, 36).
+
+**⚠ Not yet checked by a person.** My mentor, a PhD in education, is the planned reviewer:
+`python -m bench.review sheet` makes `outputs/privacy/privacy_key_for_review.xlsx`. Its "Marked Out" tab lists only text
+with a related word, so a passage with none of those words could still be missed.
+
+### P3. Three methods, plus one combination
+
+Every method splits a file into sections of whole blocks, so signed text is never rewritten, then keeps or drops each
+section.
+
+| Method | Splitting | Keeping |
+|---|---|---|
+| Rules | headings, tables, numbered clauses ("12. Term", not "12.1"), run-in titles | privacy terms; "Customer Content" only next to a word like own, use, secure or export |
+| Meaning | where a block's meaning is far from the one before (embeddings, all-mpnet-base-v2) | close to the written category definition |
+| LLM | Llama 3.1 8B marks section starts | Llama answers yes or no from the definition |
+| Rules + LLM | the rules' sections | Llama's yes or no |
+
+### P4. Scores
+
+Counted in words, because a 500-word clause matters more than a five-word one.
+- **Found:** the share of core text returned. Most important, since what is missed never reaches extraction.
+- **Clean:** the share of returned text that is core (borderline text is left out of this count).
+- **Whole:** the share of core passages returned complete inside one section.
+- **F2:** one number combining found and clean, weighing found twice as much. Used only to set the meaning method's two
+  thresholds.
+
+### P5. Fair testing
+
+Tuning files: F01–F06, F09, F11, F12. Test files: F07, F08, F10, F13, F14. Files sharing a template mostly stay on one
+side. Test scores print only with `python run.py privacy-test`, run once after everything is frozen.
+
+**Limits to state:** I read the test files while cleaning the text and drafting the key, and some order-form
+boilerplate appears on both sides. The rules' term list came from reading the tuning files. Terms seen only in test
+files, such as "Service Data" and "Credential Data", were deliberately not added, so missing them is a real failure.
+
+**First rules scores, tuning files:** found 86.5%, clean 51%, whole 80%. After one round of fixes (indemnity clauses
+that only mention Customer Content, "Student Information Systems", DocuSign's "Encrypted" logs): found 86.5%, clean
+69.5%, whole 80%. Then frozen.
+
+### P6. Each method alone, on the tuning files (Nov 2)
+
+The 15 core contract passages of the tuning files. Brochure left out:
+
+| Method | Found | Clean | Whole | Sections kept |
+|---|---|---|---|---|
+| **Rules** | **100%** | 49% | **100%** | 40 |
+| Meaning | 73% | 64% | 67% | 49 |
+| Rules + LLM | 66% | 79% | 33% | 35 |
+| LLM | 49% | 73% | 33% | 24 |
+
+**Why each result looks this way:**
+- **Rules** find everything but return extra text, because they return the whole clause. "8. Compliance" comes back
+  in full, though only one sentence in it is about data. This costs little: a later step can look inside the clause.
+- **LLM** answers no to clauses that are mostly about something else, such as "Compliance" (one safeguards sentence)
+  and "Termination" (one export sentence), though the prompt asks about any statement in the category. It also said
+  yes to titles and signature headers ("Order Form For University of Nebraska Medical Center").
+- **Meaning** has the same weakness as the LLM: a single privacy sentence does not change a clause's overall meaning.
+
+**Why these scores are optimistic:** only 15 contract passages, F01 and F02 hold the same terms, and the rules'
+term list was written from these same files. The test files are the real check.
+
+No test score has been computed. Run `python run.py privacy-test` once, after the answer key has been checked.
+
+### P7. Balancing score against manual checking: a three-way sorter
+
+**The goal (Nov 2):** core must be found, borderline gets checked by a person, and that checking should be as
+small as possible.
+
+**The method.** Each of the rules' sections (the unit that returned the most passages whole) gets up to three votes:
+the rules, Llama, and the meaning method (similarity to the category definition at or above a threshold t).
+- **2 or 3 votes: automatically in.**
+- **0 votes: automatically out.**
+- **1 vote: sent to a person.** The methods disagree, and disagreement is the signal that a section is uncertain.
+
+**How the balance is chosen.** Limits first, then the smallest cost:
+1. **Limits:** all core text found after checking, and at least 95% of borderline text in front of a person.
+2. **Cost:** among settings meeting the limits, the lowest total of words a person reads plus wrong words let in
+   automatically. Tried on the tuning files: t from 0.20 to 0.70, 2 or 3 votes to enter, a wide word net on or off.
+
+Chosen: t = 0.45, 2 votes, no word net (`outputs/privacy/sorter_settings.json`; every setting is in
+`sorter_all_settings_tune.csv`).
+
+**Result on the tuning files (contract text, 25,607 words):**
+
+| | |
+|---|---|
+| Core found after checking | 100% |
+| Core found with no person involved | 80.7% |
+| Borderline text reaching a person | 98.3% |
+| A person reads | 11.8% of the words (40 sections) |
+| Automatically out | 85.0% of the words |
+| Automatically in that is correct (clean) | 89.1% |
+
+**Why this point.** It sits just before a cliff:
+
+| t | Person reads | Borderline reaching a person | Core found |
+|---|---|---|---|
+| 0.40 | 20.2% | 98.3% | 100% |
+| **0.45** | **11.8%** | **98.3%** | **100%** |
+| 0.50 | 8.3% | 59.4% | 100% |
+
+**Why this approach, and the research behind it:**
+- **Sending uncertain cases to a person is an old, well-studied idea.** Chow (1970) set out the trade-off between errors
+  and rejecting cases.
+- **Fixing an acceptable limit, then automating as much as possible,** is how selective classification is framed:
+  Geifman & El-Yaniv (2017) set a target risk and maximize coverage. Here the limit is on missing text.
+- **Legal document review works this way.** Technology-assisted review pairs software with human reviewers (Grossman &
+  Cormack 2011), and Cormack & Grossman (2016) judge it against a recall target, a "goal post". "Core must be found" is
+  that kind of target. Their paper also warns that a hard goal post fits some aspects of quality poorly.
+
+**What is my own choice, not from those papers:** the voting rule, the 95% limit, and counting a word read the same as a
+wrong word let in. These were chosen to be simple enough to explain, and because 15 passages cannot support a
+fitted model. The cost weighting is untested; a different weighting could pick another point.
+
+**What this does not show:**
+- It assumes a person always answers like the key.
+- It was tuned on 15 passages, two files of which share the same terms, so "100% found" is optimistic.
+- The cliff at t = 0.50 suggests the setting may be fragile on new files.
+- A person never sees automatically-out text. On the test files, a random spot-check of that pile (an "elusion test" in
+  legal review) would estimate what slipped through. Practitioners warn that this test alone can overstate recall.
+
+**Sources:** [Chow 1970](https://dblp.org/pid/85/786), [Geifman & El-Yaniv 2017](https://arxiv.org/abs/1705.08500),
+[Grossman & Cormack 2011](https://scholarship.richmond.edu/jolt/vol17/iss3/5/),
+[Cormack & Grossman 2016](https://cormack.uwaterloo.ca/reliability),
+[elusion test, practitioner guide](https://relativity.com/blog/active-learning-validation-101-quantifying-your-success/).
+
+---
+
 ## Pricing tables (T)
 
 ### T1. Start with pricing tables, and use arithmetic as a free answer key

@@ -1,0 +1,84 @@
+passage_id,file_id,block_start,block_end,start_phrase,end_phrase,facets,strength,binding,anchor,human_checked
+P001,F01,24,24,Instructure will implement,secure the Customer Content,secure,core,yes,8. Compliance. Each party will comply with,no
+P002,F01,25,25,,,own;use,core,yes,"9. Aggregated Data. As between the parties,",no
+P003,F01,27,27,,,conf,borderline,yes,11. Confidentiality. Each party acknowledges that the,no
+P004,F01,29,29,,,own;use,core,yes,13. Customer Owned Content. As between Instructure,no
+P005,F01,30,30,,,use,borderline,yes,14. Feedback. instructure may send surveys to,no
+P006,F01,32,32,in connection with certain,feature within the Service,retain,core,yes,16. Termination. Either party may terminate this,no
+P007,F01,33,33,,,retain,borderline,yes,17. Suspension of Service. Instructure may immediately,no
+P008,F01,19,19,,,secure,borderline,yes,3. Customer Responsibilities. Customer: (a) is solely,no
+P009,F02,50,50,Instructure will implement,secure the Customer Content,secure,core,yes,8. Compliance. Each party will comply with,no
+P010,F02,51,51,,,own;use,core,yes,"9. Aggregated Data. As between the parties,",no
+P011,F02,53,53,,,conf,borderline,yes,11. Confidentiality. Each party acknowledges that the,no
+P012,F02,55,55,,,own;use,core,yes,13. Customer Owned Content. As between Instructure,no
+P013,F02,56,56,,,use,borderline,yes,14. Feedback. Instructure may send surveys to,no
+P014,F02,58,58,in connection with certain,feature within the Service,retain,core,yes,16. Termination. Either party may terminate this,no
+P015,F02,59,59,,,retain,borderline,yes,17. Suspension of Service. Instructure may immediately,no
+P016,F02,45,45,,,secure,borderline,yes,3. Customer Responsibilities. Customer: (a) is solely,no
+P017,F03,48,48,Instructure will implement,secure the Customer Content,secure,core,yes,8. Compliance. Each party will comply with,no
+P018,F03,49,49,,,own;use;retain;breach,core,yes,9. Data. As between Instructure and Customer;,no
+P019,F03,51,51,,,conf,borderline,yes,11. Confidentiality. Each party acknowledges that the,no
+P020,F03,53,53,in connection with certain,feature within the Service,retain,core,yes,13. Term and Termination. The term of,no
+P021,F03,54,54,,,use,borderline,yes,14. Monitoring; Suspension of Service. Instructure may,no
+P022,F03,41,41,,,secure,borderline,yes,3. Customer Responsibilities. Customer is responsible for,no
+P023,F07,46,47,,,use;share,core,yes,Product | Description Canvas Folio Management |,no
+P024,F07,68,68,(a) it shall implement,secure the Customer Content,secure,core,yes,5. Instructure Warranties. Instructure warrants that: (a),no
+P025,F07,71,71,Each party will comply,"(""Personal Information"")",law,core,yes,8. Compliance. Each party will comply with,no
+P026,F07,72,72,,,own;use,core,yes,9. Customer Content. As between Instructure and,no
+P027,F07,73,73,,,own;use,core,yes,10. Data Use. Customer agrees that data,no
+P028,F07,77,77,,,conf;law,core,yes,14. Confidentiality. Each party acknowledges that it,no
+P029,F07,79,79,in connection with certain,provide any Customer Content,retain,core,yes,16. Term and Termination. The term of,no
+P030,F07,66,66,,,secure,borderline,yes,3. Customer Responsibilities. Customer shall have sole,no
+P031,F07,102,112,,,secure;breach,core,yes,20. Security.,no
+P032,F07,114,118,,,breach,borderline,yes,Instructure agrees to purchase and maintain throughout,no
+P033,F09,14,14,,,law,core,yes,5. COMPLIANCE WITH LAWS. Performance of all,no
+P034,F09,94,99,,,secure;retain,core,no,AWS Data Security,no
+P035,F09,136,144,,,secure,core,no,Data Security,no
+P036,F09,179,202,,,breach,core,no,Incident Response Policy and Plan,no
+P037,F09,203,214,,,law,core,no,FERPA/HIPAA Compliance FERPA Overview,no
+P038,F09,218,234,,,law;share,core,no,GDPR stands for the EU General Data,no
+P039,F09,49,93,,,secure,borderline,no,Introduction,no
+P040,F09,100,135,,,secure,borderline,no,Network and Systems Security,no
+P041,F09,145,178,,,secure,borderline,no,Virus and Anti-Malware scanning,no
+P042,F09,215,217,,,law,borderline,no,"Payment Card Industry (""PCI"") Data Security Standards",no
+P043,F11,45,45,,,law,core,yes,The parties agreement with regards to Instructure's,no
+P044,F11,80,80,,,law,core,yes,The parties agreement with regards to Instructure's,no
+P045,F12,28,28,,,law,core,yes,The parties agreement with regards to Instructure's,no
+P046,F12,75,75,,,conf,borderline,yes,l. Any term requiring the confidentiality of,no
+P047,F13,34,34,,,use;breach;law;retain,core,yes,Confidentiality. Contractor acknowledges that performance under the,no
+P048,F14,88,88,(b) any laws,"(""Personal Information"")",law,core,yes,9.Compliance. Each party shall comply with all,no
+P049,F14,89,89,,,own;use,core,yes,"10.Customer Content. As between Instructure and Customer,",no
+P050,F14,90,91,,,own;use,core,yes,11.Usage Data. Customer agrees that statistical and,no
+P051,F14,97,97,,,breach,core,yes,"FOR PURPOSES OF THIS SECTION 12, ""SECURITY",no
+P052,F14,96,96,,,breach,borderline,yes,"NOTWITHSTANDING THE FOREGOING, INSTRUCTURE'S CUMULATIVE MAXIMUM LIABILITY",no
+P053,F14,98,105,,,conf;law,core,yes,13.Confidentiality.,no
+P054,F14,109,109,in connection with certain,provide any Customer Content,retain,core,yes,Upon expiration or termination of this Agreement:,no
+P055,F14,153,153,,,own,borderline,yes,"""End Organization"" means any school, school district,",no
+P056,F14,154,154,,,own,core,yes,"""End Organization Data"" means all information and",no
+P057,F14,161,163,,,own;law,core,yes,End Organization Data. Customer agrees that End,no
+P058,F14,170,170,,,own;use,core,yes,2. Customer hereby grants to Instructure a,no
+P059,F14,192,192,,,use;ai,core,yes,3.Prohibition on Training and Improvement. Unless expressly,no
+P060,F14,195,195,Customer expressly agrees,considered Customer Content,use;ai,core,yes,5. Ownership of Output. Instructure and/or its,no
+P061,F14,197,197,,,use;ai,core,yes,6. Customer's Uses of Intelligent Insights. Instructure,no
+P062,F14,206,206,,,use;ai,core,yes,2. Prohibition on Training and Improvement. Unless,no
+P063,F14,215,215,Customer expressly agrees,considered Customer Content,use;ai,core,yes,The Instructure Intellectual Property is and shall,no
+P064,F14,216,216,,,use;ai,core,yes,Customer expressly acknowledges that any text or,no
+P065,F14,218,218,,,use;ai;law,core,yes,7. Customer's Uses of AI Features. Instructure,no
+P066,F14,235,237,,,law,core,yes,2. Data Processing. The data processing addendum,no
+P067,F14,265,266,,,use,core,yes,(a) Customer shall not: (i) initiate a,no
+P068,F14,295,299,,,retain;law,core,yes,4. Customer Data and Services Data.,no
+P069,F14,302,302,,,breach;law,core,yes,"6.2 The Customer must have processes, systems",no
+P070,F14,313,314,,,retain;law,core,yes,7.1 The Customer must ensure that Credential,no
+P071,F14,320,320,,,use,core,yes,"7.8 Customer shall not, and shall not",no
+P072,F14,331,331,,,share;law,core,yes,(d) Instructure will obtain each VIA End,no
+P073,F14,333,333,,,own,core,yes,"(f) As between Instructure and Customer, any",no
+P074,F14,337,337,,,share,core,yes,9.3 Third party services. If the Customer,no
+P075,F14,70,70,,,use,borderline,yes,The number of Users for which Customer,no
+P076,F14,74,74,,,secure,borderline,yes,Customer further agrees to: (a) maintain the,no
+P077,F14,203,205,,,ai,borderline,yes,"""AI Features"" means Instructure's or a third",no
+P078,F14,242,242,,,own,borderline,yes,5.2 Certain Customer Content may be required,no
+P079,F14,259,259,,,retain,borderline,yes,11. Destruction of Credentials and Indemnification. To,no
+P080,F14,283,283,,,own,borderline,yes,"1.4 ""Customer Data"" means the data inputted",no
+P081,F14,286,286,,,own,borderline,yes,"1.7 ""Service Data"" means the Customer Data,",no
+P082,F14,332,332,,,share,borderline,yes,(e) Instructure will provide the Customer with,no
+P083,F14,338,338,,,breach,borderline,yes,ANNEX A INSURANCE REQUIREMENTS Instructure shall at,no
