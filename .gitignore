@@ -8,4 +8,3 @@ __pycache__/
 *.PDF
 contracts/
 results_*.zip
-results_privacy.zip

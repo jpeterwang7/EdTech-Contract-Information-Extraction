@@ -27,7 +27,7 @@ from collections import Counter, defaultdict
 import numpy as np
 from PIL import Image, ImageDraw
 
-from .common import DATA, OUT, WORK, normalize, page_png, read_json, write_csv
+from .common import DATA, OUT, WORK, normalize, page_png, write_csv
 from .reading import ENGINES, is_scanned, load, page_text
 
 GOLD = DATA / "gold" / "ocr_lines.csv"
