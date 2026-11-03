@@ -265,8 +265,10 @@ contract clause (what_failed.md, 36).
 
 **P5. Test fairly.** Methods are built and adjusted on the tuning files (15 core and 12 borderline passages). The test
 files are scored once, after the key is checked. The term list came from the tuning files only, so a term seen only in
-test files ("Service Data") was left out on purpose. Two limits: the test files were read while cleaning the text and
-drafting the key, and some standard wording appears in both groups.
+test files ("Service Data") was left out on purpose. Three limits: the test files were read while cleaning the text
+and drafting the key; some standard wording appears in both groups; and on Nov 2–3, F07, F08 and F10 were briefly used
+as tuning files, then put back as test files. Everything changed because of them was undone (a "security breach" term
+and two additions to the keep-together rule), but their results were seen, so the test on them is not fully blind.
 
 **P6. First results, judging sections (tuning files).**
 
@@ -385,14 +387,18 @@ inside one clause (one regex section) only:
 - In the sorter, a block brought along by automatically-kept blocks is kept automatically; one brought along with the
   help of a block a person checks goes to that person too.
 
-Example, on a made-up clause: "5. Security. The vendor shall:" / "(a) keep accurate invoices;" / "(b) encrypt Customer
-Data at rest;" / "(c) delete Customer Data within 30 days of termination."
+Example, on made-up text. Each line is its own block; "6." starts a new block and a new clause.
+- Clause 5: "5. Security. The vendor shall:" / "(a) encrypt Customer Data at rest;" / "(b) keep accurate invoices;" /
+  "(c) delete Customer Data within 30 days of termination."
+- Clause 6: "6. Data Return. Instructure will return Customer Data on request."
 
-| Blocks a method keeps | Returned after the rule |
-|---|---|
-| (c) | The lead-in and (c) |
-| (a) and (c) | The lead-in, (a), (b) and (c) |
-| (c) and the next clause, "6. Fees." | The lead-in, (c) and "6. Fees." (nothing added to clause 6) |
+| Blocks a method keeps | Returned after the rule | Why |
+|---|---|---|
+| (c) | The lead-in and (c) | (a) and (b) sit between the lead-in and the first kept block, so they stay out |
+| (a) and (c) | The lead-in, (a), (b) and (c) | (b) lies between two kept blocks of one clause, though it isn't about privacy |
+| (a) and "6. Data Return." | The lead-in, (a) and "6. Data Return." | (b) and (c) are not added: gaps are filled only inside one clause |
+
+Every block and its result: `outputs/privacy/blocks_segmented.xlsx`, made by `python -m bench.review blocks`.
 
 **Effect on the tuning files:** no contract block is added, for any method or for the sorter, so every score above is
 unchanged. It adds a few blocks inside the unscored F09 brochure. The rule was fixed before the test files were scored,

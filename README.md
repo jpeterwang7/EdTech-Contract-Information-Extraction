@@ -49,6 +49,7 @@ Headline results so far:
     Llama with context 73%, 100%, 53%.
   - Three-way sorter (term list, meaning and Llama vote): all core found after checking, 89% of borderline reaches a
     person, and a person reads 8.6% of the words (decisions.md, P8).
+  - Every block and its result: `outputs/privacy/blocks_segmented.xlsx` (`.venv/bin/python -m bench.review blocks`).
 - **Clean text** (`outputs/text/F01.md` … `F14.md`, readable next to the PDFs):
   - Page numbers and stamps in the text: 88 → 0.
   - Sentences cut off mid-way: 2,119 → 10.

@@ -301,6 +301,63 @@ def order_forms() -> str:
     return str(path)
 
 
+# ---------------------------------------------------------------- every block, as the privacy step sees it
+
+def blocks_sheet() -> str:
+    """outputs/privacy/blocks_segmented.xlsx: one row per block of every contract, with the context Llama is shown, the
+    three votes and the sorter's result. A block the keep-together rule brought along is marked so. Test files show
+    their text only, until the final test."""
+    from openpyxl import Workbook
+    from openpyxl.styles import Alignment, Font, PatternFill
+    from .privacy import (TUNE, _load_npz, load_blocks, load_unit_answers, section_signals, sort_sections,
+                          together_lanes, unit_contexts, units)
+    blocks = load_blocks()
+    s = json.loads((OUT / "privacy" / "sorter_settings.json").read_text())
+    signals = section_signals(blocks, _load_npz(), load_unit_answers(blocks))
+    lane_name = {"in": "Kept", "check": "Person checks", "out": "Dropped"}
+    result = {}
+    for f in TUNE:
+        first = sort_sections(signals[f], s["t"], s["auto_votes"], s["use_net"])
+        before = {r["sec"][0]: lane for lane, rs in first.items() for r in rs}
+        for lane, rs in together_lanes(blocks[f], {k: list(v) for k, v in first.items()}).items():
+            for r in rs:
+                moved = " (brought along)" if before[r["sec"][0]] != lane else ""
+                result[(f, r["sec"][0])] = (r, lane_name[lane] + moved)
+    kind = {"grid": "form rows", "table": "pricing table", "paragraph": "paragraph"}
+    span = lambda xs: str(xs[0]) if xs[0] == xs[-1] else f"{xs[0]}–{xs[-1]}"
+    fill = {"Kept": PatternFill("solid", fgColor="D8F0E3"), "Person checks": PatternFill("solid", fgColor="FFF2CC")}
+    wrap = Alignment(wrap_text=True, vertical="top")
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Blocks"
+    ws.append(["File", "Block", "Pages", "Type", "Context (shown to Llama, not returned)", "Text", "Words", "Word list",
+               "Llama", "Meaning", "Result"])
+    for f in sorted(blocks):
+        bs, ctx = blocks[f], unit_contexts(blocks[f])
+        for u in units(bs):
+            pages = sorted({p for k in u for p in bs[k]["pages"]})
+            row = [f, span(u), span(pages), kind.get(bs[u[0]]["kind"], bs[u[0]]["kind"]), ctx.get(u[0], ""),
+                   "\n".join(bs[k]["text"] for k in u), sum(len(bs[k]["words"]) for k in u)]
+            if (f, u[0]) in result:
+                r, res = result[(f, u[0])]
+                row += ["yes" if r["rules"] else "no", "yes" if r["llm"] else "no", round(r["meaning"], 2), res]
+            else:
+                row += ["", "", "", "Brochure, not scored" if f in TUNE else "Test file, not scored yet"]
+            ws.append(row)
+            for c in ws[ws.max_row]:
+                c.alignment = wrap
+            ws.cell(ws.max_row, 11).fill = fill.get(row[-1].split(" (")[0], PatternFill())
+    for c in ws[1]:
+        c.font = Font(bold=True)
+    for col, width in zip("ABCDEFGHIJK", (6, 7, 7, 13, 45, 90, 7, 9, 7, 8, 24)):
+        ws.column_dimensions[col].width = width
+    ws.freeze_panes, ws.auto_filter.ref = "A2", f"A1:K{ws.max_row}"
+    path = OUT / "privacy" / "blocks_segmented.xlsx"
+    wb.save(path)
+    return str(path)
+
+
 # ---------------------------------------------------------------- the decision log, readable in a browser
 
 DOC_CSS = """
@@ -432,4 +489,4 @@ def docs() -> str:
 if __name__ == "__main__":
     for fid in sys.argv[1:] or ["F02"]:
         print(order_forms() if fid == "forms" else mentor_sheet() if fid == "sheet" else docs() if fid == "docs"
-              else privacy_key() if fid == "privacy" else build(fid))
+              else blocks_sheet() if fid == "blocks" else privacy_key() if fid == "privacy" else build(fid))
