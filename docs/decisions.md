@@ -359,6 +359,48 @@ The chosen setting sits just before a cliff:
 | **0.45** | **8.6%** | **88.8%** | **100%** |
 | 0.50 | 5.0% | 49.9% | 100% |
 
+**P9. Keep blocks, but keep a passage's pieces together.** My choice on Nov 2.
+
+**The problem:** judging one block at a time can keep a lettered item ("(c) … delete Customer Data within 30 days") and
+drop its lead-in ("The vendor shall:"), so the reader loses who must do what. The tuning files can't show this, because
+all 15 of their core passages fit inside one block. On the test files, 9 core passages run across 2 to 11 blocks.
+
+**Considered: going back to sections (P3–P7).**
+
+| Tuning files | Sections | Blocks |
+|---|---|---|
+| Term list: found / clean | 100% / 49% | 100% / 69% |
+| Llama: found / clean | 66% / 79% | 73% / 100% |
+| A person reads | 11.8% of words (40 sections) | 8.6% (14 blocks) |
+| Borderline reaching a person | 98.3% | 88.8% |
+| A passage inside one clause returned complete | Always, once any part is kept | Not guaranteed |
+
+I kept blocks, because sections bring back subclauses and sentences that have nothing to do with privacy.
+
+**Added instead: a keep-together rule**, the last step after a method or the sorter has chosen its blocks. It works
+inside one clause (one regex section) only:
+- The first kept block brings its **lead-in**: the nearest line above it ending in ":".
+- Every block **between two kept blocks** comes too.
+- Items between the lead-in and the first kept block stay out, and nothing comes from another clause.
+- In the sorter, a block brought along by automatically-kept blocks is kept automatically; one brought along with the
+  help of a block a person checks goes to that person too.
+
+Example, on a made-up clause: "5. Security. The vendor shall:" / "(a) keep accurate invoices;" / "(b) encrypt Customer
+Data at rest;" / "(c) delete Customer Data within 30 days of termination."
+
+| Blocks a method keeps | Returned after the rule |
+|---|---|
+| (c) | The lead-in and (c) |
+| (a) and (c) | The lead-in, (a), (b) and (c) |
+| (c) and the next clause, "6. Fees." | The lead-in, (c) and "6. Fees." (nothing added to clause 6) |
+
+**Effect on the tuning files:** no contract block is added, for any method or for the sorter, so every score above is
+unchanged. It adds a few blocks inside the unscored F09 brochure. The rule was fixed before the test files were scored,
+so its benefit will be measured there without having been tuned on them.
+
+**Limits:** it can't recover a passage whose blocks were all missed; it can't add an item that comes after the last
+kept block; and if (a) and (c) are about privacy but (b) isn't, (b) is returned too.
+
 ---
 
 ## S. Where things run

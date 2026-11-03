@@ -211,6 +211,36 @@ def run_rules_units(blocks: dict) -> dict:
     return {f: [u for u in units(bs) if rule_keep(bs, u)] for f, bs in blocks.items()}
 
 
+def keep_together(bs: list[dict], kept: list[list[int]]) -> list[list[int]]:
+    """The last step on kept units: inside one clause (a regex section), the first kept block brings its lead-in (the
+    nearest line above it ending in ":"), and every block between two kept blocks comes too, so a privacy passage is
+    not returned in pieces. Items between the lead-in and the first kept block stay out, and nothing reaches into
+    another clause (decisions.md, P9)."""
+    on = {k for u in kept for k in u}
+    add = set()
+    for sec in rule_sections(bs):
+        body = [k for k in sec if bs[k]["kind"] != "heading"]
+        hit = [k for k in body if k in on]
+        if not hit:
+            continue
+        lead = next((k for k in reversed(body) if k < hit[0] and bs[k]["text"].rstrip().endswith(":")), None)
+        add |= {k for k in body if hit[0] < k < hit[-1] or k == lead}
+    return [u for u in units(bs) if set(u) & (on | add)]
+
+
+def together_lanes(bs: list[dict], lanes: dict) -> dict:
+    """keep_together on the sorter's piles. A block brought along by automatically-kept blocks is kept automatically;
+    one brought along only with the help of blocks a person checks goes to the person too, so they see an item with its
+    lead-in and the items between."""
+    for lane, lower, using in (("in", ("check", "out"), ("in",)), ("check", ("out",), ("in", "check"))):
+        want = {k for u in keep_together(bs, [r["sec"] for x in using for r in lanes[x]]) for k in u}
+        for lo in lower:
+            move = [r for r in lanes[lo] if set(r["sec"]) & want]
+            lanes[lo] = [r for r in lanes[lo] if r not in move]
+            lanes[lane] += move
+    return lanes
+
+
 # ---------------------------------------------------------------- reporting
 
 def report(rows: list[dict], path: Path) -> None:
@@ -304,15 +334,16 @@ def methods_available(blocks: dict, gold: list[dict]) -> dict:
         out["llm, sections"] = {f: [s for s, yes in zip(a["llm_sections"][f], a["llm_yes"][f]) if yes] for f in blocks}
         out["rules+llm, sections"] = {f: [s for s, yes in zip(rule_sections(blocks[f]), a["rules_yes"][f]) if yes]
                                       for f in blocks}
-    out["rules, blocks"] = run_rules_units(blocks)
+    together = lambda chosen: {f: keep_together(blocks[f], kept) for f, kept in chosen.items()}
+    out["rules, blocks"] = together(run_rules_units(blocks))
     if emb:
         keep = max((x / 20 for x in range(2, 15)),
-                   key=lambda k: score(blocks, gold, run_meaning_units(blocks, emb, k), TUNE)["F2"])
+                   key=lambda k: score(blocks, gold, together(run_meaning_units(blocks, emb, k)), TUNE)["F2"])
         print(f"  meaning on blocks: threshold from the tuning files: keep={keep}")
-        out["meaning, blocks"] = run_meaning_units(blocks, emb, keep)
+        out["meaning, blocks"] = together(run_meaning_units(blocks, emb, keep))
     yes = load_unit_answers(blocks)
     if yes:
-        out["llm, blocks"] = {f: [u for u, y in zip(units(bs), yes[f]) if y] for f, bs in blocks.items()}
+        out["llm, blocks"] = together({f: [u for u, y in zip(units(bs), yes[f]) if y] for f, bs in blocks.items()})
     return out
 
 
@@ -393,7 +424,7 @@ CORE_TARGET, BORDERLINE_TARGET = 1.0, 0.85     # 0.95 for sections; 0.85 for blo
 
 def sweep(blocks, gold, signals) -> list[tuple[dict, dict]]:
     return [({"t": t, "auto_votes": v, "use_net": n}, _weigh(blocks, gold, signals,
-             {f: sort_sections(signals[f], t, v, n) for f in TUNE}, TUNE))
+             {f: together_lanes(blocks[f], sort_sections(signals[f], t, v, n)) for f in TUNE}, TUNE))
             for t in [x / 20 for x in range(4, 15)] for v in (2, 3) for n in (True, False)]
 
 
@@ -420,7 +451,8 @@ def run_sorter(blocks: dict, gold: list[dict], files: list[str], rows: list[dict
         choice_path.write_text(json.dumps(settings))
     else:
         settings = json.loads(choice_path.read_text())
-    sorted_ = {f: sort_sections(signals[f], settings["t"], settings["auto_votes"], settings["use_net"]) for f in files}
+    sorted_ = {f: together_lanes(blocks[f], sort_sections(signals[f], settings["t"], settings["auto_votes"],
+                                                          settings["use_net"])) for f in files}
     print("  sorter: " + "  ".join(f"{k}={v}" for k, v in _row(settings, _weigh(blocks, gold, signals, sorted_, files)).items()))
     rows_out = [{"file_id": f, "lane": lane, "first_block": r["sec"][0], "last_block": r["sec"][-1], "words": r["words"],
                  "rules": r["rules"], "llm": r["llm"], "meaning": round(r["meaning"], 3), "net": r["net"],
