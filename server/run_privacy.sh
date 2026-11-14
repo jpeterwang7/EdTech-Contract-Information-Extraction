@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Run the two server methods:  bash benchmark_segmentation_extraction/server/run_privacy.sh
-#   1. meaning vectors for every block (CPU; skipped when they exist)
+#   1. embeddings for every block (CPU; skipped when they exist)
 #   2. start Llama with vLLM, ask yes or no for every single block, stop Llama (also on an error or Ctrl-C)
 #      (the earlier section questions: STEP=privacy-llm bash ...)
 # Rerunning is safe: Llama's answers are saved as they arrive and are not asked again.
@@ -14,7 +14,7 @@ export LLM_BASE_URL="http://localhost:$PORT/v1"
 exec > >(tee -a work/run_privacy.log) 2>&1
 
 echo "GPU memory now:"; nvidia-smi --query-gpu=index,name,memory.used,memory.total --format=csv || true
-echo; echo "== 1. Meaning vectors"
+echo; echo "== 1. Embeddings"
 if [ -f work/privacy/embeddings.npz ]; then echo "already made"; else .venv/bin/python run.py privacy-embed; fi
 
 DTYPE_ARGS=""

@@ -28,7 +28,7 @@ tables and forms.
 | `tables` | Read the pricing tables two ways; check them with arithmetic | done |
 | `forms` | Read 8 fields from each of the 14 order forms two ways (text rules, layout) and score them | done; answer key checked by me (0 of 112 changed) |
 | `text` | Clean, whole text: page numbers and stamps removed, paragraphs joined across lines and pages, checked tables in place | done; F02 and F13 read by a person beside the scans |
-| `privacy` | Find data-governance-and-privacy text with a term list, meaning and Llama; a sorter sends disagreements to a person | scored on the tuning files; test files not yet scored; answer key needs a person's check |
+| `privacy` | Find data-governance-and-privacy text with a term list, semantic similarity and Llama; a sorter sends disagreements to a person | scored on the tuning files; test files not yet scored; answer key needs a person's check |
 | extraction | Privacy facts (goal 2) | not started |
 
 Headline results so far:
@@ -51,17 +51,20 @@ Headline results so far:
   - Sentences cut off mid-way: 2,119 → 10.
   - A third OCR engine finds only 3 lines missing.
 - **Finding privacy text** (tuning files, contract text; test files not yet scored):
-  - Judging one block at a time (found, clean, whole): term list (regex) 100%, 69%, 100%; meaning 73%, 51%, 67%;
+  - Judging one block at a time (found, clean, whole): term list (regex) 100%, 69%, 100%; semantic similarity 73%, 51%, 67%;
     Llama with context 73%, 100%, 53%.
-  - Three-way sorter (term list, meaning and Llama vote): all core found after checking, 89% of borderline reaches a
+  - Three-way sorter (term list, semantic similarity and Llama vote): all core found after checking, 89% of borderline reaches a
     person, and a person reads 8.6% of the words (decisions.md, P8).
+  - Checked against a person's yes or no for each block (the answer key): the final privacy blocks match on 484 of
+    487 blocks; the 3 misses are borderline clauses dropped automatically. The test files will show whether this
+    holds (decisions.md, P10).
 
 ## Running it on the Mac
 
 ```bash
 .venv/bin/python run.py read ocr-eval tables forms text privacy
 ```
-`read` skips pages already read, and `privacy` reuses the meaning vectors and Llama answers saved in
+`read` skips pages already read, and `privacy` reuses the embeddings and Llama answers saved in
 `work/privacy/`, so neither needs the server again. Score the test files only once, after the answer key is checked
 and nothing will change:
 ```bash
@@ -122,7 +125,7 @@ Back on the Mac, unpack the results into this folder (replace the zip name with 
 unzip -o ~/Desktop/results_DATE.zip -d "$HOME/Desktop/Educational Contracts/benchmark_segmentation_extraction"
 ```
 
-**Privacy: meaning vectors and Llama** (needs the GPU). Set up once, run, then zip the answers:
+**Privacy: embeddings and Llama** (needs the GPU). Set up once, run, then zip the answers:
 ```bash
 bash benchmark_segmentation_extraction/server/setup_privacy.sh
 ```
@@ -159,7 +162,7 @@ bash benchmark_segmentation_extraction/server/cleanup_server.sh
 ```
 run.py              the entry point: python run.py <steps>
 bench/              one file per step: reading.py, ocr_eval.py, tables.py, forms.py, text.py, privacy.py;
-                    privacy_server.py (meaning vectors and Llama, run on the server); review.py (pages for checking);
+                    privacy_server.py (embeddings and Llama, run on the server); review.py (pages for checking);
                     common.py (shared helpers)
 tools/              vision_ocr.swift (Apple Vision OCR, compiled on first use)
 server/             setup, run, pack and cleanup scripts for the lab server
@@ -172,7 +175,7 @@ data/baseline_docling_rapidocr/   the earlier pipeline's output, for comparison
 data/english_words.txt.gz         word list for checking the digital pages' stored text
 docs/               decisions.md, what_failed.md, current_pipeline.png (+ .svg)
 outputs/            scores and results (made by run.py and bench/review.py)
-work/privacy/       saved meaning vectors and Llama answers (kept in git, so scores rerun without the server)
+work/privacy/       saved embeddings and Llama answers (kept in git, so scores rerun without the server)
 work/               everything else in it is made by run.py and not in git: page pictures, raw OCR, cell re-reads
 ```
 The contract PDFs are not in the repo. They are read from `../Instructure Contracts/`, or from `contracts/` inside

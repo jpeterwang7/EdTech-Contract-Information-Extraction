@@ -4,7 +4,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 source server/env_privacy.sh
 [ -x .venv/bin/python ] || { echo "Run server/setup_server.sh first."; exit 1; }
-echo "== Meaning model: sentence-transformers (CPU version of PyTorch, so it never competes for the GPU)"
+echo "== Semantic-similarity model: sentence-transformers (CPU version of PyTorch, so it never competes for the GPU)"
 .venv/bin/pip install torch --index-url https://download.pytorch.org/whl/cpu
 .venv/bin/pip install sentence-transformers
 .venv/bin/python -c "import sentence_transformers; print('sentence-transformers', sentence_transformers.__version__)"

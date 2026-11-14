@@ -11,7 +11,7 @@ these decisions are in [what_failed.md](what_failed.md).
 | Pricing tables | Read by column position, checked with arithmetic | 88 rows; all 63 subtotals and 12 grand totals add up |
 | Order-form fields | Find each label on the page, take the value beside it | 89 of 99 values right |
 | Clean text | Remove page clutter, join lines into whole paragraphs | Cut-off sentences: 2,119 → 10 |
-| Privacy passages | Term list, meaning and Llama vote on each block; a person checks where they disagree | All core text found; a person reads 8.6% of the words (tuning files) |
+| Privacy passages | Term list, semantic similarity and Llama vote on each block; a person checks where they disagree | All core text found; a person reads 8.6% of the words; matches a person's yes or no on 484 of 487 blocks (tuning files) |
 
 **Still open:**
 - A person needs to check the privacy answer key (P2).
@@ -217,8 +217,8 @@ descriptions and garbled handwriting remain. I judged these not major.
 - **Tuning files** (F01–F06, F09, F11, F12): used to build and adjust the methods. **Test files** (F07, F08, F10, F13,
   F14): scored once, at the end.
 
-**P1. One category: data governance and privacy.** My decision on Nov 2, so a 12-topic plan was dropped. The
-meaning method and Llama are given this definition word for word:
+**P1. One category: data governance and privacy.** My decision on Nov 2, so a 12-topic plan was dropped. Semantic
+similarity and Llama are given this definition word for word:
 > Data governance and privacy: who owns customer, student or user data; how the vendor may use, analyze or share it,
 > including aggregated or de-identified data and training AI models; disclosure to third parties; how long data is kept
 > and how it is exported, returned or deleted; security safeguards and data breach notification; and duties under
@@ -240,13 +240,15 @@ missing. **A person still has to check the key:** `outputs/privacy/privacy_key_f
 | Method | Keeps the text when | Tool |
 |---|---|---|
 | **Term list** | It contains a privacy term ("personal data", "FERPA", "data breach", "encrypt"…), or "Customer Content" within 6 words of a word such as own, use, secure, export or delete | Two regexes, written from the tuning files |
-| **Meaning** | Its meaning is close to the definition in P1: both are turned into lists of numbers, and their similarity score (higher = closer) is at or above a threshold | sentence-transformers, all-mpnet-base-v2 |
+| **Semantic similarity** | Its meaning is close to the definition in P1: both are turned into lists of numbers (embeddings), and their similarity score (higher = closer) is at or above a threshold | sentence-transformers, all-mpnet-base-v2 |
 | **Llama** | Llama answers yes when asked whether the text is in the category defined in P1. It must reply in a fixed form a program can read (JSON): `{"in_category": true}` or `false` | Llama 3.1 8B Instruct, on the lab server |
+
+In the code and result files, semantic similarity is still called `meaning`.
 
 At first each method judged whole sections (P6, P7); now each judges one block at a time (P8). For sections, each
 method cut the file its own way:
 - **Term list:** the regex sections defined above.
-- **Meaning:** a new section where two neighbouring blocks differ in meaning (similarity below 0.7).
+- **Semantic similarity:** a new section where two neighbouring blocks differ in meaning (similarity below 0.7).
 - **Llama:** Llama is shown 30 blocks at a time and asked where sections start.
 - **Regex sections + Llama:** the term list's sections, judged by Llama. This separates Llama's cutting from its judging.
 
@@ -258,9 +260,9 @@ are core, 20 borderline and 30 neither.
 - **Whole** = the share of core passages returned complete, meaning every block of the passage was returned. Half a
   clause can lose its meaning.
 - **F2** = found and clean in one number, with found counted twice as much: 5 × found × clean ÷ (4 × clean + found). For
-  found 100% and clean 49%, F2 = 0.83. Used only to pick the meaning method's thresholds.
+  found 100% and clean 49%, F2 = 0.83. Used only to pick the semantic-similarity thresholds.
 
-The F09 brochure is left out of every score. Scored with it, the meaning method kept only brochure text and found no
+The F09 brochure is left out of every score. Scored with it, semantic similarity kept only brochure text and found no
 contract clause (what_failed.md, 36).
 
 **P5. Test fairly.** Methods are built and adjusted on the tuning files (15 core and 12 borderline passages). The test
@@ -275,7 +277,7 @@ and two additions to the keep-together rule), but their results were seen, so th
 | Method | Found | Clean | Whole |
 |---|---|---|---|
 | **Term list** | **100%** | 49% | **100%** |
-| Meaning | 73% | 64% | 67% |
+| Semantic similarity | 73% | 64% | 67% |
 | Regex sections + Llama | 66% | 79% | 33% |
 | Llama | 49% | 73% | 33% |
 
@@ -283,14 +285,14 @@ and two additions to the keep-together rule), but their results were seen, so th
   security safeguards) is about data. The rest of the clause lowers clean.
 - **Llama's sections were too big:** on F01 it made clauses 1–10 one 1,159-word section and said no, losing "9.
   Aggregated Data." Judging the regex sections instead raised found from 49% to 66%.
-- **Llama and meaning miss a privacy sentence inside a clause about something else:** "8. Compliance." and "16.
+- **Llama and semantic similarity miss a privacy sentence inside a clause about something else:** "8. Compliance." and "16.
   Termination.", whose last sentence lets the customer export its data for 3 months.
 - **These scores are optimistic:** 15 passages, F01 and F02 share wording, the term list was written from these files,
   and only one Llama prompt was tried.
 
 **P7. The sorter: three votes, and a person checks where they disagree.** My goal: all core text found, a person
 checks borderline text, and as little reading as possible.
-1. **Vote.** Each piece gets up to three votes: the term list keeps it; Llama says yes; its meaning similarity is at or
+1. **Vote.** Each piece gets up to three votes: the term list keeps it; Llama says yes; its similarity score is at or
    above a threshold t.
 2. **Sort.** 2–3 votes: automatically in. 0 votes: automatically out. 1 vote: a person reads it.
 3. **Tune on the tuning files.** Try t from 0.20 to 0.70 in steps of 0.05, 2 or 3 votes for automatically in, and with
@@ -332,11 +334,11 @@ word let in are my own choices, kept simple because 15 passages can't support a 
 | Tuning files | Found | Clean | Whole | Before, on sections |
 |---|---|---|---|---|
 | **Term list** | **100%** | **69%** | **100%** | 100%, 49%, 100% |
-| Meaning | 73% | 51% | 67% | 73%, 64%, 67% |
+| Semantic similarity | 73% | 51% | 67% | 73%, 64%, 67% |
 | **Llama, with context** | **73%** | **100%** | 53% | 49%, 73%, 33% |
 
 - **Term list:** cleaner, because unrelated parts of a clause no longer ride along.
-- **Meaning:** less clean, because a short block gives it little to go on.
+- **Semantic similarity:** less clean, because a short block gives it little to go on.
 - **Llama gains the most:** nothing it keeps is wrong. It still misses "8. Compliance."
 
 **The sorter on blocks.** With the 95% borderline limit, a person would read 33.8% of the words (66 blocks). **I chose
@@ -407,11 +409,51 @@ so its benefit will be measured there without having been tuned on them.
 **Limits:** it can't recover a passage whose blocks were all missed; it can't add an item that comes after the last
 kept block; and if (a) and (c) are about privacy but (b) isn't, (b) is returned too.
 
+**P10. Check the pipeline against a person's judgement.** Added on Nov 14, after my mentor's feedback on the diagram.
+A person answers one question for every block, without seeing the three votes: is it about data governance and
+privacy, yes or no? The answers come from the answer key (P2). Then the final privacy blocks are set against those
+answers. The person is not a fourth vote: their answers never decide what is kept; they only measure how often the
+pipeline gives the same answer.
+
+| Tuning files, blocks | Person: privacy | Person: not privacy |
+|---|---|---|
+| In the final privacy blocks | **24** | 0 |
+| Not in them | 3 | **460** |
+
+- **484 of 487 blocks match.** No block the person calls not privacy reaches the final blocks.
+- **The 3 misses** are dropped automatically, with no vote: "14. Feedback" (customer surveys) in F01 and F02, and F12's
+  term on confidentiality of public records. They are the cost of the 85% limit chosen in P8.
+- **14 of the blocks were decided by the person who checks** (the middle pile, P7), who is assumed to answer like the
+  key, so those match by design. The real test is the other 473, decided automatically: 470 match.
+- **Why a table and not one percentage:** 460 of the 487 blocks are plainly not privacy, so a pipeline that dropped
+  everything would still match on 94%. The two cells that matter are privacy left out (lost for good) and not privacy
+  kept (noise passed to Goal 2).
+
+Two rules for the person's answers:
+- **Borderline counts as yes for now.** The key marks 25 passages "borderline" (could go either way). The review
+  workbook asks my mentor to answer each one yes or no; until then they count as privacy, since losing privacy text is
+  the costlier mistake.
+- **A lead-in counts as privacy when the items under it are.** The keep-together rule (P9) returns lines like "The
+  vendor shall:", which say nothing about privacy on their own. None occur on the tuning files, but they will on the
+  test files.
+
+`python run.py privacy` writes this table, in blocks and in words and split by who decided, to
+`outputs/privacy/agreement_tune.csv`.
+
+**This does not yet show the pipeline is robust:**
+- The key still needs a person's check (P2); until then, the person's answers are the key's first answers.
+- Matching on the tuning files is expected. The term list was written from them, and the key was drafted by reading in
+  full only blocks with related words. The term list alone also matches the key on every tuning block that is not
+  borderline.
+- The real test is the test files: `python run.py privacy-test` writes the same table to `agreement_test.csv`.
+- A privacy block with none of the related words would be missed by the key and the pipeline alike, so the table
+  can't see it. Only a person reading a random sample of the automatically-dropped blocks can (P7, limits).
+
 ---
 
 ## S. Where things run
 
 **S1. Mac for Apple Vision, lab server for heavy work.** Vision only runs on a Mac, so its saved readings travel in the
-bundle. The server ran RapidOCR's last pages, the meaning vectors and Llama, and those raw answers are saved in
+bundle. The server ran RapidOCR's last pages, the embeddings and Llama, and those raw answers are saved in
 `work/privacy`, so scores can be rerun in seconds without the server. Someone without a Mac can rerun everything except
 the Vision reading itself.

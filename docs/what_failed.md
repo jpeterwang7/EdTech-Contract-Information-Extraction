@@ -189,7 +189,7 @@ as were "Student Information Systems" and DocuSign's "Hashed/Encrypted" log line
 it to 69.5% with nothing lost (tuning files).
 
 **36. A score the brochure could swamp.** Scored in words, the brochure held most of the target text on the tuning
-files. So the meaning method, tuned on that score, kept only brochure sections: found 62.5% overall, and 0% of the
+files. So semantic similarity, tuned on that score, kept only brochure sections: found 62.5% overall, and 0% of the
 contract text. Contract text now has its own view, and thresholds are tuned on it (decisions.md, P4, P6).
 
 **37. Llama misses privacy sentences inside other clauses.** Asked yes or no per section, it said no to "Compliance"

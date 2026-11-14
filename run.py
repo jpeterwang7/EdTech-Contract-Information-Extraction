@@ -10,7 +10,7 @@ Steps, in order:
                paragraphs across lines and pages, table and form rows kept together
   privacy      find data-governance-and-privacy passages; score on the tuning files  (bench/privacy.py)
   privacy-test the same on the test files; run once, after everything is frozen
-  privacy-embed  (server) meaning vectors for every block                            (bench/privacy_server.py)
+  privacy-embed  (server) embeddings for every block                                 (bench/privacy_server.py)
   privacy-llm    (server) Llama marks section starts and answers yes or no           (bench/privacy_server.py)
   privacy-llm-units (server) Llama answers yes or no for every single block          (bench/privacy_server.py)
 """

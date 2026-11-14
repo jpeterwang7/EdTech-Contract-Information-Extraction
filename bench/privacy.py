@@ -25,7 +25,7 @@ Tuning uses TUNE files only. TEST scores are printed only with `python run.py pr
 import csv
 import json
 import re
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
 from .common import DATA, OUT, WORK, normalize, write_csv
@@ -386,14 +386,20 @@ def sort_sections(rows: list[dict], t: float, auto_votes: int, use_net: bool) ->
     return out
 
 
-def _weigh(blocks, gold, signals, sorted_, files) -> dict:
-    """Core text is found if it lands in "in" or "check" (the person is assumed to answer like the key)."""
-    core, bord, total = defaultdict(set), defaultdict(set), 0
+def _key_words(gold, files) -> tuple[dict, dict]:
+    """Core and borderline words of the key's contract passages, per file, as (block, word) pairs."""
+    core, bord = defaultdict(set), defaultdict(set)
     for g in gold:
         if g["file_id"] in files and g["binding"] == "yes":
             for k, s, e in g["spans"]:
                 (core if g["strength"] == "core" else bord)[g["file_id"]] |= {(k, w) for w in range(s, e)}
-    res = {"core_words": 0, "core_found_auto": 0, "core_found_after_check": 0, "wrong_auto_in": 0, "checked_words": 0,
+    return core, bord
+
+
+def _weigh(blocks, gold, signals, sorted_, files) -> dict:
+    """Core text is found if it lands in "in" or "check" (the person is assumed to answer like the key)."""
+    core, bord = _key_words(gold, files)
+    res ={"core_words": 0, "core_found_auto": 0, "core_found_after_check": 0, "wrong_auto_in": 0, "checked_words": 0,
            "checked_sections": 0, "auto_in_words": 0, "auto_out_words": 0, "borderline_words": 0, "borderline_checked": 0,
            "borderline_auto_in": 0, "total_words": 0}
     for f in files:
@@ -417,6 +423,27 @@ def _weigh(blocks, gold, signals, sorted_, files) -> dict:
                 else:
                     res["auto_out_words"] += r["words"]
     return res
+
+
+def agreement(blocks, gold, sorted_, files) -> list[dict]:
+    """The final privacy blocks against the person's yes or no in the key (decisions.md, P10). A block is privacy if
+    it holds any core or borderline word: borderline stands for yes until a person answers it (P2). A block a person
+    checks is assumed to get that same answer, so it always matches."""
+    core, bord = _key_words(gold, files)
+    count = Counter()
+    for f in files:
+        for lane, rows in sorted_[f].items():
+            for r in rows:
+                ws = {(k, w) for k in r["sec"] for w in range(len(blocks[f][k]["words"]))}
+                person = bool(ws & (core[f] | bord[f]))
+                final = lane == "in" or (lane == "check" and person)
+                who = "a person" if lane == "check" else "automatically"
+                count[final, who, person, "blocks"] += 1
+                count[final, who, person, "words"] += r["words"]
+    return [{"final_privacy_blocks": "in" if final else "not in", "decided": who,
+             **{f"person_{'privacy' if p else 'not_privacy'}_{unit}": count[final, who, p, unit]
+                for unit in ("blocks", "words") for p in (True, False)}}
+            for final in (True, False) for who in ("automatically", "a person")]
 
 
 CORE_TARGET, BORDERLINE_TARGET = 1.0, 0.85     # 0.95 for sections; 0.85 for blocks, my choice (decisions.md, P8)
@@ -459,6 +486,8 @@ def run_sorter(blocks: dict, gold: list[dict], files: list[str], rows: list[dict
                  "text": " ".join(blocks[f][r["sec"][0]]["words"][:30])}
                 for f in files for lane, rs in sorted_[f].items() for r in rs]
     write_csv(OUT / "privacy" / f"sorted_sections_{'tune' if files == TUNE else 'test'}.csv", rows_out)
+    write_csv(OUT / "privacy" / f"agreement_{'tune' if files == TUNE else 'test'}.csv",
+              agreement(blocks, gold, sorted_, files))
 
 
 def _row(settings: dict, w: dict) -> dict:

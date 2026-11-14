@@ -332,7 +332,7 @@ def blocks_sheet() -> str:
     ws = wb.active
     ws.title = "Blocks"
     ws.append(["File", "Block", "Pages", "Type", "Context (shown to Llama, not returned)", "Text", "Words", "Word list",
-               "Llama", "Meaning", "Result"])
+               "Llama", "Semantic similarity", "Result"])
     for f in sorted(blocks):
         bs, ctx = blocks[f], unit_contexts(blocks[f])
         for u in units(bs):
