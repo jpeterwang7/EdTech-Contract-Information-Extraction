@@ -9,7 +9,7 @@ these decisions are in [what_failed.md](what_failed.md).
 |---|---|---|
 | Read pages | PDF's own text where it exists; OCR on scans | 0.37% of letters wrong on scans (old pipeline: 8.8%) |
 | Pricing tables | Read by column position; numbers taken as printed | 88 product rows found |
-| Order-form fields | Find each label on the page, take the value beside it | 89 of 99 values right |
+| Order-form fields | Find each label on the page, take the value beside it; running text for header fields it misses | 98 of 99 values right |
 | Clean text | Remove page clutter, join lines into whole paragraphs | Cut-off sentences: 2,119 → 10 |
 | Privacy passages | Term list, semantic similarity and Llama vote on each block; a person checks where they disagree | All core text found; a person reads 8.6% of the words; matches a person's yes or no on 484 of 487 blocks (tuning files) |
 
@@ -124,26 +124,27 @@ total, signer's name and signing date. The answer key was typed from the page pi
 values against the pictures on Nov 2 and changed none** (page: `python -m bench.review forms`). It holds 99 values on the page and 13 that aren't (11 blacked out, 2 never there). Reporting one of those 13
 counts as inventing a value. It includes traps: earlier order numbers mentioned in notes, and a crossed-out signer.
 
-**F2. Compare two methods reading the same text.**
+**F2. Compare two methods reading the same text, and their combination.**
 - **Text rules:** search the running text for a label and take what follows. Simple, but side-by-side columns blur.
 - **Layout:** find the label on the page and take the words beside it. Keeps columns apart, but can't find a value inside
   a sentence.
+- **Layout + text rules:** layout first; a header field it can't find is searched for in the running text (F5).
 
-**F3. Layout is more accurate, mainly on signatures.** First versions scored 76.8% and 61.6%; general fixes found on these
-same forms raised them, so these are development scores.
+**F3. Layout + text rules is the most accurate.** First versions scored 76.8% (text rules) and 61.6% (layout); general
+fixes found on these same forms raised them (F5), so these are development scores.
 
-| Field (values on the page) | Text rules | Layout |
-|---|---|---|
-| Order number (12), order date (14), billing frequency (12) | all right | all right |
-| Customer (14) | 12 | 12 |
-| Payment terms (14) | **14** | 12 |
-| Grand total (14) | 14 | 14 |
-| Signer's name (9) | 3 | **6** |
-| Signing date (10) | 3 | **7** |
-| **All 99 values** | **84, 1 invented** | **89, 0 invented** |
+| Field (values on the page) | Text rules | Layout | Layout + text rules |
+|---|---|---|---|
+| Order number (12), order date (14), billing frequency (12) | all right | all right | all right |
+| Customer (14) | 12 | **14** | **14** |
+| Payment terms (14) | **14** | 12 | **14** |
+| Grand total (14) | 14 | 14 | 14 |
+| Signer's name (9) | 3 | **8** | **8** |
+| Signing date (10) | 3 | **10** | **10** |
+| **All 99 values** | 84, 1 invented | 96, 0 invented | **98, 0 invented** |
 
-Neither method fell for the earlier order numbers. Handwriting defeats both, and fixing that needs a stronger reader, not
-better rules.
+No method fell for the earlier order numbers. The one value still wrong is a handwritten name: "Angela Fredrickson" read
+as "Angela Fredriceson" (OF03).
 
 **F4. How the two compare on her criteria.**
 
@@ -154,7 +155,21 @@ better rules.
 | Consistency | Breaks when columns change | Breaks when a value is inside a sentence |
 | Cost | None | None |
 
-They fail in different places, so a combination would likely beat both. That hasn't been tested.
+They fail in different places, so the combination beats both (F3).
+
+**F5. Fixes from looking at every value layout got wrong (Nov 14).** Each fix is a general rule, not a patch for one form:
+- **A wide gap ends a value.** After a value's first word, a gap wider than about three letters starts the next
+  column. "Billing Contact:" is two words and only the second ends in ":", so "Billing" had joined the customer's name.
+- **A field not found is looked up in Apple Vision's reading.** The paragraph reading lost the "Date:" of two signature
+  blocks (OF04, OF13). Vision alone skips other blocks, so it is the second reading, not the first.
+- **Signature-block values are read again on their own**, enlarged, by Apple Vision, as empty table cells are (T4).
+  Handwriting is read much better alone: "7/29/2016" and "Paul Turman" are now right.
+- **Crossed-out words are blanked before that read.** A dark line through the middle of words that stays on them is a
+  strike; the printed line to write on can pass through handwriting too, but runs well past it. On all 14 forms only
+  OF13's crossed-out "Cheri Polenske" is flagged.
+- **Layout + text rules** takes a header field layout can't find from the running text, but only for fields the
+  running-text search reads without error (order number, order date, billing frequency, payment terms, grand total).
+  This finds "Net 30" inside a sentence (OF01, OF02).
 
 ---
 

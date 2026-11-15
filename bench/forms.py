@@ -1,4 +1,4 @@
-"""Step forms: read eight fields from each of the 14 order forms, two ways, and score them.
+"""Step forms: read eight fields from each of the 14 order forms, two ways and combined, and score them.
 
 Fields: order number, order date, customer, billing frequency, payment terms, grand total, and the name and
 signing date of the person who signed for the customer. The answer key is data/gold/order_form_fields.csv
@@ -7,7 +7,9 @@ signing date of the person who signed for the customer. The answer key is data/g
 Two methods, both reading the same text, so a difference comes from the method and not from the OCR:
   text rules  search the page's running text for each label ("Order #:", "Payment Terms:") and take what follows
   layout      find each label on the page and take the words printed to its right on the same line
-              (or, if nothing is there, just below it)
+              (or, if nothing is there, just below it); a field not found is looked up in Apple Vision's reading,
+              and signature-block values are read again on their own (decisions.md, F5)
+  layout + text rules   layout, then the running-text search for a header field it still lacks
 
 Each answer is one of: correct; wrong (a value, but not the right one); missed (nothing found although the page
 has a value); invented (a value found although the page has none, e.g. a blacked-out field).
@@ -15,12 +17,15 @@ has a value); invented (a value found although the page has none, e.g. a blacked
 Outputs: outputs/forms/form_fields_<method>.csv (every answer), outputs/forms/form_scores.csv
 """
 import csv
+import hashlib
 import re
 from collections import defaultdict
 from datetime import date
 
-from .common import DATA, OUT, normalize, write_csv
-from .reading import TABLE_READING, best_reading, page_text
+import numpy as np
+
+from .common import DATA, OUT, WORK, normalize, page_png, write_csv
+from .reading import TABLE_READING, best_reading, ocr_vision, page_text
 from .tables import _page_rows
 
 FIELDS = ["order_number", "order_date", "customer", "billing_frequency", "payment_terms", "grand_total",
@@ -144,14 +149,18 @@ def _right_of(rows, r: int, j: int, max_gap: float = 0.12, stop_x: float = 2.0) 
     If there are none, the nearest row just above or below that has words to the right of the label: typed
     values often sit a little above or below the label's line (a name typed on a signature line)."""
     def take(row, start_x):
-        out, last = [], start_x
+        out, last, letter = [], start_x, None
         for w in row:
             if w["box"][0] < start_x - 0.005:
                 continue
-            if w["box"][0] - last > max_gap or w["box"][0] >= stop_x or LABEL_END.search(w["text"]):
+            # the first word may stand well apart from the label; after it, a gap wider than about three letters
+            # starts the next column, even when that column's label has no colon on this word ("Billing Contact:")
+            limit = max_gap if letter is None else 3 * letter
+            if w["box"][0] - last > limit or w["box"][0] >= stop_x or LABEL_END.search(w["text"]):
                 break
             out.append(w["text"])
             last = w["box"][2]
+            letter = (w["box"][2] - w["box"][0]) / max(len(w["text"]), 1)
         return " ".join(out) or None
 
     label = rows[r][j]
@@ -167,9 +176,59 @@ def _right_of(rows, r: int, j: int, max_gap: float = 0.12, stop_x: float = 2.0) 
     return None
 
 
-def layout(form: dict) -> dict:
+def _struck(img, words: list[dict], x0: float, x1: float) -> list[dict]:
+    """Words crossed out by hand: a dark line through the middle of the words that stays on them. The printed line
+    to write on can pass through handwriting too, but it runs well past the words. (OF13: "Cheri Polenske" is
+    crossed out and "Paul Turman" handwritten beside it; decisions.md, F5.)"""
+    ink = np.asarray(img) < 128
+    H, W = ink.shape
+    a, b = int(x0 * W), int(x1 * W)
+    box = lambda w: (int(w["box"][0] * W), int(w["box"][1] * H), int(w["box"][2] * W), int(w["box"][3] * H))
+    reach = int(0.02 * W)                       # how far past the crossed words a strike may run
+    out = []
+    for w in words:
+        wx0, wy0, wx1, wy1 = box(w)
+        for y in range(wy0 + 3 * (wy1 - wy0) // 10, wy0 + 3 * (wy1 - wy0) // 4):
+            edges = np.flatnonzero(np.diff(np.concatenate(([0], ink[y, a:b].astype(np.int8), [0]))))
+            for s, e in zip(edges[::2] + a, edges[1::2] + a):
+                crossed = [box(v) for v in words if min(e, box(v)[2]) - max(s, box(v)[0]) >= 0.6 * (box(v)[2] - box(v)[0])]
+                if any(c[0] == wx0 for c in crossed) and s >= min(c[0] for c in crossed) - reach \
+                        and e <= max(c[2] for c in crossed) + reach:
+                    out.append(w)
+                    break
+            else:
+                continue
+            break
+    return out
+
+
+def _alone(form: dict, field: str, rows, r: int, j: int, x1: float) -> str:
+    """Read a signature-block value again on its own: the area right of its label, enlarged, by Apple Vision, with
+    crossed-out words blanked first. Handwriting is read much better alone than as part of a whole page, as with
+    empty table cells (decisions.md, F5 and T4)."""
+    from PIL import Image, ImageDraw
+    fid, page, label = form["file_id"], int(form["signature_page"]), rows[r][j]
+    h = label["box"][3] - label["box"][1]
+    x0, y0, y1 = label["box"][2] + 0.003, label["box"][1] - 1.2 * h, label["box"][3] + 0.6 * h
+    img = Image.open(page_png(fid, page)).convert("L")
+    W, H = img.size
+    words = [w for row in rows for w in row if x0 <= w["box"][0] < x1 and y0 <= w["_yc"] <= y1
+             and re.search(r"[A-Za-z0-9]", w["text"])]                 # a lone dash is a line by itself
+    draw = ImageDraw.Draw(img)
+    for w in _struck(img, words, x0, x1):
+        draw.rectangle((w["box"][0] * W, w["box"][1] * H, w["box"][2] * W, w["box"][3] * H), fill=255)
+    crop = img.crop((int(x0 * W), int(y0 * H), int(x1 * W), int(y1 * H)))
+    crop = crop.resize((crop.width * 2, crop.height * 2), Image.LANCZOS)
+    # named by content: Apple Vision's answers are saved by file name and reused (bench/reading.py, ocr_vision)
+    path = WORK / "cells" / f"form_{form['form_id']}_{field}_{hashlib.md5(crop.tobytes()).hexdigest()[:10]}.png"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    crop.save(path)
+    return " ".join(line["text"] for line in sorted(ocr_vision(path), key=lambda line: line["box"][0]))
+
+
+def _layout(form: dict, engine: str | None = None) -> dict:
     fid, p1, ps, pl = form["file_id"], int(form["first_page"]), int(form["signature_page"]), int(form["last_page"])
-    head = _rows(fid, p1)
+    head = _rows(fid, p1, engine)
     out = {}
     # in the header the values stand in their own column, well to the right of the labels
     hit = _find(head, r"Order\s*(#|No\.?)?\s*:")
@@ -211,7 +270,7 @@ def layout(form: dict) -> dict:
                 monies = re.findall(r"\d[\d,]*\.\d{2}", " ".join(w["text"] for w in rows[tot[0]]))
                 out["grand_total"] = monies and parse_money(monies[-1])
                 break
-    rows = _rows(fid, ps)
+    rows = _rows(fid, ps, engine)
     start = _find(rows, r"By executing")
     top = rows[start[0][0]][0]["_yc"] if start else 0
     for field, label in (("customer_signer", r"Name:"), ("customer_signed_date", r"Date:")):
@@ -222,13 +281,33 @@ def layout(form: dict) -> dict:
         r, j = min(hits, key=lambda h: rows[h[0]][h[1]]["box"][0])       # the left column is the customer's
         other = [rows[r2][j2]["box"][0] for r2, j2 in hits if rows[r2][j2]["box"][0] > rows[r][j]["box"][2] + 0.1]
         v = _right_of(rows, r, j, stop_x=min(other) - 0.02 if other else 2.0)
-        out[field] = parse_date(v) if field.endswith("date") else clean(v)
+        alone = _alone(form, field, rows, r, j, min(other) - 0.02 if other else 0.5)     # 0.5: the page's middle
+        parse = parse_date if field.endswith("date") else clean
+        out[field] = parse(alone) or parse(v)
     return out
+
+
+# header fields the running-text search reads without error (decisions.md, F3); signer fields are not among them
+TEXT_FALLBACK = ("order_number", "order_date", "billing_frequency", "payment_terms", "grand_total")
+
+
+def layout(form: dict) -> dict:
+    """Labels and positions. A field the usual reading can't find is looked up in Apple Vision's reading, which misses
+    different things, e.g. the "Date:" of a signature block (decisions.md, F5)."""
+    out, second = _layout(form), _layout(form, "vision")
+    return {field: out.get(field) or second.get(field) for field in FIELDS}
+
+
+def layout_and_text(form: dict) -> dict:
+    """Layout first; a header field it still lacks is searched for in the running text, where it can sit inside a
+    sentence ("... pay such amount to Instructure Net 30 on the date of this order"; decisions.md, F5)."""
+    out, rules = layout(form), text_rules(form)
+    return {field: out.get(field) or (rules.get(field) if field in TEXT_FALLBACK else None) for field in FIELDS}
 
 
 # ---------------------------------------------------------------- scoring
 
-METHODS = {"text rules": text_rules, "layout": layout}
+METHODS = {"text rules": text_rules, "layout": layout, "layout + text rules": layout_and_text}
 
 
 def main() -> None:

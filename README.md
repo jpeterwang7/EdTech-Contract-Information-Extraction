@@ -26,7 +26,7 @@ tables and forms.
 | `read` | Turn every page into text: the PDF's own text on digital pages; OCR on the 47 scanned pages | done (final run on the lab server, Oct 29) |
 | `ocr-eval` | Score each OCR reading against two answer keys | done |
 | `tables` | Read the pricing tables two ways: rows, columns and wrapped cells | done |
-| `forms` | Read 8 fields from each of the 14 order forms two ways (text rules, layout) and score them | done; answer key checked by me (0 of 112 changed) |
+| `forms` | Read 8 fields from each of the 14 order forms two ways (text rules, layout) and combined, and score them | done; answer key checked by me (0 of 112 changed) |
 | `text` | Clean, whole text: page numbers and stamps removed, paragraphs joined across lines and pages, table rows in place | done; F02 and F13 read by a person beside the scans |
 | `privacy` | Find data-governance-and-privacy text with a term list, semantic similarity and Llama; a sorter sends disagreements to a person | scored on the tuning files; test files not yet scored; answer key needs a person's check |
 | extraction | Privacy facts (goal 2) | not started |
@@ -43,9 +43,9 @@ Headline results so far:
   - Numbers are taken as printed (decisions.md, T1).
   - Billing Summary tables (F13, F14) are read on their own (T6).
 - **Order-form fields:**
-  - Reading by position on the page (layout) gets 89 of 99 values right.
-  - Searching the running text (text rules) gets 84.
-  - Layout is far better on signer names and dates. Handwriting defeats both.
+  - Layout plus text rules gets 98 of 99 values right; layout alone 96, text rules alone 84.
+  - Layout is far better on signer names and dates; reading each signature value alone fixed most handwriting.
+  - The one miss is a handwritten name ("Fredrickson" read as "Fredriceson").
 - **Clean text** (`outputs/text/F01.md` … `F14.md`, readable next to the PDFs):
   - Page numbers and stamps in the text: 88 → 0.
   - Sentences cut off mid-way: 2,119 → 10.

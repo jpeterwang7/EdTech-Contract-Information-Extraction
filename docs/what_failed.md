@@ -104,14 +104,27 @@ tables worse:
 
 **20. Layout can't see a value inside a sentence.** On the 2016–2017 forms, the payment terms are a paragraph
 ("…Customer must pay such amount to Instructure Net 30 on the date of this order"). Layout looks for a value next
-to the label, finds a sentence, and misses both. Text rules find "Net 30" in both.
+to the label, finds a sentence, and misses both. Text rules find "Net 30" in both, so layout + text rules now takes
+it from them (decisions.md, F5).
 
 **21. Handwriting.**
 - **Names:** "Angela Fredrickson" came out as "Angelatredrideson", and "Paul Turman" as "Pavl Turman".
 - **Crossed-out name:** on OF13 the crossed-out typed name came out as "chort Rotonate" beside the handwritten
   "Paul Turman".
 - **Date:** "7/29/2016" came out as "7/21/2016".
-- **What would help:** no rule fixes these; it needs a stronger reader. (F3)
+- **Fix (Nov 14):** each signature value is read again on its own, enlarged, with crossed-out words blanked first
+  (decisions.md, F5). The date, "Paul Turman" and OF13's name are now right. "Angela Fredrickson" still comes out as
+  "Angela Fredriceson".
+
+**43. Layout's other misses, found by checking every wrong value (Nov 14).**
+- **A neighbour's label in the customer's name:** "University of Nebraska Billing Medical Center". The next column's
+  label is "Billing Contact:", and only words ending in ":" were treated as labels. In OF01 OCR dropped the colon of
+  "Contact:" too. Fix: a gap wider than about three letters ends a value (F5).
+- **Labels lost by the reading:** the paragraph reading (Tesseract first) lost the "Date:" of two signature blocks,
+  which Apple Vision reads ("June 24, 2019", "10-27-25"). Using Vision for whole forms instead lost 4 header values,
+  because it skips blocks (R6). Fix: Vision as the second reading, per field.
+- **The first crossed-out check marked a handwritten date as crossed out**, because the printed line it is written on
+  runs through it. Fix: a strike must stay on the words it crosses (F5).
 
 ## Clean text
 
