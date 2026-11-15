@@ -11,7 +11,7 @@ these decisions are in [what_failed.md](what_failed.md).
 | Pricing tables | Read by column position; numbers taken as printed | 88 product rows found |
 | Order-form fields | Find each label on the page, take the value beside it; running text for header fields it misses | 98 of 99 values right |
 | Clean text | Remove page clutter, join lines into whole paragraphs | Cut-off sentences: 2,119 → 10 |
-| Privacy passages | Term list, semantic similarity and Llama vote on each block; a person checks where they disagree | All core text found; a person reads 8.6% of the words; matches a person's yes or no on 484 of 487 blocks (tuning files) |
+| Privacy passages | Term list, semantic similarity and Llama vote on each block; a person checks where they disagree | All core text found; a person reads 9.2% of the words; matches a person's yes or no on 459 of 462 blocks (tuning files) |
 
 **Still open:**
 - A person needs to check the privacy answer key (P2).
@@ -115,6 +115,12 @@ Docling missed F03's Year 5 block (what_failed.md, 8). The design was improved o
 the pricing reader skipped it. On F13 it came out as "sD 6720050" for USD 67,260.50. It's now found by its own header,
 and its rows are grouped by the same rule as pricing tables (T2): `outputs/tables/billing_rows.csv`.
 
+**T7. One workbook per PDF, one tab per table.** My choice on Nov 14. Each PDF's tables go to
+`outputs/tables/by_file/<file>.xlsx`, one tab per table named by page and kind ("p2 pricing 1", "p2 billing"), with each
+cell as read: 42 tables in 13 files (F09 has none). The clean text points to these tabs instead of repeating the tables
+(C2). Other tables, such as product descriptions and signing logs, are still form rows in the clean text: they need a
+table detector, checked by eye, before they can move here.
+
 ---
 
 ## F. Order-form fields
@@ -192,7 +198,14 @@ reasons in `outputs/text/removed.csv`.
 | Very unsure OCR that Apple Vision didn't confirm (C7) | 20 |
 | Empty section ("Notes") (C7) | 1 |
 
-**C2. Take tables from the table step.** Its rows replace a second reading, so "Per Year" stays in its row.
+**C2. Tables are not part of the clean text.** My choice on Nov 14. Tables are data, read once in the table step and kept
+in one workbook per PDF (T7); the clean text holds the contract's sentences.
+- **Each table leaves a one-line pointer in its place**, such as `[Table "p2 pricing 1": outputs/tables/by_file/F02.xlsx]`,
+  so a reader still sees where it was, and block numbers don't change.
+- **A cell that is a whole sentence stays in the text** as a paragraph (10+ words, ending like a sentence), so a term
+  written inside a table isn't lost. No pricing or billing cell is one today.
+- **The privacy step skips the pointers**, as it skips headings (P8). Its scores are unchanged; only its word totals
+  shrink, so a person now reads 9.2% of the words instead of 8.6%, for the same 14 blocks.
 
 **C3. Keep columns and form rows together.** A line splits where two words are far apart. Pieces on one row stay together
 as `label | value`. Two exceptions: a clause number set apart from its text, and a line continuing an unfinished sentence.
@@ -364,27 +377,27 @@ word let in are my own choices, kept simple because 15 passages can't support a 
 - **Semantic similarity:** less clean, because a short block gives it little to go on.
 - **Llama gains the most:** nothing it keeps is wrong. It still misses "8. Compliance."
 
-**The sorter on blocks.** With the 95% borderline limit, a person would read 33.8% of the words (66 blocks). **I chose
+**The sorter on blocks.** With the 95% borderline limit, a person would read 37.6% of the words (79 blocks). **I chose
 the lighter check (Nov 2):** an 85% limit, which picks t = 0.45 with two votes for automatically in and no wide net. The
 cost is 3 borderline passages that get no vote and go out unseen: "14. Feedback" (customer surveys) in F01 and F02, and
 F12's term on confidentiality of public records.
 
-| Sorter on blocks, tuning files (25,269 words) | |
+| Sorter on blocks, tuning files (23,525 words, tables left out, C2) | |
 |---|---|
 | Core found after checking | 100% |
 | Core found with no person involved | 87.8% |
 | Borderline reaching a person | 88.8% |
-| A person reads | 8.6% of the words (14 blocks) |
-| Automatically out | 88.0% of the words |
+| A person reads | 9.2% of the words (14 blocks) |
+| Automatically out | 87.1% of the words |
 | Automatically-in text that is core or borderline | 90.3% |
 
 The chosen setting sits just before a cliff:
 
 | t | A person reads | Borderline reaching a person | Core found after checking |
 |---|---|---|---|
-| 0.40 | 14.6% | 88.8% | 100% |
-| **0.45** | **8.6%** | **88.8%** | **100%** |
-| 0.50 | 5.0% | 49.9% | 100% |
+| 0.40 | 15.6% | 88.8% | 100% |
+| **0.45** | **9.2%** | **88.8%** | **100%** |
+| 0.50 | 5.4% | 49.9% | 100% |
 
 **P9. Keep blocks, but keep a passage's pieces together.** My choice on Nov 2.
 
@@ -398,7 +411,7 @@ all 15 of their core passages fit inside one block. On the test files, 9 core pa
 |---|---|---|
 | Term list: found / clean | 100% / 49% | 100% / 69% |
 | Llama: found / clean | 66% / 79% | 73% / 100% |
-| A person reads | 11.8% of words (40 sections) | 8.6% (14 blocks) |
+| A person reads | 11.8% of words (40 sections) | 9.2% (14 blocks) |
 | Borderline reaching a person | 98.3% | 88.8% |
 | A passage inside one clause returned complete | Always, once any part is kept | Not guaranteed |
 
@@ -441,14 +454,14 @@ pipeline gives the same answer.
 | Tuning files, blocks | Person: privacy | Person: not privacy |
 |---|---|---|
 | In the final privacy blocks | **24** | 0 |
-| Not in them | 3 | **460** |
+| Not in them | 3 | **435** |
 
-- **484 of 487 blocks match.** No block the person calls not privacy reaches the final blocks.
+- **459 of 462 blocks match.** No block the person calls not privacy reaches the final blocks.
 - **The 3 misses** are dropped automatically, with no vote: "14. Feedback" (customer surveys) in F01 and F02, and F12's
   term on confidentiality of public records. They are the cost of the 85% limit chosen in P8.
 - **14 of the blocks were decided by the person who checks** (the middle pile, P7), who is assumed to answer like the
-  key, so those match by design. The real test is the other 473, decided automatically: 470 match.
-- **Why a table and not one percentage:** 460 of the 487 blocks are plainly not privacy, so a pipeline that dropped
+  key, so those match by design. The real test is the other 448, decided automatically: 445 match.
+- **Why a table and not one percentage:** 435 of the 462 blocks are plainly not privacy, so a pipeline that dropped
   everything would still match on 94%. The two cells that matter are privacy left out (lost for good) and not privacy
   kept (noise passed to Goal 2).
 

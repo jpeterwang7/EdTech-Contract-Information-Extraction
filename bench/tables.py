@@ -10,12 +10,13 @@ Two methods:
              below, using the word positions from the chosen reading (PDF text, or Apple Vision on scans)
 
 Outputs: outputs/tables/pricing_rows_<method>.csv, outputs/tables/billing_rows.csv,
-         outputs/tables/pricing_scores.csv (product rows found, and rows whose quantity could not be read)
+         outputs/tables/pricing_scores.csv (product rows found, and rows whose quantity could not be read),
+         outputs/tables/by_file/<file>.xlsx (one workbook per PDF, one tab per table, as the chosen reader read it)
 """
 import json
 import re
 import statistics
-from collections import defaultdict
+from collections import Counter, defaultdict
 
 from .common import DATA, OUT, files, write_csv
 from pathlib import Path
@@ -279,9 +280,10 @@ def geometry_rows(file_id: str, n_pages: int, reread: bool = True, engine: str =
                     break
             row_lines = _table_rows(body, cols)
             names = list(dict.fromkeys(c[0] for c in cols))
-            zone = {"file_id": file_id, "page": page, "y0": min(w["box"][1] for w in rows[i]),
+            zone = {"file_id": file_id, "page": page, "kind": "pricing", "y0": min(w["box"][1] for w in rows[i]),
                     "y1": max([w["box"][3] for line in body for w in line] or [rows[i][0]["box"][3]]),
-                    "rows": [" | ".join(n.capitalize() for n in names)]}
+                    "rows": [" | ".join(n.capitalize() for n in names)], "names": [n.capitalize() for n in names],
+                    "cells": []}
             for lines in row_lines:
                 cells = _cells(lines, cols)
                 text = " ".join(w["text"] for line in lines for w in line)
@@ -301,6 +303,7 @@ def geometry_rows(file_id: str, n_pages: int, reread: bool = True, engine: str =
                                     cells[name] = again
                 zone["rows"].append(" | ".join(cells.get(n, "") for n in names) if kind == "item"
                                     else " ".join(dict.fromkeys(text.split(" "))))
+                zone["cells"].append([cells.get(n, "") for n in names])
                 out.append(row)
             # a Grand Total sits under the table, outside its columns
             if j < len(rows) and row_kind(" ".join(w["text"] for w in rows[j])) == "grand" and not (
@@ -308,6 +311,12 @@ def geometry_rows(file_id: str, n_pages: int, reread: bool = True, engine: str =
                 text = " ".join(w["text"] for w in rows[j])
                 out.append({"file_id": file_id, "page": page, "kind": "grand", "amount": money(text), "raw": text[:160]})
                 zone["rows"].append(text)
+                m = MONEY.search(text)
+                cells = [""] * len(names)
+                cells[names.index("description") if "description" in names else 0] = text[:m.start()].strip() if m else text
+                if m:
+                    cells[names.index("amount") if "amount" in names else -1] = m.group()
+                zone["cells"].append(cells)
                 zone["y1"] = max(w["box"][3] for w in rows[j])
             if zones is not None and row_lines:
                 zones.append(zone)
@@ -337,7 +346,7 @@ def billing_summaries(file_id: str, n_pages: int, engine: str = TABLE_READING, z
                 continue
             cols = [(n, (w["box"][0] + w["box"][2]) / 2) for n, w in zip(names, row)]
             order = [c[0] for c in cols]
-            body, y1 = [], max(w["box"][3] for w in row)
+            body, cells_rows, y1 = [], [], max(w["box"][3] for w in row)
             table = []                          # the lines below the header until another table or a paragraph
             for line in rows[i + 1:i + 12]:
                 if _header(line) or OTHER_TABLE.match(" ".join(w["text"] for w in line)) or len(line) > 25:
@@ -347,13 +356,52 @@ def billing_summaries(file_id: str, n_pages: int, engine: str = TABLE_READING, z
                 cells = _cells(lines, cols)
                 y1 = max(w["box"][3] for w in lines[-1])
                 body.append(" | ".join(cells.get(n, "") for n in order))
+                cells_rows.append([cells.get(n, "") for n in order])
                 out.append({"file_id": file_id, "page": page, **{n: cells.get(n, "") for n in order}})
                 if cells.get("segment", "").lower().startswith("total"):
                     break
             if zones is not None and body:
-                zones.append({"file_id": file_id, "page": page, "y0": min(w["box"][1] for w in row), "y1": y1,
-                              "rows": [" | ".join(n.capitalize() for n in order)] + body})
+                zones.append({"file_id": file_id, "page": page, "kind": "billing", "y0": min(w["box"][1] for w in row),
+                              "y1": y1, "rows": [" | ".join(n.capitalize() for n in order)] + body,
+                              "names": [n.capitalize() for n in order], "cells": cells_rows})
     return out
+
+
+# ---------------------------------------------------------------- one workbook per PDF
+
+def name_tabs(zones: list[dict]) -> None:
+    """Give each table of a file its tab name in that file's workbook: its page and kind, numbered when a page has more
+    than one of a kind ("p4 pricing 2"). The clean text points to the same names (bench/text.py; decisions.md, T7)."""
+    zones.sort(key=lambda z: (z["page"], z["y0"]))
+    per_page, n = Counter((z["page"], z["kind"]) for z in zones), Counter()
+    for z in zones:
+        key = (z["page"], z["kind"])
+        n[key] += 1
+        z["tab"] = f"p{z['page']} {z['kind']}" + (f" {n[key]}" if per_page[key] > 1 else "")
+
+
+def write_workbook(file_id: str, zones: list[dict]) -> str:
+    """One workbook per PDF, one tab per table, each cell as it was read. Returns the file name."""
+    from openpyxl import Workbook
+    from openpyxl.styles import Font, PatternFill
+    from openpyxl.utils import get_column_letter
+    wb = Workbook()
+    wb.remove(wb.active)
+    for z in zones:
+        ws = wb.create_sheet(z["tab"])
+        ws.append(z["names"])
+        for row in z["cells"]:
+            ws.append(row)
+        for c in ws[1]:
+            c.font, c.fill = Font(bold=True), PatternFill("solid", fgColor="E8E6DF")
+        for i, name in enumerate(z["names"], start=1):
+            ws.column_dimensions[get_column_letter(i)].width = min(60, 2 + max(len(str(v)) for v in
+                                                                               [name] + [r[i - 1] for r in z["cells"]]))
+        ws.freeze_panes = "A2"
+    path = OUT / "tables" / "by_file" / f"{file_id}.xlsx"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    wb.save(path)
+    return path.name
 
 
 def main() -> None:
@@ -366,12 +414,17 @@ def main() -> None:
                "geometry+tess+vision": ("geometry", "tess+vision", True),
                "geometry+vision, no re-read": ("geometry", "vision", False),
                "geometry+vision": ("geometry", "vision", True)}
+    by_file = {}                        # file -> its tables, as the chosen reader read them
     for method, (reader, engine, reread) in methods.items():
         all_rows = []
         for f in files():
             n = len(pdfium.PdfDocument(str(pdf_path(f))))
+            zones = [] if method == "geometry+vision" else None
             all_rows += (docling_rows(f["file_id"]) if reader == "docling"
-                         else geometry_rows(f["file_id"], n, reread=reread, engine=engine))
+                         else geometry_rows(f["file_id"], n, reread=reread, engine=engine, zones=zones))
+            if zones is not None:
+                billing_summaries(f["file_id"], n, zones=zones)
+                by_file[f["file_id"]] = zones
         tag = re.sub(r"[^a-z]+", "_", method).strip("_")
         write_csv(OUT / "tables" / f"pricing_rows_{tag}.csv", all_rows,
                   ["file_id", "page", "kind", "description", "qty", "price", "amount", "reread", "raw"])
@@ -382,6 +435,15 @@ def main() -> None:
     write_csv(OUT / "tables" / "billing_rows.csv", billing,
               ["file_id", "page", "segment", "recurring", "non-recurring", "total"])
     write_csv(OUT / "tables" / "pricing_scores.csv", scores)
+    written = set()
+    for fid, zones in by_file.items():
+        if zones:
+            name_tabs(zones)
+            written.add(write_workbook(fid, zones))
+    for old in (OUT / "tables" / "by_file").glob("*.xlsx"):
+        if old.name not in written:
+            old.unlink()                # a file that no longer has tables
+    print(f"   workbooks: {len(written)} files, {sum(len(z) for z in by_file.values())} tables -> outputs/tables/by_file/")
     for s in scores:
         print("  ", s)
     print(f"   billing summaries: {len(billing)} rows")

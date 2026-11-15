@@ -165,13 +165,14 @@ def run_rules(blocks: dict) -> dict:
 # ---------------------------------------------------------------- units: one block each (decisions.md, P8)
 
 def units(bs: list[dict]) -> list[list[int]]:
-    """Each block is a unit, with two exceptions. A heading is never a unit: it names a topic but states no term, so it
-    is shown as context to the block below instead. Form rows on one page that the clean-text step split at a gap (a
-    signature box: "University ... | Instructure, Inc." then "Name: | ...") are one form, so they stay together. A
-    pricing table is already one block."""
+    """Each block is a unit, with three exceptions. A heading is never a unit: it names a topic but states no term, so
+    it is shown as context to the block below instead. A table is never a unit: the clean text holds only a pointer to
+    its tab in outputs/tables/by_file/, and a sentence written in a cell stays in the text as its own paragraph
+    (decisions.md, C2). Form rows on one page that the clean-text step split at a gap (a signature box: "University
+    ... | Instructure, Inc." then "Name: | ...") are one form, so they stay together."""
     out: list[list[int]] = []
     for i, b in enumerate(bs):
-        if b["kind"] == "heading":
+        if b["kind"] in ("heading", "table"):
             continue
         if (b["kind"] == "grid" and out and out[-1][-1] == i - 1 and bs[i - 1]["kind"] == "grid"
                 and bs[i - 1]["pages"] == b["pages"]):
@@ -313,10 +314,17 @@ def load_unit_answers(blocks: dict) -> dict | None:
     if not path.exists():
         return None
     a = json.loads(path.read_text())
-    if any(a["units"].get(f) != units(bs) for f, bs in blocks.items()):
-        print("  Llama's block answers are for other units (the clean text or the unit rules changed): rerun on the server")
-        return None
-    return a["yes"]
+    out = {}
+    for f, bs in blocks.items():
+        # an answer is reused for every unit that still exists; a unit no longer judged (a table) is simply left out
+        have = {tuple(u): y for u, y in zip(a["units"].get(f, []), a["yes"].get(f, []))}
+        need = [tuple(u) for u in units(bs)]
+        if any(u not in have for u in need):
+            print("  Llama's block answers don't cover these units (the clean text or the unit rules changed): rerun on "
+                  "the server")
+            return None
+        out[f] = [have[u] for u in need]
+    return out
 
 
 def methods_available(blocks: dict, gold: list[dict]) -> dict:

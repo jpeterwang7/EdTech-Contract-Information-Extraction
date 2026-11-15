@@ -9,7 +9,6 @@ F01,check,33,33,46,True,False,0.293,True,17. Suspension of Service. Instructure 
 F01,out,0,0,14,False,False,0.162,False,INSTRU CTU RE | Services Order Form Order #: | Q-19544-1 Date: | 7/25/2016
 F01,out,1,1,13,False,False,0.0,False,"6330 South 3000 East, Suite 700. Saft Lake City, UT 84121. United States"
 F01,out,3,3,42,False,False,0.043,False,Customer | University of Nebraska Medical Center | Contact Address | 987815 Nebraska Medical Ctr | Phone City | Omaha | Email State/Province | Nebraska | Billing Contact Zip/Postal Code
-F01,out,5,5,45,False,False,0.118,False,"Description | Metric | Category | Start | End | Qty | Price | Amount Canvas Pilot | User | Pilot | 8/1/2016 | 1/31/2017 | 400 | USD 7,500.00"
 F01,out,6,6,136,False,False,0.225,False,"Payment Terms: Customer agrees to pay to Instructure the applicable fees set forth on this order form. For any Year 1 recurring costs, training and implementation fees, Customer must pay"
 F01,out,7,7,26,False,False,0.133,False,"Duration: This order begins on the initial date listed above under Term, and continues until the last date listed above, unless sooner terminated under the Agreement."
 F01,out,8,8,44,False,False,0.35,False,"Miscellaneous: In connection with certain services, Instructure shall provide Customer access to its application-programming interface (""API"") for no additional fee. Usage and access to the API will be subject to"
@@ -40,9 +39,6 @@ F02,check,59,59,46,True,False,0.293,True,17. Suspension of Service. Instructure 
 F02,out,1,1,7,False,False,0.044,False,Order #: | Q-31146-2 Date: | 3/29/2017
 F02,out,2,2,13,False,False,0.024,False,"6330 South 3000 East, Suite 700, Salt Lake City, UT 84121, United States"
 F02,out,4,4,38,False,False,0.064,False,Customer: | University of Nebraska Medical Center Contact: | Dan Moser Phone: | (402) 559-5684 Email: | dmoser@unmc.edu Address: | 987815 Nebraska Medical Ctr City: | Omaha State/Province: | Nebraska
-F02,out,6,6,213,False,False,0.244,False,Description | Metric | Category | Start | End | Qty | Price | Amount 24x7 Support | 20% of Subscription (Min $2500) | Support | 7/1/2017 | 6/30/2018 |
-F02,out,7,7,84,False,False,0.26,False,"Description | Metric | Category | Start | End | Qty | Price | Amount Tier 1 Support | User | Support | 7/1/2019 | 6/30/2020 | 1,000 | USD"
-F02,out,9,9,82,False,False,0.238,False,"Description | Metric | Category | Start | End | Qty | Price | Amount Standard Implementation | Per Implementation | Implementation | | | 1 | USD 8,000.00 |"
 F02,out,13,13,33,False,False,0.258,False,Access to unlimited instructor-led online training for up to 20 named users from Effective Date until the earlier of 12 months after subscription start date or the last date of
 F02,out,14,14,8,False,False,0.249,False,"As needed, your implementation will include the following:"
 F02,out,15,15,29,False,False,0.317,False,Expertise and best practices on any SIS import and automation work with Canvas. This includes access to API documentation and consulting with client resources on the client initiated strategy.
@@ -91,11 +87,6 @@ F03,out,0,0,17,False,False,0.146,False,INSTRUCTURE | Services Order Form Order #
 F03,out,1,1,13,False,False,0.021,False,"6330 South 3000 East, Suite 700, Salt Lake City UT 84121. United States"
 F03,out,2,2,15,False,False,0.211,False,Order Form For Board of Trustees of the Nebraska State Colleges dba Wayne State College
 F03,out,3,3,53,False,False,0.14,False,Address: | 1111 Main | Order Information City: | Wayne | Billing Frequency: | Annual Upfront State/Province: | Nebraska | Payment Terms: | Net 45 Zip/Postal Code: | 68787 Country:
-F03,out,5,5,121,False,False,0.262,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas Cloud Subscription | 7/1/2019 | 6/30/2020 | FTE | 3,292 | USD 21.90 | USD 72,094.80"
-F03,out,7,7,55,False,False,0.192,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas Cloud Subscription | 7/1/2020 | 6/30/2021 | FTE | 3,292 | USD 23.00 | USD 75,716.00"
-F03,out,9,9,55,False,False,0.201,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas Cloud Subscription | 7/1/2021 | 6/30/2022 | FTE | 3,292 | USD 24.15 | USD 79,501.80"
-F03,out,11,11,55,False,False,0.212,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas Cloud Subscription | 7/1/2022 | 6/30/2023 | FTE | 3,292 | USD 25.36 | USD 83,485.12"
-F03,out,13,13,59,False,False,0.21,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas Cloud Subscription | 7/1/2023 | 6/30/2024 | FTE | 3,292 | USD 26.63 | USD 87,665.96"
 F03,out,14,14,57,False,False,0.246,True,Deliverable | Description | Expiration Canvas Cloud Subscription | FTE means the number of full-time equivalent students calculated in accordance with the definition published by the Integrated Postsecondary Education Data
 F03,out,15,15,24,False,False,0.19,False,for 1 Year - 20 Users until the earlier of 12 months after subscription state date or the last date of the contracted subscription.
 F03,out,16,16,18,False,False,0.163,False,"Deliverable | Description | Expiration Canvas Implementation | As needed, your implementation will include the following: | N/A"
@@ -146,9 +137,6 @@ F04,out,0,0,17,False,False,0.14,False,INSTRUCTURE | Services Order Form Order #:
 F04,out,1,1,13,False,False,-0.016,False,"6330 South 3000 East, Suite 700, Salt Lake Cily, UT 84121, Uniled Slates"
 F04,out,2,2,15,False,False,0.211,False,Order Form For Board of Trustees of the Nebraska State Colleges dba Wayne State College
 F04,out,3,3,61,False,False,0.162,False,Address: | 1111 Main | Order Information City: | Wayne | Billing Frequency: | Annual Upfront State/Province: | Nebraska | Payment Terms: | Net 45 Zip/Postal Code: | 68787 Country:
-F04,out,5,5,41,False,False,0.155,False,Description | Start | End | Metric | Qty | Price | Amount Additional Ticketing System License | 7/1/2019 | 6/30/2020 | Per Year | 2 | USD 500.00 |
-F04,out,7,7,41,False,False,0.157,False,Description | Start | End | Metric | Qty | Price | Amount Additional Ticketing System License | 7/1/2020 | 6/30/2021 | Per Year | 2 | USD 500.00 |
-F04,out,9,9,45,False,False,0.141,False,Description | Start | End | Metric | Qty | Price | Amount Additional Ticketing System License | 7/1/2021 | 6/30/2022 | Per Year | 2 | USD 500.00 |
 F04,out,10,10,57,False,False,0.202,False,Duration: Instructure may begin providing the services on the later of: (i) ninety (90) days prior to the earliest start date; or (ii) the date of the last signature on
 F04,out,11,11,18,False,False,0.255,False,Miscellaneous: Instructure's support terms are available as follows: Canvas & Catalog: hitps://www.canvaslms.com/policies/support-terms Bridge: https://www.getbridge.com/support-terms Portfolium: hitps:/portfolium.com/support-terms MasteryConnect: htips://www.masteryconnect.com/support/
 F04,out,12,12,10,False,False,0.231,False,PURCHASE ORDER INFORMATION on this order form? | TAX INFORMATION
@@ -163,9 +151,6 @@ F05,out,3,3,40,False,False,0.055,False,Address: | 987815 Nebraska Medical Ctr | 
 F05,out,4,4,1,False,False,0.156,False,Name:
 F05,out,5,5,1,False,False,0.139,False,Email:
 F05,out,6,6,1,False,False,0.116,False,Phone:
-F05,out,8,8,113,False,False,0.253,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas Cloud Subscription | 3/24/2020 | 3/23/2021 | Enrollment | 10,000 | USD 2.50 | USD 25,000.00"
-F05,out,10,10,48,False,False,0.225,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas Cloud Subscription | 3/24/2021 | 6/30/2021 | User | 500 | USD 2.97 | USD 1,485.00"
-F05,out,11,11,61,False,False,0.198,False,Description | Start | End | Metric | Qty | Price | Amount UNMC 24x7 Support | 3/24/2021 | 6/30/2021 | 20% of | 1 | USD 672.95 | USD
 F05,out,12,12,93,False,False,0.321,False,Deliverable | Description | Expiration Canvas Cloud Subscription | Enrollment Metric is measured by the number of courses started | (whether or not completed) by any individual | N/A Canvas
 F05,out,13,13,8,False,False,0.305,False,authorized by the Customer to access the Service.
 F05,out,14,14,9,False,False,0.376,False,and Customer has paid for such access and/or use.
@@ -187,10 +172,6 @@ F06,out,4,4,1,False,False,0.156,False,Name:
 F06,out,5,5,1,False,False,0.139,False,Email:
 F06,out,6,6,1,False,False,0.116,False,Phone:
 F06,out,7,7,3,False,False,-0.029,False,VTE | pray
-F06,out,9,9,77,False,False,0.249,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas Cloud Subscription | 7/1/2020 | 6/30/2021 | Enrollment | 10,000 | USD 2.50 | USD 25,000.00"
-F06,out,10,10,68,False,False,0.273,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas Cloud Subscription | 7/1/2021 | 6/30/2022 | Enrollment | 10,000 | USD 2.50 | USD 25,000.00"
-F06,out,11,11,22,False,False,0.162,False,"Description | Start | End | Metric | Qty | Price | Amount Recurring Sub-Total USD 42,000.00 Year 2 Total USD 42,000.00"
-F06,out,13,13,82,False,False,0.253,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas Cloud Subscription | 7/1/2022 | 6/30/2023 | Enrollment | 10,000 | USD 2.50 | USD 25,000.00"
 F06,out,14,14,67,False,False,0.344,False,Description | Teg | Co | EE | Lo | © © | Expiration Deliverable Canvas Cloud Subscription | Eh Enrollment Metric is measured by the number of courses started
 F06,out,15,15,8,False,False,0.305,False,authorized by the Customer to access the Service.
 F06,out,16,16,42,False,False,0.161,False,The items above must be completed during the time period beginning on the later of the Effective Date or the initial Start Date specified in this Order Form and ending
@@ -275,7 +256,6 @@ F11,out,27,27,13,False,False,0.024,False,"6330 South 3000 East, Suite 700, Salt 
 F11,out,28,28,9,False,False,0.146,False,Order Form For University of Nebraska Medical Center (NETEC)
 F11,out,29,29,50,False,False,0.072,False,Address: | 987815 Nebraska Medical Ctr | Order Information City: | Omaha | Billing Frequency: | Annual Upfront State/Province: | Nebraska | Payment Terms: | Net 30 Zip/Postal Code: |
 F11,out,30,30,23,False,False,0.076,False,Billing Frequency Term: Non-Recurring items will be invoiced upon signing. Recurring items will be invoiced 30 days prior to the annual start date.
-F11,out,32,32,83,False,False,0.241,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas LMS Cloud Subscription | 2024-07-01 | 2025-06-30 | Enrollment | 10,000 | USD 3.16 | USD"
 F11,out,33,33,24,False,False,0.179,False,Deliverable | Description | Expiration | Qty 24x7 Support | 24x7 support per year (20% of subscription - minimums apply) | N/A | 1
 F11,out,34,34,22,False,False,0.267,False,Deliverable | Description | Expiration | Qty Canvas Catalog Cloud Subscription | Annual Canvas Catalog subscription for Higher Education clients | N/A
 F11,out,35,35,42,False,False,0.161,False,The items above must be completed during the time period beginning on the later of the Effective Date or the initial Start Date specified in this Order Form and ending
@@ -301,10 +281,6 @@ F11,out,57,57,13,False,False,0.024,False,"6330 South 3000 East, Suite 700, Salt 
 F11,out,58,58,9,False,False,0.146,False,Order Form For University of Nebraska Medical Center (NETEC)
 F11,out,59,59,69,False,False,0.094,False,Address: | 987815 Nebraska Medical Ctr | Order Information City: | Omaha | Billing Frequency: | Annual Upfront State/Province: | Nebraska | Payment Terms: | Net 30 Zip/Postal Code: |
 F11,out,60,60,23,False,False,0.076,False,Billing Frequency Term: Non-Recurring items will be invoiced upon signing. Recurring items will be invoiced 30 days prior to the annual start date.
-F11,out,62,62,78,False,False,0.248,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas LMS Cloud Subscription | 2023-07-01 | 2024-06-30 | Enrollment | 10,000 | USD 2.75 | USD"
-F11,out,64,64,31,False,False,0.258,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas LMS Cloud Subscription | 2024-07-01 | 2025-06-30 | Enrollment | 10,000 | USD 2.94 | USD"
-F11,out,65,65,60,False,False,0.238,False,"Description | Start | End | Metric | Qty | Price | Amount 24x7 Support | 2024-07-01 | 2025-06-30 | 20% of Subscription (Minimums | 1 | USD 5,880.00 |"
-F11,out,67,67,82,False,False,0.241,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas LMS Cloud Subscription | 2025-07-01 | 2026-06-30 | Enrollment | 10,000 | USD 3.09 | USD"
 F11,out,68,68,20,False,False,0.18,False,Deliverable | Description | Expiration 24x7 Support | 24x7 support per year (20% of subscription - minimums apply) | N/A
 F11,out,69,69,42,False,False,0.161,False,The items above must be completed during the time period beginning on the later of the Effective Date or the initial Start Date specified in this Order Form and ending
 F11,out,70,70,3,False,False,0.289,False,Metrics and Descriptions:
@@ -385,7 +361,6 @@ F12,out,11,11,13,False,False,0.024,False,"6330 South 3000 East, Suite 700, Salt 
 F12,out,12,12,16,False,False,0.191,False,Order Form For The Board of Regents of the University of Nebraska on behalf of UNMC
 F12,out,13,13,53,False,False,0.063,False,Address: | 987815 Nebraska Medical Ctr | Order Information City: | Omaha | Billing Frequency: | Annual Upfront State/Province: | Nebraska | Payment Terms: | Net 30 Zip/Postal Code: |
 F12,out,14,14,23,False,False,0.076,False,Billing Frequency Term: Non-Recurring items will be invoiced upon signing. Recurring items will be invoiced 30 days prior to the annual start date.
-F12,out,16,16,43,False,False,0.105,False,"Description | Start | End | Metric | Qty | Price | Amount Canvas Certified Educator Program | | | Per Each | 1 | USD 1,200.00 | USD 1,200.00"
 F12,out,17,17,50,False,False,0.1,False,Professional Services | Description | Expiration | Qty Canvas Certified Educator | One enrollment in a series of 6 online courses to complete the HE Canvas Certified Educator | 12
 F12,out,18,18,11,False,False,0.168,False,named participant may not be swapped for a different named participant.
 F12,out,19,19,55,False,False,0.149,False,Institutions who purchase at least 1 Canvas Certified Technical Admin seat and a quantity of Canvas Certified Educator seats equal to or greater than 10% of their faculty (10 seat

@@ -8,8 +8,9 @@ fixes it, page by page and then across pages:
   1. furniture   drop page numbers ("Page 5 of 7"), DocuSign stamps, lines with words that repeat in the top or
                  bottom margin of 3 or more pages of a file (running headers and footers), and logo noise.
                  Every drop is logged in removed.csv.
-  2. tables      pricing tables are not read again: the rows read in the table step (T2-T6) are
-                 put in their place, one row per line ("Catalog Cloud Subscription | Per Year | ... | USD 12,000")
+  2. tables      tables are not part of the clean text: each one read in the table step (T2-T7) leaves a
+                 one-line pointer to its tab in outputs/tables/by_file/<file>.xlsx. A cell that is a whole
+                 sentence stays in the text as a paragraph, so a term written inside a table is not lost (C2)
   3. columns     a printed line is split where the gap between two words is far wider than a space, so two
                  columns side by side become two pieces
   4. grids       a printed row with two or more pieces, at least one short, is a row of a form or a smaller table.
@@ -35,7 +36,7 @@ import pypdfium2 as pdfium
 
 from .common import OUT, files, normalize, pdf_path, write_csv
 from .reading import _covered, best_reading, is_scanned, is_word, load, page_source, real_word_share
-from .tables import billing_summaries, geometry_rows
+from .tables import billing_summaries, geometry_rows, name_tabs
 
 FURNITURE = [(re.compile(r"^page\s*\d+\s*(of\s*\d+)?$", re.I), "page number"),
              (re.compile(r"^-?\s*\d{1,3}\s*-?$"), "page number"),
@@ -185,8 +186,14 @@ def page_blocks(file_id: str, page: int, repeated: set[str], zones: list[dict], 
             para["last"] = pc
         if grid is not None and r["yc"] - grid["bottom"] > 0.04:
             grid = None
-    for z in zones:                                       # the checked pricing tables, in their place
-        blocks.append({"kind": "table", "pages": [page], "rows": z["rows"], "y": z["y0"], "y1": z["y1"]})
+    for z in zones:                                       # each table leaves a pointer to its tab, in its place
+        blocks.append({"kind": "table", "pages": [page], "file_id": file_id, "tab": z["tab"], "rows": z["rows"],
+                       "y": z["y0"], "y1": z["y1"]})
+        sentences = [c for row in z["cells"] for c in row if len(c.split()) >= 10 and END.search(c)]
+        for k, c in enumerate(sentences):                 # a whole sentence in a cell stays as text
+            piece = {"text": c, "box": [0.0, z["y0"], 1.0, z["y1"]]}
+            blocks.append({"kind": "paragraph", "pages": [page], "lines": [piece], "last": piece,
+                           "y": z["y0"] + 1e-6 * (k + 1)})
     blocks.sort(key=lambda b: b["y"])
     blocks = _fill_or_drop_labels(blocks, file_id, page, removed)
     blocks = _drop_empty_sections(blocks, file_id, page, removed)
@@ -333,7 +340,9 @@ def _join_lines(texts: list[str]) -> str:
 
 def _finish(b) -> dict:
     if b["kind"] == "table":
-        return {"kind": "table", "pages": b["pages"], "rows": b["rows"], "text": "\n".join(b["rows"])}
+        pointer = f'[Table "{b["tab"]}": outputs/tables/by_file/{b["file_id"]}.xlsx]'
+        return {"kind": "table", "pages": b["pages"], "tab": b["tab"], "rows": [pointer], "text": pointer,
+                "_table_text": "\n".join(b["rows"])}            # for the checks only; not written out
     if b["kind"] == "grid":
         rows = [" | ".join(_join_lines([p["text"] for p in cell]) for cell in r["cells"]) for r in b["rows"]]
         return {"kind": "grid", "pages": b["pages"], "rows": rows, "text": "\n".join(rows)}
@@ -349,6 +358,7 @@ def file_blocks(file_id: str, n_pages: int, removed: list[dict]) -> list[dict]:
     zones = []
     geometry_rows(file_id, n_pages, zones=zones)
     billing_summaries(file_id, n_pages, zones=zones)
+    name_tabs(zones)
     blocks = []
     for p in range(1, n_pages + 1):
         page = page_blocks(file_id, p, repeated, [z for z in zones if z["page"] == p], removed)
@@ -401,7 +411,9 @@ def check(file_id: str, n_pages: int, blocks: list[dict], removed: list[dict]) -
         "joined_across_pages": sum(bool(b.get("joined_across_pages")) for b in blocks),
         "removed": sum(r["file_id"] == file_id for r in removed),
     }
-    clean_words = Counter(w for b in blocks for w in re.findall(r"[a-z]{5,}", b["text"].lower()))
+    # a table's words are kept in its workbook, so they count as kept here
+    clean_words = Counter(w for b in blocks
+                          for w in re.findall(r"[a-z]{5,}", (b["text"] + " " + b.get("_table_text", "")).lower()))
     missing, scanned = [], [p for p in range(1, n_pages + 1) if _scanned(file_id, p)]
     for p in scanned:
         dropped = {w for r in removed if r["file_id"] == file_id and r["page"] == p
@@ -454,7 +466,7 @@ def main() -> None:
         blocks = file_blocks(f["file_id"], n, removed)
         (OUT / "text").mkdir(parents=True, exist_ok=True)
         (OUT / "text" / f"{f['file_id']}.md").write_text(to_markdown(f, blocks))
-        all_blocks += [{"file_id": f["file_id"], **b} for b in blocks]
+        all_blocks += [{"file_id": f["file_id"], **{k: v for k, v in b.items() if not k.startswith("_")}} for b in blocks]
         c = check(f["file_id"], n, blocks, removed)
         missing_rows += [{"file_id": f["file_id"], "page": p, "word": w, "kind": k, "third_engine_line": t}
                          for p, w, k, t in c.pop("_missing")]

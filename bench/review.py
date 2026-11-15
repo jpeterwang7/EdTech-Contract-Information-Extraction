@@ -304,8 +304,8 @@ def order_forms() -> str:
 # ---------------------------------------------------------------- every block, as the privacy step sees it
 
 def blocks_sheet() -> str:
-    """outputs/privacy/blocks_segmented.xlsx: one row per block of every contract, with the context Llama is shown, the
-    three votes and the sorter's result. A block the keep-together rule brought along is marked so. Test files show
+    """outputs/privacy/blocks_segmented.xlsx: one row per judged block of every contract (headings are context, tables
+    are in outputs/tables/by_file/), with the context Llama is shown, the three votes and the sorter's result. A block the keep-together rule brought along is marked so. Test files show
     their text only, until the final test."""
     from openpyxl import Workbook
     from openpyxl.styles import Alignment, Font, PatternFill

@@ -27,7 +27,7 @@ tables and forms.
 | `ocr-eval` | Score each OCR reading against two answer keys | done |
 | `tables` | Read the pricing tables two ways: rows, columns and wrapped cells | done |
 | `forms` | Read 8 fields from each of the 14 order forms two ways (text rules, layout) and combined, and score them | done; answer key checked by me (0 of 112 changed) |
-| `text` | Clean, whole text: page numbers and stamps removed, paragraphs joined across lines and pages, table rows in place | done; F02 and F13 read by a person beside the scans |
+| `text` | Clean, whole text: page numbers and stamps removed, paragraphs joined across lines and pages, each table replaced by a pointer to its tab | done; F02 and F13 read by a person beside the scans |
 | `privacy` | Find data-governance-and-privacy text with a term list, semantic similarity and Llama; a sorter sends disagreements to a person | scored on the tuning files; test files not yet scored; answer key needs a person's check |
 | extraction | Privacy facts (goal 2) | not started |
 
@@ -42,6 +42,7 @@ Headline results so far:
     table headers).
   - Numbers are taken as printed (decisions.md, T1).
   - Billing Summary tables (F13, F14) are read on their own (T6).
+  - One workbook per PDF, one tab per table: `outputs/tables/by_file/` (T7). The clean text points to them.
 - **Order-form fields:**
   - Layout plus text rules gets 98 of 99 values right; layout alone 96, text rules alone 84.
   - Layout is far better on signer names and dates; reading each signature value alone fixed most handwriting.
@@ -54,9 +55,9 @@ Headline results so far:
   - Judging one block at a time (found, clean, whole): term list (regex) 100%, 69%, 100%; semantic similarity 73%, 51%, 67%;
     Llama with context 73%, 100%, 53%.
   - Three-way sorter (term list, semantic similarity and Llama vote): all core found after checking, 89% of borderline reaches a
-    person, and a person reads 8.6% of the words (decisions.md, P8).
-  - Checked against a person's yes or no for each block (the answer key): the final privacy blocks match on 484 of
-    487 blocks; the 3 misses are borderline clauses dropped automatically. The test files will show whether this
+    person, and a person reads 9.2% of the words (decisions.md, P8).
+  - Checked against a person's yes or no for each block (the answer key): the final privacy blocks match on 459 of
+    462 blocks; the 3 misses are borderline clauses dropped automatically. The test files will show whether this
     holds (decisions.md, P10).
 
 ## Running it on the Mac
