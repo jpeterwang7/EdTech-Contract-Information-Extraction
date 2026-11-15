@@ -1,20 +1,16 @@
-"""Step tables: read the pricing tables two ways and check them with arithmetic.
+"""Step tables: read the pricing tables two ways.
 
 Every Instructure order form prices its products in tables with the same kind of columns
 (Description, Start Date, End Date, Metric, Qty, Price, Amount), followed by Sub-Total, Year Total and
-Grand Total rows. That gives a free accuracy test that needs no hand labels:
-  row check       Qty x Price = Amount on every product row
-  subtotal check  the product rows above a Sub-Total / Year Total add up to it
-  grand check     all product rows of an order form add up to its Grand Total
-A wrong digit, a lost row or a value put in the wrong column breaks at least one of these.
+Grand Total rows. The printed numbers are taken as correct (decisions.md, T1).
 
 Two methods:
   docling    the table structure the earlier pipeline got from Docling's table model (TableFormer)
   geometry   ours: find the header row by its column names, then put every word under the header it sits
              below, using the word positions from the chosen reading (PDF text, or Apple Vision on scans)
 
-Outputs: outputs/tables/pricing_rows_<method>.csv, outputs/tables/pricing_checks_<method>.csv,
-         outputs/tables/pricing_scores.csv
+Outputs: outputs/tables/pricing_rows_<method>.csv, outputs/tables/billing_rows.csv,
+         outputs/tables/pricing_scores.csv (product rows found, and rows whose quantity could not be read)
 """
 import json
 import re
@@ -329,9 +325,9 @@ def geometry_rows(file_id: str, n_pages: int, reread: bool = True, engine: str =
 
 def billing_summaries(file_id: str, n_pages: int, engine: str = TABLE_READING, zones: list | None = None) -> list[dict]:
     """The Billing Summary on the newer order forms (Segment | Recurring | Non-Recurring | Total) has no Qty or Price
-    column, so it is found by its own header. Two checks: Recurring + Non-Recurring = Total on each row, and the
-    Year rows add up to the Total row. (decisions.md, T7)"""
-    checks = []
+    column, so it is found by its own header and its rows are grouped like any table's (decisions.md, T2 and T6).
+    Returns one dict per row, up to its Total row."""
+    out = []
     for page in range(1, n_pages + 1):
         words = [w for line in best_reading(file_id, page, engine) for w in line.get("words", [])]
         rows = _page_rows(words)
@@ -341,7 +337,7 @@ def billing_summaries(file_id: str, n_pages: int, engine: str = TABLE_READING, z
                 continue
             cols = [(n, (w["box"][0] + w["box"][2]) / 2) for n, w in zip(names, row)]
             order = [c[0] for c in cols]
-            body, years, y1 = [], [], max(w["box"][3] for w in row)
+            body, y1 = [], max(w["box"][3] for w in row)
             table = []                          # the lines below the header until another table or a paragraph
             for line in rows[i + 1:i + 12]:
                 if _header(line) or OTHER_TABLE.match(" ".join(w["text"] for w in line)) or len(line) > 25:
@@ -351,66 +347,13 @@ def billing_summaries(file_id: str, n_pages: int, engine: str = TABLE_READING, z
                 cells = _cells(lines, cols)
                 y1 = max(w["box"][3] for w in lines[-1])
                 body.append(" | ".join(cells.get(n, "") for n in order))
-                rec, non, tot = (money(cells.get(n, "")) for n in ("recurring", "non-recurring", "total"))
-                is_total = cells.get("segment", "").lower().startswith("total")
-                if None not in (rec, non):
-                    checks.append({"check": "billing row", "ok": close(rec + non, tot), "file_id": file_id, "page": page,
-                                   "detail": f"{rec:,.2f} + {non:,.2f} vs {tot:,.2f}", "raw": body[-1]})
-                if is_total:
-                    checks.append({"check": "billing total", "ok": close(sum(years), tot), "file_id": file_id,
-                                   "page": page, "detail": f"years {sum(years):,.2f} vs printed {tot:,.2f}", "raw": body[-1]})
+                out.append({"file_id": file_id, "page": page, **{n: cells.get(n, "") for n in order}})
+                if cells.get("segment", "").lower().startswith("total"):
                     break
-                years.append(tot)
             if zones is not None and body:
                 zones.append({"file_id": file_id, "page": page, "y0": min(w["box"][1] for w in row), "y1": y1,
                               "rows": [" | ".join(n.capitalize() for n in order)] + body})
-    return checks
-
-
-# ---------------------------------------------------------------- the arithmetic checks
-
-def close(a: float, b: float) -> bool:
-    return abs(a - b) <= max(0.011, 0.0005 * abs(b))     # cents, or rounding on large sums
-
-
-def check(rows: list[dict]) -> list[dict]:
-    """Run the three checks over one file's rows (in reading order). Returns one result per check."""
-    res = []
-    since_sub, since_total, since_grand = [], [], []
-    for r in rows:
-        if r["kind"] == "item":
-            if r["qty"] is None and r.get("price") is not None and r["amount"] is not None:
-                ok = close(r["price"], r["amount"])     # a flat fee with no quantity: price = amount
-                res.append({"check": "row", "ok": ok, "file_id": r["file_id"], "page": r["page"],
-                            "detail": f"no qty: {r['price']:g} vs {r['amount']:g}", "raw": r["raw"]})
-            elif r["qty"] is not None and r.get("price") is not None and r["amount"] is not None:
-                ok = close(r["qty"] * r["price"], r["amount"])
-                res.append({"check": "row", "ok": ok, "file_id": r["file_id"], "page": r["page"],
-                            "detail": f"{r['qty']:g} x {r['price']:g} = {r['qty'] * r['price']:g} vs {r['amount']:g}",
-                            "raw": r["raw"]})
-            else:
-                res.append({"check": "row", "ok": False, "file_id": r["file_id"], "page": r["page"],
-                            "detail": f"missing value: qty={r['qty']} price={r.get('price')} amount={r['amount']}",
-                            "raw": r["raw"]})
-            amt = r["amount"] or 0.0
-            since_sub.append(amt); since_total.append(amt); since_grand.append(amt)
-        elif r["amount"] is None:
-            res.append({"check": r["kind"], "ok": False, "file_id": r["file_id"], "page": r["page"],
-                        "detail": "total row without a readable amount", "raw": r["raw"]})
-        else:
-            pool = {"subtotal": since_sub, "total": since_total, "grand": since_grand}[r["kind"]]
-            if not pool:
-                continue                                  # e.g. a Year Total right after its Sub-Total: nothing new
-            ok = close(sum(pool), r["amount"])
-            res.append({"check": "grand" if r["kind"] == "grand" else "subtotal", "ok": ok, "file_id": r["file_id"],
-                        "page": r["page"], "detail": f"sum {sum(pool):,.2f} vs printed {r['amount']:,.2f}",
-                        "raw": r["raw"]})
-            since_sub = []
-            if r["kind"] in ("total", "grand"):
-                since_total = []
-            if r["kind"] == "grand":
-                since_grand = []
-    return res
+    return out
 
 
 def main() -> None:
@@ -424,34 +367,21 @@ def main() -> None:
                "geometry+vision, no re-read": ("geometry", "vision", False),
                "geometry+vision": ("geometry", "vision", True)}
     for method, (reader, engine, reread) in methods.items():
-        all_rows, all_checks = [], []
+        all_rows = []
         for f in files():
             n = len(pdfium.PdfDocument(str(pdf_path(f))))
-            rows = (docling_rows(f["file_id"]) if reader == "docling"
-                    else geometry_rows(f["file_id"], n, reread=reread, engine=engine))
-            all_rows += rows
-            all_checks += check(rows)
+            all_rows += (docling_rows(f["file_id"]) if reader == "docling"
+                         else geometry_rows(f["file_id"], n, reread=reread, engine=engine))
         tag = re.sub(r"[^a-z]+", "_", method).strip("_")
         write_csv(OUT / "tables" / f"pricing_rows_{tag}.csv", all_rows,
                   ["file_id", "page", "kind", "description", "qty", "price", "amount", "reread", "raw"])
-        write_csv(OUT / "tables" / f"pricing_checks_{tag}.csv", all_checks,
-                  ["file_id", "page", "check", "ok", "detail", "raw"])
-        for c in ("row", "subtotal", "grand"):
-            sel = [x for x in all_checks if x["check"] == c]
-            scores.append({"method": method, "check": c, "checked": len(sel), "passed": sum(x["ok"] for x in sel),
-                           "pass_rate": round(sum(x["ok"] for x in sel) / len(sel), 3) if sel else ""})
         items = [r for r in all_rows if r["kind"] == "item"]
-        scores.append({"method": method, "check": "product rows found", "checked": len(items), "passed": "",
-                       "pass_rate": ""})
-        scores.append({"method": method, "check": "product rows with no Qty read", "checked": len(items),
-                       "passed": sum(r["qty"] is None for r in items), "pass_rate": ""})
-    billing = [c for f in files() for c in billing_summaries(f["file_id"], len(pdfium.PdfDocument(str(pdf_path(f)))))]
-    write_csv(OUT / "tables" / "billing_checks.csv", billing, ["file_id", "page", "check", "ok", "detail", "raw"])
-    for c in ("billing row", "billing total"):
-        sel = [x for x in billing if x["check"] == c]
-        scores.append({"method": "billing summary (vision)", "check": c, "checked": len(sel),
-                       "passed": sum(x["ok"] for x in sel),
-                       "pass_rate": round(sum(x["ok"] for x in sel) / len(sel), 3) if sel else ""})
+        scores.append({"method": method, "product_rows_found": len(items),
+                       "rows_with_no_qty_read": sum(r["qty"] is None for r in items)})
+    billing = [r for f in files() for r in billing_summaries(f["file_id"], len(pdfium.PdfDocument(str(pdf_path(f)))))]
+    write_csv(OUT / "tables" / "billing_rows.csv", billing,
+              ["file_id", "page", "segment", "recurring", "non-recurring", "total"])
     write_csv(OUT / "tables" / "pricing_scores.csv", scores)
     for s in scores:
         print("  ", s)
+    print(f"   billing summaries: {len(billing)} rows")

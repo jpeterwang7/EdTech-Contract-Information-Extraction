@@ -4,7 +4,7 @@ Steps, in order:
   read         render pages, record the PDF text layer, run the three OCR engines   (bench/reading.py)
   ocr-sample   pick lines from scanned pages for the hand-checked OCR answer key     (bench/ocr_eval.py)
   ocr-eval     score every reading against the answer keys                           (bench/ocr_eval.py)
-  tables       read the pricing tables two ways and check them with arithmetic       (bench/tables.py)
+  tables       read the pricing tables two ways: rows, columns and wrapped cells     (bench/tables.py)
   forms        read 8 fields from each order form two ways and score them             (bench/forms.py)
   text         turn printed lines into clean whole text: no page furniture, whole       (bench/text.py)
                paragraphs across lines and pages, table and form rows kept together

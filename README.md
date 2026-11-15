@@ -25,9 +25,9 @@ tables and forms.
 |---|---|---|
 | `read` | Turn every page into text: the PDF's own text on digital pages; OCR on the 47 scanned pages | done (final run on the lab server, Oct 29) |
 | `ocr-eval` | Score each OCR reading against two answer keys | done |
-| `tables` | Read the pricing tables two ways; check them with arithmetic | done |
+| `tables` | Read the pricing tables two ways: rows, columns and wrapped cells | done |
 | `forms` | Read 8 fields from each of the 14 order forms two ways (text rules, layout) and score them | done; answer key checked by me (0 of 112 changed) |
-| `text` | Clean, whole text: page numbers and stamps removed, paragraphs joined across lines and pages, checked tables in place | done; F02 and F13 read by a person beside the scans |
+| `text` | Clean, whole text: page numbers and stamps removed, paragraphs joined across lines and pages, table rows in place | done; F02 and F13 read by a person beside the scans |
 | `privacy` | Find data-governance-and-privacy text with a term list, semantic similarity and Llama; a sorter sends disagreements to a person | scored on the tuning files; test files not yet scored; answer key needs a person's check |
 | extraction | Privacy facts (goal 2) | not started |
 
@@ -38,10 +38,10 @@ Headline results so far:
   - A second test on 785 lines from digital pages, not used to design anything, ranks the readings in the same
     order (0.39% of characters wrong).
 - **Pricing tables:**
-  - 88 product rows found.
-  - Every subtotal (63/63) and grand total (12/12) adds up.
-  - The 7 row checks that fail are printed that way in the contracts themselves.
-  - Billing Summary tables (F13, F14) pass all 10 of their arithmetic checks.
+  - 88 product rows found, each with its quantity (Docling: 86; Tesseract alone: 20, as it can't read the grey
+    table headers).
+  - Numbers are taken as printed (decisions.md, T1).
+  - Billing Summary tables (F13, F14) are read on their own (T6).
 - **Order-form fields:**
   - Reading by position on the page (layout) gets 89 of 99 values right.
   - Searching the running text (text rules) gets 84.

@@ -8,7 +8,7 @@ fixes it, page by page and then across pages:
   1. furniture   drop page numbers ("Page 5 of 7"), DocuSign stamps, lines with words that repeat in the top or
                  bottom margin of 3 or more pages of a file (running headers and footers), and logo noise.
                  Every drop is logged in removed.csv.
-  2. tables      pricing tables are not read again: the rows checked by arithmetic in the table step (T1-T6) are
+  2. tables      pricing tables are not read again: the rows read in the table step (T2-T6) are
                  put in their place, one row per line ("Catalog Cloud Subscription | Per Year | ... | USD 12,000")
   3. columns     a printed line is split where the gap between two words is far wider than a space, so two
                  columns side by side become two pieces

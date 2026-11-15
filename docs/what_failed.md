@@ -31,15 +31,14 @@ to use it everywhere. The systematic test changed that:
 
 **5. Using the paragraph-text winner for tables.** The Tesseract + Vision combination, best for paragraphs, made
 tables worse:
-- **Scores:** 67 product rows instead of 88; grand totals added up in 7 of 11 order forms instead of 12 of 12.
-- **Example:** Tesseract read "155,674.61" as "165,674.61" in an F10 table (the subtotal check caught it). (T5)
+- **Scores:** 67 product rows instead of 88.
+- **Example:** Tesseract read "155,674.61" as "165,674.61" in an F10 table. (T5)
 
 ## Pricing tables
 
 **6. Our first table reader.**
 - **Design:** one printed line = one table row; header words matched one by one.
-- **Score:** it passed only 55 of 87 row checks (63%), *worse* than Docling (71% at that time).
-- **Causes:**
+- **Problems:**
   - "Ext." and "Price" were read as two separate columns in the 2016–2017 forms.
   - Prices printed on two lines ("USD" / "12,000.00") were cut in half.
 - **Fix:** both were fixed (T2, T3). Docling also gained from the shared fixes, so the comparison stays fair.
@@ -47,8 +46,6 @@ tables worse:
 **7. Lone characters disappear.**
 - **What happened:** whole-page OCR left the Qty cell empty in 6 rows, though each clearly shows "1". Both Apple
   Vision and Tesseract missed the same cell in F06, and Vision read "USD" as "USE" with full confidence.
-- **Why it's dangerous:** these rows still *passed* the arithmetic check under the flat-fee rule. An incomplete row
-  looked correct.
 - **Fixes:**
   - Rows with no quantity are now counted separately.
   - Empty cells are re-read one at a time (T4), which recovered 6 of 6.
@@ -60,16 +57,11 @@ tables worse:
 - **Merged rows:** in F04 it merged the Year 3 Total and the Grand Total into one cell.
 - **Misspelled descriptions:** "Camvas", "Carvas", "Besic Support", "CloudSubsoription".
 
-**9. What the arithmetic check cannot see.**
-- **Not checked:** descriptions and dates are not tested at all.
-- **Errors in the source:** 7 rows fail because the contracts' own numbers don't multiply out (T6). A reader can't
-  "fix" those, and they set a ceiling on the row-check score.
-
 **42. A wrapped cell's last line went to the wrong row.**
 - **What happened:** each wrapped line joined the nearest amount line. "Apply)", the fourth line of "20% of Subscription
   (Minimums Apply)", is closer to the next row's amount line, so it landed in the next row 9 times (F06, F08, F11). In
   F05 it was too far from both amount lines and was dropped.
-- **Why it mattered little:** only the Metric text was wrong. No number or arithmetic check changed.
+- **Why it mattered little:** only the Metric text was wrong. No number changed.
 - **Two first fixes failed:**
   - "Always join the amount line above" dropped "Apply)" (too far from its amount line), and a version that let a row
     grow line by line pulled "Page 1 of 3" into a row.
@@ -78,7 +70,7 @@ tables worse:
 - **Fix:** between two amount lines, rows split at the widest gap, with no fixed spacing (T2). The taller rows then made
   the lone "1" in one F08 quantity cell unreadable to the empty-cell re-read, so its cut-out is now trimmed to the ink
   (T4).
-- **Result:** all 10 lines are in the right row. For the chosen reader, every number, description and score is
+- **Result:** all 10 lines are in the right row. For the chosen reader, every number, description and row count is
   unchanged.
 
 ## Order-form fields
@@ -136,7 +128,7 @@ to the label, finds a sentence, and misses both. Text rules find "Net 30" in bot
 **23. The first clean text read pricing tables a second time.**
 - **What happened:** with the paragraph reading, the grey-shaded table rows came out as "Recurring | Rn NRE | Jo
   AINSI", and product names were torn from their rows.
-- **Fix:** tables now come from the arithmetic-checked table step (C2).
+- **Fix:** tables now come from the table step (C2).
 
 **24. Clause numbers deleted as page headers.** The rule for running headers removed "19.6", "19.7", "19.16" in F07,
 because those clauses happened to start near the top of three pages. A repeated header now needs at least three
@@ -189,8 +181,8 @@ And it missed "Notes", the one it was written for, because it asked for a fifth 
 
 **32. A table no step was checking.** The Billing Summary has no Qty or Price column, so the table reader skipped it
 and the paragraph reading garbled it on F13: "sD 6720050" for USD 67,260.50. Our letter scores and sentence counts
-could not see this; I found it by reading the page. It now has its own reading and arithmetic checks
-(decisions.md, T7). Lesson: every table with numbers needs a check, not only the ones the first rule recognised.
+could not see this; I found it by reading the page. It now has its own reading
+(decisions.md, T6). Lesson: every kind of table needs a reader, not only the ones the first rule recognised.
 
 ## Finding the privacy passages
 

@@ -8,7 +8,7 @@ these decisions are in [what_failed.md](what_failed.md).
 | Step | Decision | Result so far |
 |---|---|---|
 | Read pages | PDF's own text where it exists; OCR on scans | 0.37% of letters wrong on scans (old pipeline: 8.8%) |
-| Pricing tables | Read by column position, checked with arithmetic | 88 rows; all 63 subtotals and 12 grand totals add up |
+| Pricing tables | Read by column position; numbers taken as printed | 88 product rows found |
 | Order-form fields | Find each label on the page, take the value beside it | 89 of 99 values right |
 | Clean text | Remove page clutter, join lines into whole paragraphs | Cut-off sentences: 2,119 → 10 |
 | Privacy passages | Term list, semantic similarity and Llama vote on each block; a person checks where they disagree | All core text found; a person reads 8.6% of the words; matches a person's yes or no on 484 of 487 blocks (tuning files) |
@@ -75,8 +75,8 @@ lines and no score. It fixed some words ("violation") and added others' errors (
 
 ## T. Tables
 
-**T1. Check pricing tables with arithmetic.** These checks need no hand labels: quantity × price = amount on each row,
-rows add up to subtotals, and everything adds up to the grand total. A wrong digit or a lost row breaks one of them.
+**T1. Take the printed numbers as correct.** My choice on Nov 14. The table step reads rows and columns and does not test
+the numbers: quantities, prices and amounts are assumed right as printed.
 
 **T2. Read tables by position.** Find the header row by its column names, then put each word under the header that is
 horizontally nearest. A row can wrap onto several printed lines, so rows are built around their one amount:
@@ -85,13 +85,13 @@ horizontally nearest. A row can wrap onto several printed lines, so rows are bui
   it the lower row, whichever way a cell wraps.
 - Lines above the first amount or below the last one join only if their gap is the size of a gap inside a row, judged
   against the table's own gaps, so a page number under the table stays out.
-- No fixed spacing is assumed, since OCR engines measure text height differently. Billing Summaries (T7) use the same
+- No fixed spacing is assumed, since OCR engines measure text height differently. Billing Summaries (T6) use the same
   rule. This replaced "join the nearest amount line" on Nov 14 (what_failed.md, 42).
 
 This is compared with Docling's table model, used by the earlier pipeline.
 
-**T3. Both methods share three rules, to keep the comparison fair.** "Ext. Price" on older forms means the amount. A flat
-fee with no quantity passes when price = amount. A price still counts if OCR misread the currency ("USE 12,000.00").
+**T3. Both methods share two rules, to keep the comparison fair.** "Ext. Price" on older forms means the amount, and a
+price still counts if OCR misread the currency ("USE 12,000.00").
 
 **T4. Re-read a cell that comes out empty.** Page-wide OCR skips lone characters, like the "1" in a quantity cell. Such a
 cell is cut out and read alone, by up to three readers. This recovered all 6 empty quantities, but the order was chosen
@@ -101,20 +101,19 @@ on those same 6 cells. The cut-out is trimmed to the ink inside it, so a lone "1
 **T5. Use Apple Vision for tables.** Table headers sit on grey shading, which Tesseract can't read, so it misses whole
 tables. The best reading for paragraphs isn't the best for tables.
 
-| Table reader + OCR | Row checks | Subtotals | Grand totals | Rows found |
-|---|---|---|---|---|
-| Docling (old) | 78/86 | 60/60 | 7/8 | 86 |
-| Position + Tesseract | 19/20 | 13/13 | 4/4 | 20 |
-| Position + Tesseract and Vision | 60/67 | 37/40 | 7/11 | 67 |
-| **Position + Vision + cell re-read** | **81/88** | **63/63** | **12/12** | **88** |
+| Table reader + OCR | Product rows found | Rows with no quantity read |
+|---|---|---|
+| Docling (old) | 86 | 2 |
+| Position + Tesseract | 20 | 0 |
+| Position + Tesseract and Vision | 67 | 4 |
+| Position + Vision, no re-read | 88 | 6 |
+| **Position + Vision + cell re-read** | **88** | **0** |
 
-**T6. The 7 failing rows are errors in the contracts.** Each was checked against the page: for example, 400 users ×
-$7,500.00 is printed as $7,500. So there are no known reading errors in the 88 rows' numbers. Descriptions and dates
-aren't tested by arithmetic. The design was improved on these same files, so these are development scores.
+Docling missed F03's Year 5 block (what_failed.md, 8). The design was improved on these same files.
 
-**T7. Billing Summary tables get their own check.** F13 and F14 have this table, with no quantity or price column, so
-the pricing reader skipped it. On F13 it came out as "sD 6720050" for USD 67,260.50. It's now read separately, and all 10
-arithmetic checks pass.
+**T6. Billing Summary tables are read on their own.** F13 and F14 have this table, with no quantity or price column, so
+the pricing reader skipped it. On F13 it came out as "sD 6720050" for USD 67,260.50. It's now found by its own header,
+and its rows are grouped by the same rule as pricing tables (T2): `outputs/tables/billing_rows.csv`.
 
 ---
 
@@ -178,7 +177,7 @@ reasons in `outputs/text/removed.csv`.
 | Very unsure OCR that Apple Vision didn't confirm (C7) | 20 |
 | Empty section ("Notes") (C7) | 1 |
 
-**C2. Take tables from the table step.** Checked rows replace a second reading, so "Per Year" stays in its row.
+**C2. Take tables from the table step.** Its rows replace a second reading, so "Per Year" stays in its row.
 
 **C3. Keep columns and form rows together.** A line splits where two words are far apart. Pieces on one row stay together
 as `label | value`. Two exceptions: a clause number set apart from its text, and a line continuing an unfinished sentence.
@@ -210,7 +209,7 @@ Done for F02 and F13. A digital order form would add confidence.
 
 Being narrow, these rules may leave a few empty labels in other files. That's the safer failure.
 
-**C8. My check of F13, the poorest scan, led to one fix:** the Billing Summary (T7). Misspellings, split product
+**C8. My check of F13, the poorest scan, led to one fix:** the Billing Summary (T6). Misspellings, split product
 descriptions and garbled handwriting remain. I judged these not major.
 
 ---

@@ -326,7 +326,7 @@ def patch_codes(lines: list[dict], ocr: list[dict]) -> list[dict]:
 # Which reading later steps use. Digital pages: always the PDF's own text. Scanned pages: the reading that
 # scored best on the test made for that kind of content (decisions.md, R7 and T5):
 #   running text  -> tess+vision (hand-checked lines, outputs/reading/ocr_scores.csv)
-#   pricing tables -> vision     (arithmetic checks, outputs/tables/pricing_scores.csv)
+#   pricing tables -> vision     (finds every table row, outputs/tables/pricing_scores.csv)
 SCANNED_READING = "tess+vision"
 TABLE_READING = "vision"
 _INV = None
