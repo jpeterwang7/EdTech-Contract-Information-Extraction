@@ -65,6 +65,22 @@ tables worse:
 - **Errors in the source:** 7 rows fail because the contracts' own numbers don't multiply out (T6). A reader can't
   "fix" those, and they set a ceiling on the row-check score.
 
+**42. A wrapped cell's last line went to the wrong row.**
+- **What happened:** each wrapped line joined the nearest amount line. "Apply)", the fourth line of "20% of Subscription
+  (Minimums Apply)", is closer to the next row's amount line, so it landed in the next row 9 times (F06, F08, F11). In
+  F05 it was too far from both amount lines and was dropped.
+- **Why it mattered little:** only the Metric text was wrong. No number or arithmetic check changed.
+- **Two first fixes failed:**
+  - "Always join the amount line above" dropped "Apply)" (too far from its amount line), and a version that let a row
+    grow line by line pulled "Page 1 of 3" into a row.
+  - A fixed spacing limit (1.7 text heights) worked with Apple Vision but not with Tesseract, whose tighter word boxes
+    put wrapped lines up to 1.8 heights apart.
+- **Fix:** between two amount lines, rows split at the widest gap, with no fixed spacing (T2). The taller rows then made
+  the lone "1" in one F08 quantity cell unreadable to the empty-cell re-read, so its cut-out is now trimmed to the ink
+  (T4).
+- **Result:** all 10 lines are in the right row. For the chosen reader, every number, description and score is
+  unchanged.
+
 ## Order-form fields
 
 **16. Hidden DocuSign text garbled every signature on the DocuSign forms.**

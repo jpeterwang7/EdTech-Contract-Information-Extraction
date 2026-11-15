@@ -18,6 +18,7 @@ Outputs: outputs/tables/pricing_rows_<method>.csv, outputs/tables/pricing_checks
 """
 import json
 import re
+import statistics
 from collections import defaultdict
 
 from .common import DATA, OUT, files, write_csv
@@ -153,6 +154,43 @@ def _cells(lines: list[list[dict]], cols: list[tuple[str, float]]) -> dict[str, 
     return {k: " ".join(v) for k, v in cell.items()}
 
 
+def _table_rows(body: list[list[dict]], cols: list[tuple[str, float]], amount: str = "amount",
+                is_amount=lambda cell: bool(re.search(r"\d", cell))) -> list[list[list[dict]]]:
+    """Group a table's lines (top to bottom) into rows, whichever way its cells wrap (decisions.md, T2).
+    Every row has exactly one amount, so between two lines holding an amount there is exactly one boundary between
+    rows. Rows are set apart by extra space (cell padding), so the boundary is the widest gap between those two lines:
+    a line above it belongs to the upper row, a line below it to the lower row. Lines above the first amount line or
+    below the last one join the nearest row only if their gap is the size of a gap inside a row, judged against this
+    table's own gaps, so a page number under the table stays out. No fixed spacing is assumed, as OCR engines
+    measure text height differently. Joining each line to the nearest amount line instead put "(Minimums / Apply)"
+    in two rows (what_failed.md, 42)."""
+    yc = lambda line: sum(w["_yc"] for w in line) / len(line)
+    anchors = [k for k, line in enumerate(body) if is_amount(_cells([line], cols).get(amount, ""))]
+    if not anchors:
+        return []
+    gap = [yc(body[k + 1]) - yc(body[k]) for k in range(len(body) - 1)]      # gap[k] lies between lines k and k + 1
+    cuts, inside = [], []
+    for a, b in zip(anchors, anchors[1:]):
+        widest = max(range(a, b), key=lambda k: gap[k])
+        cuts.append(widest)
+        inside += [gap[k] for k in range(a, b) if k != widest]
+    bounds = [gap[k] for k in cuts]
+    if inside and bounds:
+        edge = (max(inside) + min(bounds)) / 2          # halfway between a gap inside a row and one between rows
+    elif bounds:
+        edge = 0.75 * min(bounds)                       # no wrapped cells to compare with: clearly less than a row
+    else:
+        edge = 2.5 * statistics.median(w["box"][3] - w["box"][1] for line in body for w in line)   # a lone row
+    first, last = anchors[0], anchors[-1]
+    while first > 0 and gap[first - 1] <= edge:
+        first -= 1
+    while last < len(body) - 1 and gap[last] <= edge:
+        last += 1
+    starts = [first] + [k + 1 for k in cuts]
+    ends = [k + 1 for k in cuts] + [last + 1]
+    return [body[s:e] for s, e in zip(starts, ends)]
+
+
 _TESS_DIGIT = None
 
 
@@ -164,8 +202,10 @@ def reread_cell(file_id: str, page: int, cols: list[tuple[str, float]], name: st
     gives a number: Apple Vision on the enlarged cell; the same with a white margin around it; Tesseract
     reading a single character, digits only. (This order was chosen on the 6 cells that needed it; decisions.md, T4.)
     The cell spans halfway to the neighbouring headers, trimmed so the table's ruling lines stay out, and from
-    the top to the bottom of the row's lines."""
+    the top to the bottom of the row's lines. It is then cut down to the ink inside it: in a row made tall by a
+    wrapped cell elsewhere, a lone "1" was too small a part of the cut-out to be read (what_failed.md, 42)."""
     global _TESS_DIGIT
+    import numpy as np
     from PIL import Image, ImageOps
     centres = [c[1] for c in cols]
     i = [c[0] for c in cols].index(name)
@@ -176,9 +216,16 @@ def reread_cell(file_id: str, page: int, cols: list[tuple[str, float]], name: st
     bottom = max(w["box"][3] for line in lines for w in line) + 0.006
     img = Image.open(page_png(file_id, page))
     W, H = img.size
-    crop = img.crop((int((left + trim) * W), int(top * H), int((right - trim) * W), int(bottom * H)))
-    crop = crop.resize((crop.width * 2, crop.height * 2), Image.LANCZOS).convert("L")
-    base = WORK / "cells" / f"{file_id}_p{page}_{name}_{int(top * 1000)}"
+    crop = img.crop((int((left + trim) * W), int(top * H), int((right - trim) * W), int(bottom * H))).convert("L")
+    ink = np.asarray(crop) < 128
+    ink[ink.mean(axis=1) > 0.5] = False                 # a ruling line caught at the top or bottom edge
+    ys, xs = np.nonzero(ink)
+    if len(ys):
+        pad = 12
+        crop = crop.crop((max(0, xs.min() - pad), max(0, ys.min() - pad),
+                          min(crop.width, xs.max() + pad + 1), min(crop.height, ys.max() + pad + 1)))
+    crop = crop.resize((crop.width * 2, crop.height * 2), Image.LANCZOS)
+    base = WORK / "cells" / f"{file_id}_p{page}_{name}_{int(top * 1000)}_{int(bottom * 1000)}_ink"
     base.parent.mkdir(parents=True, exist_ok=True)
     padded = ImageOps.expand(crop, border=(crop.width, crop.height), fill=255)
     crop.save(f"{base}.png")
@@ -212,11 +259,9 @@ def first_number(text: str) -> float | None:
 def geometry_rows(file_id: str, n_pages: int, reread: bool = True, engine: str = TABLE_READING,
                   zones: list | None = None) -> list[dict]:
     """A table row can span several visual lines (a wrapped "USD / 12,000.00", a tall "20% of / Subscription /
-    (Minimums Apply)" cell). Every row has exactly one amount, printed once, so the visual lines that hold an
-    amount are the row anchors and every other line joins the nearest anchor (if within MAX_JOIN of it).
+    (Minimums Apply)" cell); _table_rows groups them.
     If `zones` is a list, each table's place on the page and its rows as text are added to it (bench/text.py
     uses them in place of reading the table a second time)."""
-    MAX_JOIN = 0.03
     out = []
     for page in range(1, n_pages + 1):
         words = [w for line in best_reading(file_id, page, engine) for w in line.get("words", [])]
@@ -236,21 +281,12 @@ def geometry_rows(file_id: str, n_pages: int, reread: bool = True, engine: str =
                 j += 1
                 if row_kind(text) in ("total", "grand"):
                     break
-            yc = lambda line: sum(w["_yc"] for w in line) / len(line)
-            anchors = [k for k, line in enumerate(body) if re.search(r"\d", _cells([line], cols).get("amount", ""))]
-            groups = {k: [body[k]] for k in anchors}
-            for k, line in enumerate(body):
-                if k in groups or not anchors:
-                    continue
-                near = min(anchors, key=lambda a: abs(yc(body[a]) - yc(line)))
-                if abs(yc(body[near]) - yc(line)) <= MAX_JOIN:
-                    groups[near].append(line)
+            row_lines = _table_rows(body, cols)
             names = list(dict.fromkeys(c[0] for c in cols))
             zone = {"file_id": file_id, "page": page, "y0": min(w["box"][1] for w in rows[i]),
                     "y1": max([w["box"][3] for line in body for w in line] or [rows[i][0]["box"][3]]),
                     "rows": [" | ".join(n.capitalize() for n in names)]}
-            for k in anchors:
-                lines = sorted(groups[k], key=yc)
+            for lines in row_lines:
                 cells = _cells(lines, cols)
                 text = " ".join(w["text"] for line in lines for w in line)
                 kind = row_kind(text)
@@ -277,7 +313,7 @@ def geometry_rows(file_id: str, n_pages: int, reread: bool = True, engine: str =
                 out.append({"file_id": file_id, "page": page, "kind": "grand", "amount": money(text), "raw": text[:160]})
                 zone["rows"].append(text)
                 zone["y1"] = max(w["box"][3] for w in rows[j])
-            if zones is not None and anchors:
+            if zones is not None and row_lines:
                 zones.append(zone)
             i = j
         # Grand Totals printed away from any table (another line further down the page)
@@ -306,11 +342,14 @@ def billing_summaries(file_id: str, n_pages: int, engine: str = TABLE_READING, z
             cols = [(n, (w["box"][0] + w["box"][2]) / 2) for n, w in zip(names, row)]
             order = [c[0] for c in cols]
             body, years, y1 = [], [], max(w["box"][3] for w in row)
+            table = []                          # the lines below the header until another table or a paragraph
             for line in rows[i + 1:i + 12]:
-                cells = _cells([line], cols)
-                if money(cells.get("total", "")) is None:
+                if _header(line) or OTHER_TABLE.match(" ".join(w["text"] for w in line)) or len(line) > 25:
                     break
-                y1 = max(w["box"][3] for w in line)
+                table.append(line)
+            for lines in _table_rows(table, cols, "total", lambda cell: money(cell) is not None):
+                cells = _cells(lines, cols)
+                y1 = max(w["box"][3] for w in lines[-1])
                 body.append(" | ".join(cells.get(n, "") for n in order))
                 rec, non, tot = (money(cells.get(n, "")) for n in ("recurring", "non-recurring", "total"))
                 is_total = cells.get("segment", "").lower().startswith("total")

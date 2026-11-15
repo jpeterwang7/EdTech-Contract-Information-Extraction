@@ -78,16 +78,25 @@ lines and no score. It fixed some words ("violation") and added others' errors (
 **T1. Check pricing tables with arithmetic.** These checks need no hand labels: quantity × price = amount on each row,
 rows add up to subtotals, and everything adds up to the grand total. A wrong digit or a lost row breaks one of them.
 
-**T2. Read tables by position.** Find the header row by its column names, then put each word under the nearest header. A
-row can wrap onto several printed lines, so each row is built around the line holding its amount. This is compared with
-Docling's table model, used by the earlier pipeline.
+**T2. Read tables by position.** Find the header row by its column names, then put each word under the header that is
+horizontally nearest. A row can wrap onto several printed lines, so rows are built around their one amount:
+- Between two lines holding an amount there is exactly one boundary between rows, and it is the widest gap between
+  them, because wrapped lines sit close together and rows have padding. Lines above it join the upper row, lines below
+  it the lower row, whichever way a cell wraps.
+- Lines above the first amount or below the last one join only if their gap is the size of a gap inside a row, judged
+  against the table's own gaps, so a page number under the table stays out.
+- No fixed spacing is assumed, since OCR engines measure text height differently. Billing Summaries (T7) use the same
+  rule. This replaced "join the nearest amount line" on Nov 14 (what_failed.md, 42).
+
+This is compared with Docling's table model, used by the earlier pipeline.
 
 **T3. Both methods share three rules, to keep the comparison fair.** "Ext. Price" on older forms means the amount. A flat
 fee with no quantity passes when price = amount. A price still counts if OCR misread the currency ("USE 12,000.00").
 
 **T4. Re-read a cell that comes out empty.** Page-wide OCR skips lone characters, like the "1" in a quantity cell. Such a
 cell is cut out and read alone, by up to three readers. This recovered all 6 empty quantities, but the order was chosen
-on those same 6 cells.
+on those same 6 cells. The cut-out is trimmed to the ink inside it, so a lone "1" in a tall row is still read
+(what_failed.md, 42).
 
 **T5. Use Apple Vision for tables.** Table headers sit on grey shading, which Tesseract can't read, so it misses whole
 tables. The best reading for paragraphs isn't the best for tables.

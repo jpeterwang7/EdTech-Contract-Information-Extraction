@@ -13,7 +13,7 @@ geometry+tess+vision,row,67,60,0.896
 geometry+tess+vision,subtotal,40,37,0.925
 geometry+tess+vision,grand,11,7,0.636
 geometry+tess+vision,product rows found,67,,
-geometry+tess+vision,product rows with no Qty read,67,5,
+geometry+tess+vision,product rows with no Qty read,67,4,
 "geometry+vision, no re-read",row,88,81,0.92
 "geometry+vision, no re-read",subtotal,63,63,1.0
 "geometry+vision, no re-read",grand,12,12,1.0
